@@ -1,0 +1,51 @@
+{
+  "name": "kalman-filter",
+  "version": "1.0.0",
+  "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/piercus/kalman-filter.git"
+  },
+  "keywords": [
+    "kalman",
+    "filter",
+    "kalmanfilter",
+    "kalman-filter",
+    "extended",
+    "extended-kalman-filter",
+    "extended-kalmanfilter",
+    "extended-kalman",
+    "extended-filter",
+    "constant",
+    "speed",
+    "acceleration",
+    "dynamic",
+    "model",
+    "tracking",
+    "math",
+    "smoothing",
+    "multi-dimension",
+    "noise",
+    "linear",
+    "dynamic",
+    "models",
+    "forward",
+    "smoothing",
+    "online",
+    "forward-backward",
+    "smoothing",
+    "autocovariance",
+    "correlation",
+    "covariance"
+  ],
+  "author": "Pierre Colle <piercus@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/piercus/kalman-filter/issues"
+  },
+  "homepage": "https://github.com/piercus/kalman-filter#readme"
+}
