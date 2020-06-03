@@ -189,7 +189,8 @@ const kFilter = new KalmanFilter({
 
 ### Extended Kalman Filter 
 
-Use function as observation or dynamic  matrixes
+Use function as observation or dynamic  matrixes.
+
 In this example, we create a constant-speed filter with non-uniform intervals;
 
 ```js
@@ -305,7 +306,7 @@ measures.forEach(measure => {
 		measure
 	});
 	
-	results.push(previousCorrected.toArray());
+	results.push(previousCorrected.av);
 });
 
 console.log(results);
@@ -321,6 +322,7 @@ const results = kFilter.batch({measures, passMode: 'forward-backward'});
 ## Register models shortcuts
 
 To get more information on how to build a dynamic model, check in the code `lib/dynamic/` (or `lib/observation` for observation models).
+
 If you feel your model can be used by other, do not hesitate to create a Pull Request.
 
 ```js
