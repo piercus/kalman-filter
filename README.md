@@ -2,10 +2,11 @@
 
 [Kalman Filter](https://en.wikipedia.org/wiki/Kalman_filter) in JavaScript
 
-This library implements: 
-* N-dimension Kalman-Filter
-* Online Kalman-Filter
-* Prediction/Correction step
+This library implements following features: 
+* N-dimension Kalman Filter
+* Online Kalman Filter
+* Forward-Backward Kalman Filter
+* Separated Prediction/Correction step
 * Extended Kalman Filter
 * Correlation Matrix
 
@@ -23,9 +24,7 @@ npm install kalman-filter
 const {KalmanFilter} = require('kalman-filter');
 
 const measures = [0, 0.1, 0.5, 0.2];
-
 const kFilter = new KalmanFilter();
-
 const res = kFilter.batch(measures)
 
 console.log(res);
@@ -35,9 +34,16 @@ console.log(res);
 
 ## How to instantiate your kalman filter
 
-### Simple instanciation with stateModel.name
+### Configure the dynamic with `dynamic.name`
 
-#### stateModel.name = 'constant-position' 
+`dynamic.name` is a shortcut to configure commonly use models as : 
+* constant-position
+* constant-speed
+* constant-acceleration
+
+You can also register your own shortcust see [Register models shortcuts](#register-models-shortcuts)
+
+#### constant-position on 2D data
 
 This is the default behavior
 
@@ -57,7 +63,7 @@ const kFilter = new KalmanFilter({
 
 ```
 
-#### stateModel.name = 'constant-speed' on 2D data
+#### 'constant-speed' on 3D data
 
 
 ```js
@@ -65,19 +71,19 @@ const {KalmanFilter} = require('kalman-filter');
 
 const kFilter = new KalmanFilter({
 	observation: {
-		sensorDimension: 2,
+		sensorDimension: 3,
 		name: 'sensors'
 	},
 	dynamic: {
 		name: 'constant-speed',// observation.sensorDimension * 2 == state.dimension
 		timeStep: 0.1,
-		covariance: [3, 3, 4, 4]// equivalent to diag([3, 3, 4, 4])
+		covariance: [3, 3, 3, 4, 4, 4]// equivalent to diag([3, 3, 3, 4, 4, 4])
 	}
 });
 
 ```
 
-#### stateModel.name = 'constant-acceleration' on 2D data
+#### 'constant-acceleration' on 2D data
 
 
 ```js
@@ -99,7 +105,7 @@ const kFilter = new KalmanFilter({
 
 ### Instanciation of a generic linear model
 
-This is an example of how build a constant speed model, in 3D without `stateModel.name`
+This is an example of how build a constant speed model, in 3D without `dynamic.name`
 
 ```js
 const {KalmanFilter} = require('kalman-filter');
@@ -126,7 +132,9 @@ const kFilter = new KalmanFilter({
 
 ```
 
-## Customize the observation
+### Configure the observation
+
+#### Using `sensor` observation
 
 The observation is made from 2 different sensors which are identical, the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
 
@@ -150,36 +158,7 @@ const kFilter = new KalmanFilter({
 
 ```
 
-## Customize the observation
-
-The observation is made from 2 different sensors which are different, the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
-
-```js
-const {KalmanFilter} = require('kalman-filter');
-
-const timeStep = 0.1;
-
-const kFilter = new KalmanFilter({
-	observation: {
-		sensorDimension: 2,
-		nSensors: 2,		
-		covariance: [3, 4, 0.3, 0.4], // equivalent to diag([3, 4, 0.3, 0.4])
-		name: 'sensors'
-	},
-	dynamic: {
-		name: 'constant-speed',// observation.sensorDimension * 2 == state.dimension
-		covariance: [3, 3, 4, 4]// equivalent to diag([3, 3, 4, 4])
-	}
-});
-
-```
-
-## Custom observation matrix
-
-The observation matrix transform measure into state, it is called `measureToState`
-
-
-### Linear case
+#### Custom Observation matrix
 
 The observation is made from 2 different sensors which are different, the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
 
@@ -208,8 +187,9 @@ const kFilter = new KalmanFilter({
 });
 ```
 
-### Use function as observation or dynamic  matrixes
+### Extended Kalman Filter 
 
+Use function as observation or dynamic  matrixes
 In this example, we create a constant-speed filter with non-uniform intervals;
 
 ```js
@@ -338,7 +318,7 @@ console.log(results);
 const results = kFilter.batch({measures, passMode: 'forward-backward'});
 ```
 
-## Register dynamic/observation models
+## Register models shortcuts
 
 To get more information on how to build a dynamic model, check in the code `lib/dynamic/` (or `lib/observation` for observation models).
 If you feel your model can be used by other, do not hesitate to create a Pull Request.
