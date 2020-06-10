@@ -406,3 +406,70 @@ const observationCovariance = getCovariance({
 });
 
 ```
+
+## How to measure how good does a specific model fits with data
+
+There are different ways to measure the performance of a model against some measures : 
+
+### Model fits with a specific measurements
+
+We use [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance)
+
+```js
+const measures = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
+
+// online kalman filter
+let previousCorrected = null;
+const results = [];
+
+measures.forEach(measure => {
+	const predicted = kFilter.predict({
+		previousCorrected
+	});
+	
+	const dist = predicted.mahalanobis(measure)
+	
+	previousCorrected = kFilter.correct({
+		predicted,
+		measure
+	});
+	
+	distances.push(dist);
+});
+
+const distance = distances.reduce((d1, d2) => d1 + d2, 0);
+```
+### How precise is this Model
+
+We compare the model with random generated numbers sequence.
+
+```js
+const h = require('hasard')
+const measureHasard = h.array({value: h.number({type: 'normal'}), size: 2})
+
+const measures = measureHasard.run(200);
+
+// online kalman filter
+let previousCorrected = null;
+const results = [];
+
+measures.forEach(measure => {
+	const predicted = kFilter.predict({
+		previousCorrected
+	});
+	
+	const dist = predicted.mahalanobis(measure)
+	
+	previousCorrected = kFilter.correct({
+		predicted,
+		measure
+	});
+	
+	distances.push(dist);
+});
+
+const distance = distances.reduce((d1, d2) => d1 + d2, 0);
+
+```
+
+
