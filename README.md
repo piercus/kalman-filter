@@ -2,7 +2,9 @@
 
 [Kalman Filter](https://en.wikipedia.org/wiki/Kalman_filter) in JavaScript
 
-This library implements following features: 
+
+
+This library implements following features:
 * N-dimension Kalman Filter
 * Online Kalman Filter
 * Forward-Backward Kalman Filter
@@ -36,7 +38,7 @@ console.log(res);
 
 ### Configure the dynamic with `dynamic.name`
 
-`dynamic.name` is a shortcut to configure commonly use models as : 
+`dynamic.name` is a shortcut to configure commonly use models as :
 * constant-position
 * constant-speed
 * constant-acceleration
@@ -93,7 +95,7 @@ const kFilter = new KalmanFilter({
 	observation: {
 		sensorDimension: 2,
 		name: 'sensors'
-	},	
+	},
 	dynamic: {
 		name: 'constant-acceleration',// observation.sensorDimension * 3 == state.dimension
 		timeStep: 0.1,
@@ -187,7 +189,7 @@ const kFilter = new KalmanFilter({
 });
 ```
 
-### Extended Kalman Filter 
+### Extended Kalman Filter
 
 Use function as observation or dynamic  matrixes.
 
@@ -300,12 +302,12 @@ measures.forEach(measure => {
 	const predicted = kFilter.predict({
 		previousCorrected
 	});
-	
+
 	previousCorrected = kFilter.correct({
 		predicted,
 		measure
 	});
-	
+
 	results.push(previousCorrected.av);
 });
 
@@ -331,18 +333,18 @@ const {registerDynamic, KalmanFilter, registerObservation} = require('kalman-fil
 registerDynamic('custom-dynamic', function(opts1){
 	// do your stuff
 	return {
-		dimension, 
+		dimension,
 		transition,
-		covariance 
+		covariance
 	}
 })
 
 registerObservation('custom-sensor', function(opts2){
 	// do your stuff
 	return {
-		dimension, 
+		dimension,
 		measureToState,
-		covariance 
+		covariance
 	}
 })
 
@@ -367,9 +369,9 @@ In order to find the proper values for covariance matrix, we use following appro
 
 const {getCovariance, KalmanFilter} = require('kalman-filter');
 
-// Ground truth values in the dynamic model hidden state 
-const groundTruthStates = [ // here this is (x, vx)	
-	[[0, 1.1], [1.1, 1], [2.1, 0.9], [3, 1], [4, 1.2]], // example 1 
+// Ground truth values in the dynamic model hidden state
+const groundTruthStates = [ // here this is (x, vx)
+	[[0, 1.1], [1.1, 1], [2.1, 0.9], [3, 1], [4, 1.2]], // example 1
 	[[8, 1.1], [9.1, 1], [10.1, 0.9], [11, 1], [12, 1.2]] // example 2
 ]
 
@@ -377,7 +379,7 @@ const groundTruthStates = [ // here this is (x, vx)
 const measures = [ // here this is x only
 	[[0.1], [1.3], [2.4], [2.6], [3.8]], // example 1
 	[[8.1], [9.3], [10.4], [10.6], [11.8]] // example 2
-]; 
+];
 
 const kFilter = new KalmanFilter({
 	observation: {
@@ -390,12 +392,12 @@ const kFilter = new KalmanFilter({
 })
 
 const dynamicCovariance = getCovariance({
-	measures: groundTruthStates.map(ex => 
+	measures: groundTruthStates.map(ex =>
 		return ex.slice(1).map((_, index) => {
 			return kFilter.predict({previousCorrected: ex[index - 1]}).av;
 		})
 	).reduce((a,b) => a.concat(b)),
-	averages: groundTruthStates.map(ex => 
+	averages: groundTruthStates.map(ex =>
 		return ex.slice(1)
 	).reduce((a,b) => a.concat(b)),
 });
@@ -409,7 +411,7 @@ const observationCovariance = getCovariance({
 
 ## How to measure how good does a specific model fits with data
 
-There are different ways to measure the performance of a model against some measures : 
+There are different ways to measure the performance of a model against some measures :
 
 ### Model fits with a specific measurements
 
@@ -426,14 +428,14 @@ measures.forEach(measure => {
 	const predicted = kFilter.predict({
 		previousCorrected
 	});
-	
+
 	const dist = predicted.mahalanobis(measure)
-	
+
 	previousCorrected = kFilter.correct({
 		predicted,
 		measure
 	});
-	
+
 	distances.push(dist);
 });
 
@@ -457,19 +459,17 @@ measures.forEach(measure => {
 	const predicted = kFilter.predict({
 		previousCorrected
 	});
-	
+
 	const dist = predicted.mahalanobis(measure)
-	
+
 	previousCorrected = kFilter.correct({
 		predicted,
 		measure
 	});
-	
+
 	distances.push(dist);
 });
 
 const distance = distances.reduce((d1, d2) => d1 + d2, 0);
 
 ```
-
-
