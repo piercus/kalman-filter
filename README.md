@@ -2,8 +2,6 @@
 
 [Kalman Filter](https://en.wikipedia.org/wiki/Kalman_filter) in JavaScript
 
-
-
 This library implements following features:
 * N-dimension Kalman Filter
 * Online Kalman Filter
