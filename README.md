@@ -462,7 +462,7 @@ const observations = observationHasard.run(200);
 let previousCorrected = null;
 const results = [];
 
-measures.forEach(observation => {
+observations.forEach(observation => {
 	const predictedState = kFilter.predict({
 		previousCorrected
 	});
