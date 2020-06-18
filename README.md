@@ -470,7 +470,7 @@ observations.forEach(observation => {
 	const dist = predicted.mahalanobis(measure)
 
 	previousCorrected = kFilter.correct({
-		predictedState,
+		predicted,
 		observation
 	});
 
