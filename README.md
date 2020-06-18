@@ -6,7 +6,7 @@ This library implements following features:
 * N-dimensional Kalman Filter (for [multivariate Gaussian](https://en.wikipedia.org/wiki/Multivariate_normal_distribution))
 * Forward Kalman Filter (Online)
 * Forward-Backward Smoothing Kalman Filter
-* Splited Prediction/Correction steps
+* Split Prediction/Correction steps
 * Extended Kalman Filter (when using functions for dynamics and observation matrixes )
 * Correlation Matrix
 
