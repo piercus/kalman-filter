@@ -456,7 +456,7 @@ We compare the model with random generated numbers sequence.
 const h = require('hasard')
 const measureHasard = h.array({value: h.number({type: 'normal'}), size: 2})
 
-const observation = measureHasard.run(200);
+const observations = observationHasard.run(200);
 
 // online kalman filter
 let previousCorrected = null;
