@@ -309,7 +309,7 @@ observations.forEach(observation => {
 	});
 
 	 const correctedState = kFilter.correct({
-		predictedState,
+		predicted,
 		observation
 	});
 
