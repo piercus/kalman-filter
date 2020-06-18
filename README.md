@@ -25,7 +25,7 @@ const {KalmanFilter} = require('kalman-filter');
 
 const observations = [0, 0.1, 0.5, 0.2];
 const kFilter = new KalmanFilter();
-const res = kFilter.filterAll(observation)
+const res = kFilter.filterAll(observations)
 
 console.log(res);
 ```
