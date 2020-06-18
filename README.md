@@ -289,9 +289,9 @@ When using online usage (only the forward step), the output of the `filter` meth
 // online kalman filter
 let previousCorrected = null;
 const results = [];
-observation.forEach(m => {
-	previous = kFilter.filter(previousCorrected, observation);
-	results.push(previous.mean);
+observations.forEach(observation => {
+	previousCorrected = kFilter.filter({previousCorrected, observation});
+	results.push(previousCorrected.mean);
 });
 ```
 
