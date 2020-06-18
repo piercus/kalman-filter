@@ -328,7 +328,7 @@ The Forward - Backward process
 
 ```js
 // batch kalman filter
-const results = kFilter.batch({observation, passMode: 'forward-backward'});
+const results = kFilter.filterAll({observation, passMode: 'forward-backward'});
 ```
 
 ## Register models shortcuts
