@@ -428,7 +428,7 @@ There are different ways to measure the performance of a model against some meas
 We use [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance)
 
 ```js
-const observation = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
+const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 // online kalman filter
 let previousCorrected = null;
