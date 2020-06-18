@@ -279,7 +279,7 @@ const kFilter = new KalmanFilter({
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 // batch kalman filter
-const results = kFilter.filterAll(observation);
+const results = kFilter.filterAll(observations);
 ```
 ### Online usage (run it online, forward step only)
 
