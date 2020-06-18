@@ -314,6 +314,9 @@ observations.forEach(observation => {
 	});
 
 	results.push(correctedState.mean);
+	
+	// update the previousCorrected for next loop iteration
+	previousCorrected = correctedState
 });
 
 console.log(results);
