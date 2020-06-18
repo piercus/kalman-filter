@@ -276,7 +276,7 @@ const kFilter = new KalmanFilter({
 ### Simple Batch usage (run it once for the whole dataset)
 
 ```js
-const observation = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
+const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 // batch kalman filter
 const results = kFilter.filterAll(observation);
