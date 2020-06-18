@@ -434,7 +434,7 @@ const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 let previousCorrected = null;
 const results = [];
 
-measures.forEach(measure => {
+observations.forEach(observation => {
 	const predictedState = kFilter.predict({
 		previousCorrected
 	});
