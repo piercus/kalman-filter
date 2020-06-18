@@ -189,7 +189,13 @@ const kFilter = new KalmanFilter({
 
 ### Extended Kalman Filter
 
-Use non linear functions as observation or dynamic  matrixes.
+In order to use the Kalman-Filter with a dynamic or observation model which is not strictly a [General linear model](https://en.wikipedia.org/wiki/General_linear_model), it is possible to use `function` in following parameters :
+* `observation.stateProjection`
+* `observation.covariance`
+* `observation.transition`
+* `observation.covariance`
+
+In this situation this `function` will return the value of the matrix at each step of the kalman-filter.
 
 In this example, we create a constant-speed filter with non-uniform intervals;
 
