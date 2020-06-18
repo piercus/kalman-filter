@@ -454,7 +454,7 @@ We compare the model with random generated numbers sequence.
 
 ```js
 const h = require('hasard')
-const measureHasard = h.array({value: h.number({type: 'normal'}), size: 2})
+const observationHasard = h.array({value: h.number({type: 'normal'}), size: 2})
 
 const observations = observationHasard.run(200);
 
