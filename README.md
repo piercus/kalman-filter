@@ -303,7 +303,7 @@ If you want to use KalmanFilter in more advanced usage, you might want to dissoc
 // online kalman filter
 let previousCorrected = null;
 const results = [];
-observation.forEach(measure => {
+observations.forEach(observation => {
 	const predictedState = kFilter.predict({
 		previousCorrected
 	});
