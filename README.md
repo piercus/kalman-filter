@@ -3,11 +3,11 @@
 [Kalman Filter](https://en.wikipedia.org/wiki/Kalman_filter) in JavaScript
 
 This library implements following features:
-* N-dimension Kalman Filter
-* Online Kalman Filter
-* Forward-Backward Kalman Filter
-* Separated Prediction/Correction step
-* Extended Kalman Filter
+* N-dimensional Kalman Filter (for [multivariate Gaussian](https://en.wikipedia.org/wiki/Multivariate_normal_distribution))
+* Forward Kalman Filter (Online)
+* Forward-Backward Smoothing Kalman Filter
+* Split Prediction/Correction steps
+* Extended Kalman Filter (when using functions for dynamics and observation matrixes)
 * Correlation Matrix
 
 ## Installation
@@ -23,9 +23,9 @@ npm install kalman-filter
 ```js
 const {KalmanFilter} = require('kalman-filter');
 
-const measures = [0, 0.1, 0.5, 0.2];
+const observations = [0, 0.1, 0.5, 0.2];
 const kFilter = new KalmanFilter();
-const res = kFilter.batch(measures)
+const res = kFilter.filterAll(observations)
 
 console.log(res);
 ```
@@ -43,7 +43,7 @@ console.log(res);
 
 You can also register your own shortcust see [Register models shortcuts](#register-models-shortcuts)
 
-#### constant-position on 2D data
+#### 'constant-position' on 2D data
 
 This is the default behavior
 
@@ -136,7 +136,7 @@ const kFilter = new KalmanFilter({
 
 #### Using `sensor` observation
 
-The observation is made from 2 different sensors which are identical, the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
+The observation is made from 2 different sensors with identical properties (i.e. same covariances) , the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
 
 ```js
 const {KalmanFilter} = require('kalman-filter');
@@ -160,7 +160,7 @@ const kFilter = new KalmanFilter({
 
 #### Custom Observation matrix
 
-The observation is made from 2 different sensors which are different, the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
+The observation is made from 2 different sensors with different properties (i.e. different covariances), the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
 
 This can be achived manually by doing
 
@@ -172,7 +172,7 @@ const timeStep = 0.1;
 const kFilter = new KalmanFilter({
 	observation: {
 		dimension: 4,
-		measureToState: [
+		stateProjection: [
 			[1, 0, 0, 0],
 			[0, 1, 0, 0],
 			[1, 0, 0, 0],
@@ -189,9 +189,16 @@ const kFilter = new KalmanFilter({
 
 ### Extended Kalman Filter
 
-Use function as observation or dynamic  matrixes.
+In order to use the Kalman-Filter with a dynamic or observation model which is not strictly a [General linear model](https://en.wikipedia.org/wiki/General_linear_model), it is possible to use `function` in following parameters :
+* `observation.stateProjection`
+* `observation.covariance`
+* `observation.transition`
+* `observation.covariance`
+
+In this situation this `function` will return the value of the matrix at each step of the kalman-filter.
 
 In this example, we create a constant-speed filter with non-uniform intervals;
+
 
 ```js
 const {KalmanFilter} = require('kalman-filter');
@@ -202,18 +209,18 @@ const kFilter = new KalmanFilter({
 	observation: {
 		dimension: 2,
 		/**
-		* @param {KalmanPoint} predicted
+		* @param {State} predictedState
 		* @param {Array.<Number>} observation
 		* @param {Number} index		
 		*/
-		measureToState: function(opts){
+		stateProjection: function(opts){
 			return [
 				[1, 0, 0, 0],
 				[0, 1, 0, 0]
 			]
 		},
 		/**
-		* @param {KalmanPoint} predicted
+		* @param {State} predictedState
 		* @param {Array.<Number>} observation
 		* @param {Number} index
 		*/		
@@ -229,7 +236,7 @@ const kFilter = new KalmanFilter({
 	dynamic: {
 		dimension: 4, //(x, y, vx, vy)
 		/**
-		* @param {KalmanPoint} previousCorrected
+		* @param {State} previousCorrected
 		* @param {Number} index
 		*/
 		transition: function(opts){
@@ -245,7 +252,7 @@ const kFilter = new KalmanFilter({
 			]
 		},
 		/**
-		* @param {KalmanPoint} previousCorrected
+		* @param {State} previousCorrected
 		* @param {Number} index
 		*/		
 		covariance: function(opts){
@@ -269,22 +276,22 @@ const kFilter = new KalmanFilter({
 ### Simple Batch usage (run it once for the whole dataset)
 
 ```js
-const measures = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
+const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 // batch kalman filter
-const results = kFilter.batch(measures);
+const results = kFilter.filterAll(observations);
 ```
-### Online usage (run it online)
+### Online usage (run it online, forward step only)
 
-When using online usage, the output of the `online` method is an instance of the "Kalman Point" class.
+When using online usage (only the forward step), the output of the `filter` method is an instance of the ["State"](/lib/state.js) class.
 
 ```js
 // online kalman filter
-let previous = null;
+let previousCorrected = null;
 const results = [];
-measures.forEach(m => {
-	previous = kFilter.online(previous, m);
-	results.push(previous.av);
+observations.forEach(observation => {
+	previousCorrected = kFilter.filter({previousCorrected, observation});
+	results.push(previousCorrected.mean);
 });
 ```
 
@@ -296,27 +303,32 @@ If you want to use KalmanFilter in more advanced usage, you might want to dissoc
 // online kalman filter
 let previousCorrected = null;
 const results = [];
-measures.forEach(measure => {
-	const predicted = kFilter.predict({
+observations.forEach(observation => {
+	const predictedState = kFilter.predict({
 		previousCorrected
 	});
 
-	previousCorrected = kFilter.correct({
+	 const correctedState = kFilter.correct({
 		predicted,
-		measure
+		observation
 	});
 
-	results.push(previousCorrected.av);
+	results.push(correctedState.mean);
+
+	// update the previousCorrected for next loop iteration
+	previousCorrected = correctedState
 });
 
 console.log(results);
 ```
 
-### Batch Forward - Backward filtering usage
+### Batch Forward - Backward smoothing usage
+
+The Forward - Backward process
 
 ```js
 // batch kalman filter
-const results = kFilter.batch({measures, passMode: 'forward-backward'});
+const results = kFilter.filterAll({observations, passMode: 'forward-backward'});
 ```
 
 ## Register models shortcuts
@@ -341,7 +353,7 @@ registerObservation('custom-sensor', function(opts2){
 	// do your stuff
 	return {
 		dimension,
-		measureToState,
+		stateProjection,
 		covariance
 	}
 })
@@ -416,22 +428,22 @@ There are different ways to measure the performance of a model against some meas
 We use [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance)
 
 ```js
-const measures = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
+const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 // online kalman filter
 let previousCorrected = null;
 const results = [];
 
-measures.forEach(measure => {
-	const predicted = kFilter.predict({
+observations.forEach(observation => {
+	const predictedState = kFilter.predict({
 		previousCorrected
 	});
 
-	const dist = predicted.mahalanobis(measure)
+	const dist = predicted.mahalanobis(observation)
 
 	previousCorrected = kFilter.correct({
 		predicted,
-		measure
+		observation
 	});
 
 	distances.push(dist);
@@ -445,16 +457,16 @@ We compare the model with random generated numbers sequence.
 
 ```js
 const h = require('hasard')
-const measureHasard = h.array({value: h.number({type: 'normal'}), size: 2})
+const observationHasard = h.array({value: h.number({type: 'normal'}), size: 2})
 
-const measures = measureHasard.run(200);
+const observations = observationHasard.run(200);
 
 // online kalman filter
 let previousCorrected = null;
 const results = [];
 
-measures.forEach(measure => {
-	const predicted = kFilter.predict({
+observations.forEach(observation => {
+	const predictedState = kFilter.predict({
 		previousCorrected
 	});
 
@@ -462,7 +474,7 @@ measures.forEach(measure => {
 
 	previousCorrected = kFilter.correct({
 		predicted,
-		measure
+		observation
 	});
 
 	distances.push(dist);
