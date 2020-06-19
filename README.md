@@ -283,7 +283,7 @@ const results = kFilter.filterAll(observations);
 ```
 ### Online usage (run it online, forward step only)
 
-When using online usage (only the forward step), the output of the `filter` method is an instance of the ["State"](state.js) class.
+When using online usage (only the forward step), the output of the `filter` method is an instance of the ["State"](/lib/state.js) class.
 
 ```js
 // online kalman filter
