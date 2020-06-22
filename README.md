@@ -128,7 +128,7 @@ const kFilter = new KalmanFilter({
 			// We just use random-guessed values here that seems reasonable
 			mean: [[500], [500], [500], [0], [0], [0]],
 			// We init the dynamic model with a huge covariance cause we don't 
-			// have any idea where my modeled object before the first observation
+			// have any idea where my modeled object before the first observation is located
 			covariance: [
 				[huge, 0, 0, 0, 0, 0], 
 				[0, huge, 0, 0, 0, 0], 
