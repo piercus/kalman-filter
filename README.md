@@ -190,7 +190,7 @@ The observation is made from 2 different sensors with different properties (i.e.
 
 This can be achived manually by using the detailed API :
 * `observation.dimension` is the size of the observation
-* `observation.stateProjection` is the matrix that transform state into observation, also called *observation model*
+* `observation.stateProjection` is the matrix that transforms state into observation, also called *observation model*
 * `observation.covariance` is the covariance matrix of the *observation model*
 
 ```js
