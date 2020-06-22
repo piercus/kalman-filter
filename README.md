@@ -105,7 +105,7 @@ const kFilter = new KalmanFilter({
 
 ### Instanciation of a generic linear model
 
-This is an example of how build a constant speed model, in 3D without `dynamic.name`, using detailed api.
+This is an example of how to build a constant speed model, in 3D without `dynamic.name`, using detailed api.
 
 * `dynamic.dimension` is the size of the state
 * `dynamic.transition` is the state transition model that defines the dynamic of the system
