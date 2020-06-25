@@ -9,7 +9,7 @@ const defaultOptions = {
           dimension: 1,
           stateProjection: function(opts){
             return [
-                  [1, 0],
+                  [1],
           ]
           },
 
@@ -31,16 +31,13 @@ const defaultOptions = {
         },
           transition : function (opts) { //Constant position model
             return [
-                    [1, 0],
-                    [0, 0]
+                    [1]
             ]
           },
 
           covariance: function(opts){
   			       return [
-  				          [1, 0],
-  				          [0, 1]
-  			       ]
+  				          [1]
           }
   }
 
@@ -61,8 +58,7 @@ test('Init with zero mean', t =>{
       init: {
         mean: null,
         covariance: [
-                    [1, 0],
-                    [0, 1]
+                    [1]
                   ]
       }
     })
@@ -83,16 +79,14 @@ test('Impact previousCorrected and dynamic covariance', t =>{
     dynamic: Object.assign({}, defaultOptions.dynamic, {
       init: {
         covariance: [
-                    [tiny, 0],
-                    [0, tiny]
+                    [tiny]
                   ]
       }
     })
   })
   const kf = new CoreKalmanFilter(smallDynamicCovOpts);
   const previousCorrected = new State ({covariance: [
-                                                    [tiny, 0],
-                                                    [0,tiny],
+                                                    [tiny],
                                         ]
                                       })
   const predicted = kf.filter({previousCorrected})
@@ -125,8 +119,7 @@ test('Compare dynamic and observation covariances', t =>{
     dynamic: Object.assign({}, defaultOptions.dynamic, {
       init: {
         covariance: [
-                    [tiny, 0],
-                    [0, tiny]
+                    [tiny]
                   ]
       }
     })
@@ -139,8 +132,7 @@ test('Compare dynamic and observation covariances', t =>{
     dynamic: Object.assign({}, defaultOptions.dynamic, {
       init: {
         covariance: [
-                    [huge, 0],
-                    [0, huge]
+                    [huge]
                   ]
       }
     })
@@ -161,8 +153,7 @@ test('Compare dynamic and observation covariances', t =>{
 test('Predicted covariance equals to zero', t =>{
   const kf = new CoreKalmanFilter(defaultOptions);
   const predicted = new State ({covariance: [
-                                            [0, 0],
-                                            [0, 0],
+                                            [0],
                                         ]
                                       })
   const previousCorrected = kf.correct({predicted,observation})
