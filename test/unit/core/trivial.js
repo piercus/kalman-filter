@@ -9,17 +9,17 @@ const distanceMat = require('../../../lib/distance-mat.js');
 const defaultOptions = {
 	observation: {
 		dimension: 1,
-		stateProjection: (function () {
+		stateProjection(opts) {
 			return [
 				[1]
 			];
-		})(),
+		},
 
-		covariance: (function () {
+		covariance(opts) {
 			return [
 				[1]
 			];
-		})()
+		}
 	},
 
 	dynamic: {
@@ -31,17 +31,17 @@ const defaultOptions = {
 				[1]
 			]
 		},
-		transition: (function () { // Constant position model
+		transition(opts) { // Constant position model
 			return [
 				[1]
 			];
-		})(),
+		},
 
-		covariance: (function () {
+		covariance(opts) {
 			return [
 				[1]
 			];
-		})()
+		}
 	}
 
 };
@@ -68,9 +68,11 @@ test('Init with zero mean', t => {
 test('Impact previousCorrected and dynamic covariance', t => {
 	const smallDynamicCovOpts = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			covariance: [
-				[tiny]
-			]
+			covariance() {
+			 	return [
+					[tiny]
+				]
+			}
 		})
 	});
 	const kf = new CoreKalmanFilter(smallDynamicCovOpts);
@@ -95,7 +97,7 @@ test('Huge predicted covariance', t => {
 	});
 	const corrected = kf.correct({
 		predicted,
-		observation: defaultOptions.observation.observations
+		observation
 	});
 	t.true(corrected instanceof State);
 	t.true(2 / trace(corrected.covariance) < tiny / 2); // Verifying that the sum of the variance is huge
@@ -121,9 +123,11 @@ test('Dynamic covariance test', t => {
 
 	const hugeDynOpts = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			covariance: [
-				[huge]
-			]
+			covariance() {
+			 	return [
+					[huge]
+				]
+			}
 		})
 	});
 	const kfHuge = new CoreKalmanFilter(hugeDynOpts);
@@ -165,7 +169,11 @@ test('Observation covariance test', t => {
 
 	const smallObservationCovOpts = Object.assign({}, defaultOptions, {
 		observation: Object.assign({}, defaultOptions.observation, {
-			covariance: [[tiny]]
+			covariance() {
+			 	return [
+					[tiny]
+				]
+			}
 		})
 	});
 	const kfSmall = new CoreKalmanFilter(smallObservationCovOpts);
@@ -239,13 +247,19 @@ test('Fitted observation', t => {
 test('Wrongly sized', () => {
 	const WrongOpts = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			covariance: [
-				[tiny, 0],
-				[0, tiny]
-			]
+			covariance() {
+				return [
+					[tiny, 0],
+					[0, tiny]
+				]
+			}
 		}),
 		observation: Object.assign({}, defaultOptions.observation, {
-			covariance: [[huge]]
+			covariance() {
+			 	return [
+					[tiny]
+				]
+			}
 		})
 	});
 	const kf = new CoreKalmanFilter(WrongOpts);
@@ -255,4 +269,27 @@ test('Wrongly sized', () => {
 	});
 });
 
-// Test : Throws an error if covariance are non-function
+// Test : Throws an error for NaN predicted
+
+test('NaN Error', () => {
+	const previousCorrected = new State({
+		mean: [[0]],
+		covariance: [[NaN]]
+	});
+});
+// Error Test: non-squared matrix
+
+test('Non squared matrix', () => {
+	const nonSquaredState = new State({
+		mean: [[0, 0]],
+		covariance: [
+			[1, 0, 0],
+			[0, 1, 0]
+		]
+	});
+	const kf = new CoreKalmanFilter(defaultOptions);
+	throws(() => {
+		kf.predict({previousCorrected: nonSquaredState},
+			'Non squared matrix not authorized');
+	});
+});
