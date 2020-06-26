@@ -2,7 +2,8 @@ const test = require('ava');
 
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
-const diag = require('../../../lib/diag.js');
+const trace = require('../../../lib/trace.js');
+const equalState = require('../helpers/equal-state.js');
 
 const defaultOptions = {
 	observation: {
@@ -18,12 +19,10 @@ const defaultOptions = {
 				[1]
 			];
 		})(),
-
-		observations: [[0.1]]
 	},
 
 	dynamic: {
-		dimension: 2,
+		dimension: 1,
 		init: {
 			mean: [[0]],
 
@@ -46,6 +45,8 @@ const defaultOptions = {
 
 };
 
+const observation = [[0.1]];
+
 const huge = 1000;
 const tiny = 0.001;
 
@@ -54,18 +55,9 @@ const tiny = 0.001;
 
 test('Init with zero mean', t => {
 	const kf1 = new CoreKalmanFilter(defaultOptions);
-	const initNullOpts = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			init: {
-				mean: null,
-				covariance: [
-					[1]
-				]
-			}
-		})
-	});
-	const kf2 = new CoreKalmanFilter(initNullOpts);
-	t.is(kf1.predict(), kf2.predict());
+	t.true(equalState(kf1.predict(), kf1.predict({
+		previousCorrected: defaultOptions.dynamic.init
+	})));
 	t.true(kf1.predict instanceof State);
 	t.true(kf2.predict instanceof State);
 });
@@ -76,21 +68,20 @@ test('Init with zero mean', t => {
 test('Impact previousCorrected and dynamic covariance', t => {
 	const smallDynamicCovOpts = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			init: {
-				covariance: [
-					[tiny]
-				]
-			}
+			covariance: [
+				[tiny]
+			],
 		})
 	});
 	const kf = new CoreKalmanFilter(smallDynamicCovOpts);
 	const previousCorrected = new State({
+		mean: [[0]]
 		covariance: [[tiny]]
 	});
 	const predicted = kf.filter({previousCorrected});
 	t.true(predicted instanceof State);
 	t.is(typeof predicted.index, 'number');
-	t.true(2 / diag(predicted.covariance) > huge / 2);
+	t.true(2 / trace(predicted.covariance) > huge / 2); //Verifying that the sum of the variance is tiny
 });
 
 // Test 3: Verify that a huge predicted.covariance return a huge newCorrected.covariance
@@ -102,24 +93,68 @@ test('Huge predicted covariance', t => {
 			[huge]
 		]
 	});
-	const previousCorrected = kf.correct({predicted,
+	const corrected = kf.correct({
+		predicted,
 		observation: defaultOptions.observation.observations
 	});
-	t.true(previousCorrected instanceof State);
-	t.true(2 / diag(previousCorrected.covariance) < tiny / 2);
+	t.true(corrected instanceof State);
+	t.true(2 / trace(previousCorrected.covariance) < tiny / 2); //Verifying that the sum of the variance is huge
 });
 
-// Test 4: Verify that huge dynamic.covariance + small observation.covariance
-// leads to a poorer result (bigger covariance) than huge observation.covariance + small dynamic.covariance
+// Test 4a: Play with dynamic and previousCorrected covariances
 
-test('Compare dynamic and observation covariances', t => {
+test('Dynamic covariance test', t => {
+	const normalPreviousCorrected = new State({
+		mean: [[0]],
+		covariance: [[1]]
+	})
+	const smallPreviousCorrected = new State({
+		mean: [[0]],
+		covariance: [[tiny]]
+	})
+	const hugePreviousCorrected = new State({
+		mean: [[0]],
+		covariance: [[huge]]
+	});
+
+	const kfDefault = new CoreKalmanFilter(defaultOptions);
+
+	const hugeDynOpts = Object.assign({}, defaultOptions, {
+		dynamic: Object.assign({}, defaultOptions.dynamic, {
+			covariance: [
+				[huge]
+			]
+		}),
+	});
+	const kfHuge = new CoreKalmanFilter(hugeDynOpts);
+
+	const predicted1 = kfDefault.filter({
+		previousCorrected: normalPreviousCorrected
+	});
+	const predicted2 = kfHuge.filter({
+		previousCorrected: normalPreviousCorrected
+	});
+	const predicted3 = kfHuge.filter({
+		previousCorrected: smallPreviousCorrected
+	});
+	const predicted4 = kfDefault.filter({
+		previousCorrected: hugePreviousCorrected
+	});
+	t.true(trace(predicted1.covariance) < trace(predicted2.covariance));
+	t.true(equalState(predicted1, predicted3));
+	t.true(equalState(predicted2, predicted4));
+});
+
+
+
+// Test 4b: Play with observation and previousCorrected covariances
+
+test('Observation covariance test', t => {
 	const smallDynamicCovOpts = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			init: {
-				covariance: [
-					[tiny]
-				]
-			}
+			covariance: [
+				[tiny]
+			]
 		}),
 		observation: Object.assign({}, defaultOptions.observation, {
 			covariance: [[huge]]
@@ -128,11 +163,9 @@ test('Compare dynamic and observation covariances', t => {
 	const kf1 = new CoreKalmanFilter(smallDynamicCovOpts);
 	const smallObservationCovOpts = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			init: {
-				covariance: [
-					[huge]
-				]
-			}
+			covariance: [
+				[huge]
+			]
 		}),
 		observation: Object.assign({}, defaultOptions.observation, {
 			covariance: [[tiny]]
@@ -145,32 +178,75 @@ test('Compare dynamic and observation covariances', t => {
 	const predicted2 = kf2.filter({
 		previousCorrected: smallObservationCovOpts.dynamic.init
 	});
-	const previousCorrected1 = kf1.correct({predicted1,
+	const corrected1 = kf1.correct({
+		predicted1,
 		observation: smallDynamicCovOpts.observation.observations
 	});
-	const previousCorrected2 = kf2.correct({predicted2,
+	const corrected2 = kf2.correct({
+		predicted2,
 		observation: smallObservationCovOpts.observation.observations
 	});
-	t.true(diag(previousCorrected1.covariance) > diag(previousCorrected2.covariance));
+	t.true(trace(corrected1.covariance) > trace(corrected2.covariance));
 });
 
 // Test 5: Verify that if predicted.covariance = 0, then newCorrected.covariance = 0
 
 test('Predicted covariance equals to zero', t => {
 	const kf = new CoreKalmanFilter(defaultOptions);
-	const predicted = new State({covariance: [
+	const predicted = new State({
+		covariance: [
 		[0]
-	]
+		]
 	});
-	const previousCorrected = kf.correct({predicted,
+	const corrected = kf.correct({
+		predicted,
 		observation: defaultOptions.observation.observations
 	});
-	t.is(diag(previousCorrected.covariance), 0);
+	t.is(trace(corrected.covariance), 0);
 });
 
 // Test 6: Verify that if observation fits the model, then the newCorrected.covariance
 // is smaller than if not
 
+test('Fitted observation', t => {
+	const kf1 = new CoreKalmanFilter(defaultOptions);
+	const badFittedObs = [[1.2]];
+	const predicted1 = kf1.predict({
+		previousCorrected: defaultOptions.dynamic.init
+	})
+	const corrected1 = kf1.correct({
+		predicted1,
+		observation: observation
+	})
+	const corrected2 = kf1.correct({
+		predicted1,
+		observation: badFittedObs
+	})
+	t.true(corrected1 instanceof State);
+	t.true(corrected2 instanceof State);
+	t.true(trace(corrected1.covariance)<trace(corrected2.covariance));
+
+})
+
 // Test : Throw an error if a covariance or mean is wrongly sized
+
+test('Wrongly sized', t => {
+	const WrongOpts = Object.assign({}, defaultOptions, {
+		dynamic: Object.assign({}, defaultOptions.dynamic, {
+			covariance: [
+				[tiny,0],
+				[0, tiny]
+			]
+		}),
+		observation: Object.assign({}, defaultOptions.observation, {
+			covariance: [[huge]]
+		})
+	});
+	const kf = new CoreKalmanFilter(WrongOpts)
+	throws(() => {
+		kf.predict(), 'An array of the model is wrongly sized'
+
+	})
+})
 
 // Test : Throws an error if covariance are non-function
