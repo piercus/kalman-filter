@@ -11,6 +11,7 @@ const defaultOptions = {
 	observation: {
 		dimension: 2,
 		stateProjection() {
+			
 			return [
 				[1, 0, 0, 0],
 				[0, 1, 0, 0]
