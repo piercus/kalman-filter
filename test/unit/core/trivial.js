@@ -2,9 +2,9 @@ const test = require('ava');
 
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
-const trace = require('../../../lib/trace.js');
-const equalState = require('../helpers/equal-state.js');
-const distanceMat = require('../../../lib/distance-mat.js');
+const trace = require('../../../lib/linalgebra/trace.js');
+const equalState = require('../test/helpers/equal-state.js');
+const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
 
 const defaultOptions = {
 	observation: {
@@ -71,7 +71,7 @@ test('Impact previousCorrected and dynamic covariance', t => {
 			covariance() {
 			 	return [
 					[tiny]
-				]
+				];
 			}
 		})
 	});
@@ -126,7 +126,7 @@ test('Dynamic covariance test', t => {
 			covariance() {
 			 	return [
 					[huge]
-				]
+				];
 			}
 		})
 	});
@@ -172,7 +172,7 @@ test('Observation covariance test', t => {
 			covariance() {
 			 	return [
 					[tiny]
-				]
+				];
 			}
 		})
 	});
@@ -251,14 +251,14 @@ test('Wrongly sized', () => {
 				return [
 					[tiny, 0],
 					[0, tiny]
-				]
+				];
 			}
 		}),
 		observation: Object.assign({}, defaultOptions.observation, {
 			covariance() {
 			 	return [
 					[tiny]
-				]
+				];
 			}
 		})
 	});
