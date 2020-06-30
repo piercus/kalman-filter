@@ -227,9 +227,15 @@ test('Non null covariance', t => {
 	const kf1 = new CoreKalmanFilter(defaultOptions);
 	const kf2 = new CoreKalmanFilter(nullCovTransitionOpts);
 
-	const predicted1 = kf1.predict(previousCorrected1);
-	const predicted2 = kf1.predict(previousCorrected2);
-	const predicted3 = kf2.predict(previousCorrected1);
+	const predicted1 = kf1.predict({
+		previousCorrected: previousCorrected1
+	});
+	const predicted2 = kf1.predict({
+		previousCorrected: previousCorrected2
+	});
+	const predicted3 = kf2.predict({
+		previousCorrected: previousCorrected1
+	});
 
 	t.true(predicted1.covariance[0][1] > predicted2.covariance[0][1]);
 	t.true(predicted1.covariance[0][1] > predicted3.covariance[0][1]);

@@ -31,7 +31,7 @@ const defaultOptions = {
 
 	dynamic: {
 		init: {
-			mean: [[500], [500], [500], [500], [0], [0], [0], [0]],
+			mean: [[500], [500], [100], [100], [0], [0], [0], [0]],
 
 			covariance: [
 				[huge, 0, 0, 0, 0, 0, 0, 0],
@@ -62,28 +62,28 @@ const defaultOptions = {
 		},
 
 		covariance() {
+			// We consider a screen having 1280*720 pixels and a size of a box of 100*100 pixels
 			return [
 				[1, 0, 0, 0, 0, 0, 0, 0],
 				[0, 1, 0, 0, 0, 0, 0, 0],
-				[0, 0, 1, 0, 0, 0, 0, 0],
-				[0, 0, 0, 1, 0, 0, 0, 0],
-				[0, 0, 0, 0, 0.1, 0, 0, 0],
-				[0, 0, 0, 0, 0, 0.1, 0, 0],
-				[0, 0, 0, 0, 0, 0, 0.1, 0],
-				[0, 0, 0, 0, 0, 0, 0, 0.1]
+				[0, 0, 0.1, 0, 0, 0, 0, 0],
+				[0, 0, 0, 0.1, 0, 0, 0, 0],
+				[0, 0, 0, 0, 0.01, 0, 0, 0],
+				[0, 0, 0, 0, 0, 0.01, 0, 0],
+				[0, 0, 0, 0, 0, 0, 0.001, 0],
+				[0, 0, 0, 0, 0, 0, 0, 0.001]
 			];
 		}
 	}
 };
 
 const huge = 1000;
-const tiny = 0.001;
 const timeStep = 0.1;
 
 const observations = [
-	[1, 2, 1, 1],
-	[2.1, 3.9, 1.2, 1.5],
-	[3, 6, 1.4, 1.9]
+	[[1], [2], [1], [1]],
+	[[2.1], [3.9], [1.02], [1.05]],
+	[[3], [6], [1.04], [1.09]]
 ];
 
 // Test 1: Verify that if observation fits the model, then the newCorrected.covariance
@@ -92,11 +92,14 @@ const observations = [
 test('Fitted observation', t => {
 	const kf1 = new CoreKalmanFilter(defaultOptions);
 	const firstState = new State({
-		mean: [[1], [2], [1], [1], [11], [19], [12], [15]],
+		mean: [[1], [2], [1], [1], [11], [19], [0.2], [0.5]],
 		covariance: [
-			[1, 0, 0, 0, 0, 0, 0, 0],
+			// The 0.3 covariance tells us that 30% of the time, when x moves out of constant
+			// speed modelisation, it is because of occlusion which impacts w in the same
+			// direction
+			[1, 0, 0.3, 0, 0, 0, 0, 0],
 			[0, 1, 0, 0, 0, 0, 0, 0],
-			[0, 0, 1, 0, 0, 0, 0, 0],
+			[0.3, 0, 1, 0, 0, 0, 0, 0],
 			[0, 0, 0, 1, 0, 0, 0, 0],
 			[0, 0, 0, 0, 0.1, 0, 0, 0],
 			[0, 0, 0, 0, 0, 0.1, 0, 0],
@@ -104,7 +107,7 @@ test('Fitted observation', t => {
 			[0, 0, 0, 0, 0, 0, 0, 0.1]
 		]
 	});
-	const badFittedObs = [[3.2, 2.9, 1.7, 1.2]];
+	const badFittedObs = [[3.2], [2.9], [1.7], [1.2]];
 	const predicted1 = kf1.predict({
 		previousCorrected: firstState
 	});
@@ -130,11 +133,13 @@ test('Fitted observation', t => {
 
 test('stateProjection', t => {
 	const otherStateProjectionOpts = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		observation: Object.assign({}, defaultOptions.observation, {
 			stateProjection() {
 				return [
-					[2, 0, 0, 0, 0, 0, 0, 0],
-					[0, 2, 0, 0, 0, 0, 0, 0],
+					// State is centerX, centerY, width, height
+					// Observation is left,top, width, height
+					[1, 0, -0.5, 0, 0, 0, 0, 0],
+					[0, 1, 0, 0.5, 0, 0, 0, 0],
 					[0, 0, 1, 0, 0, 0, 0, 0],
 					[0, 0, 0, 1, 0, 0, 0, 0]
 				];
@@ -142,16 +147,17 @@ test('stateProjection', t => {
 		})
 	});
 	const firstState = new State({
-		mean: [[1], [2], [1], [1], [11], [19], [12], [15]],
+		mean: [[1], [2], [0.1], [0.1], [11], [19], [1], [1]],
+
 		covariance: [
 			[1, 0, 0, 0, 0, 0, 0, 0],
 			[0, 1, 0, 0, 0, 0, 0, 0],
-			[0, 0, 1, 0, 0, 0, 0, 0],
-			[0, 0, 0, 1, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0.1, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0.1, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0.1, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0.1]
+			[0, 0, 0.1, 0, 0, 0, 0, 0],
+			[0, 0, 0, 0.1, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0.01, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0.01, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0.001, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0.001]
 		]
 	});
 	const kf1 = new CoreKalmanFilter(defaultOptions);
@@ -171,10 +177,55 @@ test('stateProjection', t => {
 		observation: observations[1]
 	});
 
-	// If our model is correct, the difference between corrected mean and predicted mean
-	// should be greater for the stateProjection that gives more importance to some parameters
-	const diff1 = distanceMat(corrected1.mean, predicted1.mean);
-	const diff2 = distanceMat(corrected2.mean, predicted2.mean);
+	// Verify that the covariance between w and x is greater when the stateProjection
+	// includes a dependance between x and w
+	t.true(corrected1.covariance[2][0] < corrected2.covariance[2][0]);
+});
 
-	t.true(diff2 > diff1);
+// Test 3: Mixed fitted observation: some terms are well fitted, others not
+
+test('Mixed fitted observation', t => {
+	const yBadFittedObs = [[2], [2.9], [1.02], [1.05]];
+	const yAndhBadFittedObs = [[2], [2.9], [1.02], [1]];
+
+	const kf1 = new CoreKalmanFilter(defaultOptions);
+	const firstState = new State({
+		mean: [[1], [2], [1], [1], [11], [19], [0.2], [0.5]],
+		covariance: [
+			// The 0.3 covariance tells us that 30% of the time, when x moves out of constant
+			// speed modelisation, it is because of occlusion which impacts w in the same
+			// direction
+			[1, 0, 0.3, 0, 0, 0, 0, 0],
+			[0, 1, 0, 0, 0, 0, 0, 0],
+			[0.3, 0, 1, 0, 0, 0, 0, 0],
+			[0, 0, 0, 1, 0, 0, 0, 0],
+			[0, 0, 0, 0, 0.1, 0, 0, 0],
+			[0, 0, 0, 0, 0, 0.1, 0, 0],
+			[0, 0, 0, 0, 0, 0, 0.1, 0],
+			[0, 0, 0, 0, 0, 0, 0, 0.1]
+		]
+	});
+	const predicted = kf1.predict({
+		previousCorrected: firstState
+	});
+	const corrected1 = kf1.correct({
+		predicted,
+		observation: observations[1]
+	});
+	const corrected2 = kf1.correct({
+		predicted,
+		observation: yBadFittedObs
+	});
+	const corrected3 = kf1.correct({
+		predicted,
+		observation: yAndhBadFittedObs
+	});
+	// Objective1: Verify that the corrected covariance is bigger for y and h
+	t.true(corrected2.covariance[1][1] > corrected2.covariance[0][0]);
+	t.true(corrected2.covariance[1][1] > corrected1.covariance[1][1]);
+
+	// Objective2: Verify that there is a covariance term between y and h if both are
+	// badly fitted
+
+	t.not(corrected3.covariance[1][3], 0);
 });
