@@ -4,7 +4,7 @@
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
   "main": "index.js",
   "scripts": {
-    "test": "xo && ava"
+    "test": "xo && ava test/unit/core/trivial.js"
   },
   "repository": {
     "type": "git",
