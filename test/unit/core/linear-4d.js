@@ -179,7 +179,10 @@ test('stateProjection', t => {
 
 	// Verify that the covariance between w and x is greater when the stateProjection
 	// includes a dependance between x and w
-	t.true(corrected1.covariance[2][0] < corrected2.covariance[2][0]);
+	t.true(
+		Math.abs(getCorrelation(corrected1.covariance, 2, 0))
+		< Math.abs(getCorrelation(corrected2.covariance, 2, 0))
+	);
 });
 
 // Test 3: Mixed fitted observation: some terms are well fitted, others not
@@ -221,8 +224,8 @@ test('Mixed fitted observation', t => {
 		observation: yAndhBadFittedObs
 	});
 	// Objective1: Verify that the corrected covariance is bigger for y and h
-	t.true(corrected2.covariance[1][1] > corrected2.covariance[0][0]);
-	t.true(corrected2.covariance[1][1] > corrected1.covariance[1][1]);
+	t.true(Math.abs(corrected2.covariance[1][1]) > Math.abs(corrected2.covariance[0][0]));
+	t.true(Math.abs(corrected2.covariance[1][1]) > Math.abs(corrected1.covariance[1][1]));
 
 	// Objective2: Verify that there is a covariance term between y and h if both are
 	// badly fitted

@@ -2,7 +2,7 @@
 // (speed), our model is to be considered without external forces on the pendulum
 // (constant speed)
 
-// We have used a specific script to build the default parameters
+// We have used a specific script to build the default parameters [script](../../../script/covariance-pendulum.js)
 
 const test = require('ava');
 
@@ -146,12 +146,12 @@ test('Predicted variance', t => {
 
 	// Verify that the corrected variance of bad observation is closer to the predicted covariance
 	const dist1 = [
-		corrected1.covariance[0][0] - predicted1.covariance[0][0],
-		corrected1.covariance[1][1] - predicted1.covariance[1][1]
+		Math.abs(corrected1.covariance[0][0] - predicted1.covariance[0][0]),
+		Math.abs(corrected1.covariance[1][1] - predicted1.covariance[1][1])
 	];
 	const dist2 = [
-		corrected2.covariance[0][0] - predicted1.covariance[0][0],
-		corrected2.covariance[1][1] - predicted1.covariance[1][1]
+		Math.abs(corrected2.covariance[0][0] - predicted1.covariance[0][0]),
+		Math.abs(corrected2.covariance[1][1] - predicted1.covariance[1][1])
 	];
 	t.true(dist1[0] < dist2[0]);
 	t.true(dist1[1] < dist2[1]);
@@ -237,10 +237,10 @@ test('Non null covariance', t => {
 		previousCorrected: previousCorrected1
 	});
 
-	t.true(predicted1.covariance[0][1] > predicted2.covariance[0][1]);
-	t.true(predicted1.covariance[0][1] > predicted3.covariance[0][1]);
+	t.true(Math.abs(predicted1.covariance[0][1]) > Math.abs(predicted2.covariance[0][1]));
+	t.true(Math.abs(predicted1.covariance[0][1]) > Math.abs(predicted3.covariance[0][1]));
 
 	// Verify that alpha variance is also greater is these cases
-	t.true(predicted1.covariance[0][0] > predicted2.covariance[0][0]);
-	t.true(predicted1.covariance[0][0] > predicted3.covariance[0][0]);
+	t.true(Math.abs(predicted1.covariance[0][0]) > Math.abs(predicted2.covariance[0][0]));
+	t.true(Math.abs(predicted1.covariance[0][0]) > Math.abs(predicted3.covariance[0][0]));
 });
