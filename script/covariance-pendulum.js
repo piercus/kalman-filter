@@ -7,9 +7,9 @@ const transition = [
 			[0, 1]
 ];
 
-const gtAlpha= function(iteration){ return 20*Math.sin(iteration*timeStep)};
-const gtValpha = function(iteration){ return 20*timeStep*Math.cos(iteration*timeStep)};
-const gtList = [[[gtX(0)], [gtVx(0)]]];
+const gtAlpha= function(iteration){ return 10*Math.sin(iteration*timeStep)};
+const gtValpha = function(iteration){ return 10*timeStep*Math.cos(iteration*timeStep)};
+const gtList = [[[gtAlpha(0)], [gtAlpha(0)]]];
 
 const predictions = [[[0],[0]]];
 
