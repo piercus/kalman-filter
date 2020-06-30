@@ -11,7 +11,6 @@ const defaultOptions = {
 	observation: {
 		dimension: 2,
 		stateProjection() {
-			
 			return [
 				[1, 0, 0, 0],
 				[0, 1, 0, 0]
@@ -52,8 +51,8 @@ const defaultOptions = {
 			return [
 				[1, 0, 0, 0],
 				[0, 1, 0, 0],
-				[0, 0, 0.1, 0],
-				[0, 0, 0, 0.1]
+				[0, 0, 0.01, 0],
+				[0, 0, 0, 0.01]
 			];
 		}
 	}
@@ -65,9 +64,9 @@ const tiny = 0.001;
 const timeStep = 0.1;
 
 const observations = [
-	[1, 2],
-	[2.1, 3.9],
-	[3, 6]
+	[[1], [2]],
+	[[2.1], [3.9]],
+	[[3], [6]]
 ];
 
 // Test 1: Verify that if observation fits the model, then the newCorrected.covariance
@@ -84,7 +83,7 @@ test('Fitted observation', t => {
 			[0, 0, 0, 1]
 		]
 	});
-	const badFittedObs = [[3.2, 2.9]];
+	const badFittedObs = [[3.2], [2.9]];
 	const predicted1 = kf1.predict({
 		previousCorrected: firstState
 	});
@@ -115,25 +114,26 @@ test('Covariance between position and speed', t => {
 	t.not(covariance[2][4], 0);
 });
 
-// Test 3: Balanced vs unbalanced: verify that the covariance is smaller when balanced
+// Test 3: Balanced (same certainty on all variables) vs unbalanced:
+// verify that the covariance is smaller when balanced
 
 test('Balanced and unbalanced', t => {
 	const kf = new CoreKalmanFilter(defaultOptions);
 	const previousCorrectedBalanced = new State({
 		mean: [[1], [2], [1.1], [1.9]],
 		covariance: [
-			[2, 0, 0, 0],
-			[0, 2, 0, 0],
-			[0, 0, 0.2, 0],
-			[0, 0, 0, 0.2]
+			[1, 0, 0, 0],
+			[0, 1, 0, 0],
+			[0, 0, 0.01, 0],
+			[0, 0, 0, 0.01]
 		]
 	});
 	const previousCorrectedUnbalanced = new State({
 		mean: [[1], [2], [1.1], [1.9]],
 		covariance: [
 			[10, 0, 0, 0],
-			[0, 0.1, 0, 0],
-			[0, 0, 1, 0],
+			[0, 1, 0, 0],
+			[0, 0, 0.1, 0],
 			[0, 0, 0, 0.01]
 		]
 	});
@@ -145,7 +145,7 @@ test('Balanced and unbalanced', t => {
 	});
 	t.true(predictedBalanced instanceof State);
 	t.true(predictedUnbalanced instanceof State);
-	t.true(trace(predictedBalanced.covariance) < trace(predictedUnbalanced.covariance));
+	t.true(predictedBalanced.covariance[0][0] < predictedUnbalanced.covariance[0][0]);
 });
 
 // Test 4: Impact of timeStep
@@ -183,5 +183,8 @@ test('Impact of timeStep', t => {
 	const predicted2 = kf2.predict();
 	t.true(predicted1 instanceof State);
 	t.true(predicted2 instanceof State);
-	t.true(trace(predicted1.covariance) < trace(predicted2.covariance));
+	// Verify that the variance on Vx is bigger when timeStep increases
+	t.true(predicted1.covariance[2][2] < predicted2.covariance[2][2]);
+	// Verify that the predicted covariance between x and Vx is also bigger when timeStep increases
+	t.true(predicted1.covariance[0][2] < predicted2.covariance[0][2]);
 });
