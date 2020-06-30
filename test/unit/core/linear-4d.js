@@ -6,6 +6,7 @@ const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
 const trace = require('../../../lib/linalgebra/trace.js');
 const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
+const getCorrelation = require('../../helpers/get-correlation.js');
 
 const defaultOptions = {
 	observation: {
@@ -177,11 +178,11 @@ test('stateProjection', t => {
 		observation: observations[1]
 	});
 
-	// Verify that the covariance between w and x is greater when the stateProjection
+	// Verify that the correlation between w and x is greater when the stateProjection
 	// includes a dependance between x and w
 	t.true(
-		Math.abs(getCorrelation(corrected1.covariance, 2, 0))
-		< Math.abs(getCorrelation(corrected2.covariance, 2, 0))
+		Math.abs(getCorrelation(corrected1.covariance, 2, 0)) <
+		Math.abs(getCorrelation(corrected2.covariance, 2, 0))
 	);
 });
 
