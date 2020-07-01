@@ -369,16 +369,7 @@ If you feel your model can be used by other, do not hesitate to create a Pull Re
 ```js
 const {registerDynamic, KalmanFilter, registerObservation} = require('kalman-filter');
 
-registerDynamic('custom-dynamic', function(opts1){
-	// do your stuff
-	return {
-		dimension,
-		transition,
-		covariance
-	}
-})
-
-registerObservation('custom-sensor', function(opts2){
+registerObservation('custom-sensor', function(opts1){
 	// do your stuff
 	return {
 		dimension,
@@ -387,13 +378,24 @@ registerObservation('custom-sensor', function(opts2){
 	}
 })
 
+registerDynamic('custom-dynamic', function(opts2, observation){
+	// do your stuff
+	// here you can use the parameter of observation (like observation.dimension)
+	// to build the parameters for dynamic
+	return {
+		dimension,
+		transition,
+		covariance
+	}
+})
+
 const kFilter = new KalmanFilter({
-	dynamic: {
-		name: 'custom-dynamic',
-		// ... fields of opts1
-	},
 	observation: {
 		name: 'custom-sensor',
+		// ... fields of opts1
+	},
+	dynamic: {
+		name: 'custom-dynamic',
 		// ... fields of opts2
 	}
 });
