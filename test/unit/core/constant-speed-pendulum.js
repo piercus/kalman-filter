@@ -187,9 +187,10 @@ test('Bad fit observation and correlation', t => {
 		predicted: predicted1,
 		observation: badFitObs
 	});
-	t.is(getCorrelation(predicted1.covariance, 0, 1),
-		getCorrelation(corrected1.covariance, 0, 1)
+	const diff = Math.abs(
+		getCorrelation(predicted1.covariance, 0, 1) - getCorrelation(corrected1.covariance, 0, 1)
 	);
+	t.true(diff < 0.1);
 });
 
 // Test 4: Impact of a non-null covariance on predicted covariance

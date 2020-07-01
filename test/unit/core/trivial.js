@@ -3,7 +3,7 @@ const test = require('ava');
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
 const trace = require('../../../lib/linalgebra/trace.js');
-const equalState = require('../test/helpers/equal-state.js');
+const equalState = require('../../../test/helpers/equal-state.js');
 const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
 
 const defaultOptions = {
@@ -56,10 +56,10 @@ const tiny = 0.001;
 
 test('Init with zero mean', t => {
 	const kf1 = new CoreKalmanFilter(defaultOptions);
-	t.true(equalState(kf1.predict(), kf1.predict({
+	t.true(equalState(kf1.predict({} ), kf1.predict({
 		previousCorrected: defaultOptions.dynamic.init
 	})));
-	t.true(kf1.predict instanceof State);
+	t.true(kf1.predict({}) instanceof State);
 });
 
 // Test 2: Verify that smalls previousCorrected.covariance and dynamic.covariance
@@ -80,7 +80,7 @@ test('Impact previousCorrected and dynamic covariance', t => {
 		mean: [[0]],
 		covariance: [[tiny]]
 	});
-	const predicted = kf.filter({previousCorrected});
+	const predicted = kf.predict({previousCorrected});
 	t.true(predicted instanceof State);
 	t.is(typeof predicted.index, 'number');
 	t.true(2 / trace(predicted.covariance) > huge / 2); // Verifying that the sum of the variance is tiny
@@ -132,16 +132,16 @@ test('Dynamic covariance test', t => {
 	});
 	const kfHuge = new CoreKalmanFilter(hugeDynOpts);
 
-	const predicted1 = kfDefault.filter({
+	const predicted1 = kfDefault.predict({
 		previousCorrected: normalPreviousCorrected
 	});
-	const predicted2 = kfHuge.filter({
+	const predicted2 = kfHuge.predict({
 		previousCorrected: normalPreviousCorrected
 	});
-	const predicted3 = kfHuge.filter({
+	const predicted3 = kfHuge.predict({
 		previousCorrected: smallPreviousCorrected
 	});
-	const predicted4 = kfDefault.filter({
+	const predicted4 = kfDefault.predict({
 		previousCorrected: hugePreviousCorrected
 	});
 	t.true(trace(predicted1.covariance) < trace(predicted2.covariance));
