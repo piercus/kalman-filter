@@ -105,19 +105,42 @@ const kFilter = new KalmanFilter({
 
 ### Instanciation of a generic linear model
 
-This is an example of how build a constant speed model, in 3D without `dynamic.name`
+This is an example of how to build a constant speed model, in 3D without `dynamic.name`, using detailed api.
+
+* `dynamic.dimension` is the size of the state
+* `dynamic.transition` is the state transition model that defines the dynamic of the system
+* `dynamic.covariance` is the covariance matrix of the transition model
+* `dynamic.init` is used for initial state (we generally set a big covariance on it)
 
 ```js
 const {KalmanFilter} = require('kalman-filter');
 
 const timeStep = 0.1;
 
+const huge = 1e8;
+
 const kFilter = new KalmanFilter({
 	observation: {
 		dimension: 3
 	},
 	dynamic: {
-		dimension: 6, //(x, y, z, vx, vy, vz)
+		init: {
+			// We just use random-guessed values here that seems reasonable
+			mean: [[500], [500], [500], [0], [0], [0]],
+			// We init the dynamic model with a huge covariance cause we don't 
+			// have any idea where my modeled object before the first observation is located
+			covariance: [
+				[huge, 0, 0, 0, 0, 0], 
+				[0, huge, 0, 0, 0, 0], 
+				[0, 0, huge, 0, 0, 0],
+				[0, 0, 0, huge, 0, 0],
+				[0, 0, 0, 0, huge, 0],
+				[0, 0, 0, 0, 0, huge],
+			],
+		},
+		// Corresponds to (x, y, z, vx, vy, vz)
+		dimension: 6, 
+		// This is a constant-speed model on 3D : [ [Id , timeStep*Id], [0, Id]]
 		transition: [
 			[1, 0, 0, timeStep, 0, 0],
 			[0, 1, 0, 0, timeStep, 0],
@@ -126,7 +149,10 @@ const kFilter = new KalmanFilter({
 			[0, 0, 0, 0, 1, 0],
 			[0, 0, 0, 0, 0, 1]
 		],
-		covariance: [1, 1, 1, 0.1, 0.1, 0.1]// equivalent to diag([1, 1, 1, 0.1, 0.1, 0.1])
+		// Diagonal covariance for independant variables
+		// since timeStep = 0.1, 
+		// it makes sense to consider speed variance to be ~ timeStep^2 * positionVariance
+		covariance: [1, 1, 1, 0.01, 0.01, 0.01]// equivalent to diag([1, 1, 1, 0.01, 0.01, 0.01])
 	}
 });
 
@@ -162,7 +188,10 @@ const kFilter = new KalmanFilter({
 
 The observation is made from 2 different sensors with different properties (i.e. different covariances), the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
 
-This can be achived manually by doing
+This can be achived manually by using the detailed API :
+* `observation.dimension` is the size of the observation
+* `observation.stateProjection` is the matrix that transforms state into observation, also called *observation model*
+* `observation.covariance` is the covariance matrix of the *observation model*
 
 ```js
 const {KalmanFilter} = require('kalman-filter');
@@ -192,8 +221,8 @@ const kFilter = new KalmanFilter({
 In order to use the Kalman-Filter with a dynamic or observation model which is not strictly a [General linear model](https://en.wikipedia.org/wiki/General_linear_model), it is possible to use `function` in following parameters :
 * `observation.stateProjection`
 * `observation.covariance`
-* `observation.transition`
-* `observation.covariance`
+* `dynamic.transition`
+* `dynamic.covariance`
 
 In this situation this `function` will return the value of the matrix at each step of the kalman-filter.
 
