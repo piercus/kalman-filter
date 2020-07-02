@@ -14,6 +14,8 @@ const trace = require('../../../lib/linalgebra/trace.js');
 const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
 const getCorrelation = require('../../helpers/get-correlation.js');
 
+const huge = 1000;
+
 const defaultOptions = {
 	observation: {
 		dimension: 1,
@@ -59,7 +61,6 @@ const defaultOptions = {
 
 };
 
-const huge = 1000;
 // Const tiny = 0.001;
 const timeStep = 0.1;
 
@@ -95,7 +96,6 @@ test('Fitted observation', t => {
 	});
 	t.true(corrected1 instanceof State);
 	t.true(corrected2 instanceof State);
-	t.true(trace(corrected1.covariance) < trace(corrected2.covariance));
 	const dist1 = distanceMat(firstState.mean, corrected1.mean);
 	const dist2 = distanceMat(firstState.mean, corrected2.mean);
 
@@ -107,9 +107,10 @@ test('Fitted observation', t => {
 
 test('Covariance between position and speed', t => {
 	const kf = new CoreKalmanFilter(defaultOptions);
-	const {covariance} = kf.predict();
-	t.not(covariance[1][2], 0); // Check if the covariance between x and Vx is not zero
-	t.not(covariance[2][1], 0);
+	const covariance = kf.predict({}).covariance;
+
+	t.not(covariance[0][1], 0); // Check if the covariance between alpha and Valpha is not zero
+	t.not(covariance[1][0], 0);
 });
 
 // Test 3a: Predicted near the groundTruth and with small variance on alpha
@@ -144,7 +145,7 @@ test('Predicted variance', t => {
 		observation: badFitObs
 	});
 
-	// Verify that the corrected variance of bad observation is closer to the predicted covariance
+	// Verify that the corrected variance is not linked to the quality of the observation
 	const dist1 = [
 		Math.abs(corrected1.covariance[0][0] - predicted1.covariance[0][0]),
 		Math.abs(corrected1.covariance[1][1] - predicted1.covariance[1][1])
@@ -153,11 +154,11 @@ test('Predicted variance', t => {
 		Math.abs(corrected2.covariance[0][0] - predicted1.covariance[0][0]),
 		Math.abs(corrected2.covariance[1][1] - predicted1.covariance[1][1])
 	];
-	t.true(dist1[0] < dist2[0]);
-	t.true(dist1[1] < dist2[1]);
+	t.is(dist1[0], dist2[0]);
+	t.is(dist1[1], dist2[1]);
 
-	// Check that the covariance between alpha and Valpha is greater when the observation is fitted
-	t.true(corrected1.covariance[1][0] > corrected2.covariance[1][0]);
+	// Check that it is the same for the covariance between alpha and Valpha
+	t.is(corrected1.covariance[1][0], corrected2.covariance[1][0]);
 });
 
 // Test 3b: Check in the same case is the correlation between x and vx remain the same

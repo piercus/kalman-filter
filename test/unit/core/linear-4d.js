@@ -8,6 +8,8 @@ const trace = require('../../../lib/linalgebra/trace.js');
 const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
 const getCorrelation = require('../../helpers/get-correlation.js');
 
+const huge = 1000;
+
 const defaultOptions = {
 	observation: {
 		dimension: 4,
@@ -78,7 +80,6 @@ const defaultOptions = {
 	}
 };
 
-const huge = 1000;
 const timeStep = 0.1;
 
 const observations = [
