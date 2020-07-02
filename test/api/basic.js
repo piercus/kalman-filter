@@ -3,7 +3,7 @@
 const test = require('ava');
 
 const {KalmanFilter} = require('kalman-filter');
-const State = require('../../../lib/state.js');
+const State = require('../../lib/state.js');
 
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
@@ -123,8 +123,6 @@ test('Constant acceleration on 2D Data', t => {
 });
 
 test('Sensor observation', t => {
-	const timeStep = 0.1;
-
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2, // Observation.dimension == observation.sensorDimension * observation.nSensors

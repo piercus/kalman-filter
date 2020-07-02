@@ -42,5 +42,3 @@ const covariance = gtList.map((gt, index) => {
 		[a[1][0] + b[1][0], a[1][1] + b[1][1]]
 	]))
 	.map(r => r.map(a => a / gtList.length));
-
-console.log(covariance);

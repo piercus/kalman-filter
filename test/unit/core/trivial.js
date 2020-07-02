@@ -200,7 +200,7 @@ test('Observation covariance test', t => {
 
 	// Verify that the kalman gain is greater when we are more confident in Observation
 	t.true(sum(kalmanGain1) > sum(kalmanGain2));
-	t.true(equalState(corrected2, corrected3, tolerance = 0.1));
+	t.true(equalState(corrected2, corrected3, 0.1));
 });
 
 // Test 5: Verify that if predicted.covariance = 0, then newCorrected.covariance = 0
@@ -275,8 +275,7 @@ test('Wrongly sized', t => {
 	});
 	const kf = new CoreKalmanFilter(WrongOptions);
 	const error = t.throws(() => {
-		kf.predict({}),
-		{instanceof: TypeError};
+		kf.predict({});
 	});
 	t.is(error.message, 'An array of the model is wrongly sized');
 });
@@ -285,15 +284,15 @@ test('Wrongly sized', t => {
 
 test('NaN Error', t => {
 	const previousCorrected = new State({
-		mean: [[Number.NaN]],
-		covariance: [[0]]
+		mean: [[0]],
+		covariance: [[Number.NaN]]
 	});
 	const kf = new CoreKalmanFilter(defaultOptions);
+
 	const error = t.throws(() => {
-		kf.predict({previousCorrected}),
-		{instanceof: TypeError};
+		kf.predict({previousCorrected});
 	});
-	t.is(error.message, 'kf is not defined');
+	t.is(error.message, 'a matrix is NaN');
 });
 // Error Test: non-squared matrix
 
@@ -307,8 +306,7 @@ test('Non squared matrix', t => {
 	});
 	const kf = new CoreKalmanFilter(defaultOptions);
 	const error = t.throws(() => {
-		kf.predict({previousCorrected: nonSquaredState}),
-		{instanceof: TypeError};
+		kf.predict({previousCorrected: nonSquaredState});
 	});
 	t.is(error.message, 'Non squared matrix not authorized');
 });
