@@ -285,7 +285,7 @@ test('Wrongly sized', t => {
 
 test('NaN Error', t => {
 	const previousCorrected = new State({
-		mean: [[NaN]],
+		mean: [[Number.NaN]],
 		covariance: [[0]]
 	});
 	const kf = new CoreKalmanFilter(defaultOptions);
