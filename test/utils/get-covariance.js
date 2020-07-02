@@ -1,9 +1,10 @@
 const test = require('ava');
 const h = require('hasard');
+const cholesky = require('cholesky');
 const matMul = require('../../lib/linalgebra/mat-mul');
 const add = require('../../lib/linalgebra/add');
-const cholesky = require('cholesky');
 const getCovariance = require('../../lib/utils/get-covariance');
+
 const buildDataFromCovariance = function (covariance) {
 	const dimension = covariance.length;
 	const cholTriangle = cholesky(covariance);
