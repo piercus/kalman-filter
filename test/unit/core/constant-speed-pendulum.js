@@ -60,7 +60,7 @@ const defaultOptions = {
 };
 
 const huge = 1000;
-const tiny = 0.001;
+// Const tiny = 0.001;
 const timeStep = 0.1;
 
 const observations = [
@@ -122,7 +122,7 @@ test('Predicted variance', t => {
 			[0.0001, 0.001]
 		]
 	});
-	const obsNoiseOpts = Object.assign({}, defaultOptions, {
+	const obsNoiseOptions = Object.assign({}, defaultOptions, {
 		observation: Object.assign({}, defaultOptions.observation, {
 			covariance() {
 				return [
@@ -131,7 +131,7 @@ test('Predicted variance', t => {
 			}
 		})
 	});
-	const kf = new CoreKalmanFilter(obsNoiseOpts);
+	const kf = new CoreKalmanFilter(obsNoiseOptions);
 
 	const goodFitObs = [[0.09]];
 	const badFitObs = [[0.17]];
@@ -171,7 +171,7 @@ test('Bad fit observation and correlation', t => {
 			[0.0001, 0.001]
 		]
 	});
-	const obsNoiseOpts = Object.assign({}, defaultOptions, {
+	const obsNoiseOptions = Object.assign({}, defaultOptions, {
 		observation: Object.assign({}, defaultOptions.observation, {
 			covariance() {
 				return [
@@ -180,7 +180,7 @@ test('Bad fit observation and correlation', t => {
 			}
 		})
 	});
-	const kf = new CoreKalmanFilter(obsNoiseOpts);
+	const kf = new CoreKalmanFilter(obsNoiseOptions);
 
 	const badFitObs = [[0.17]];
 	const corrected1 = kf.correct({
@@ -212,7 +212,7 @@ test('Non null covariance', t => {
 			[0, 0.01]
 		]
 	});
-	const nullCovTransitionOpts = Object.assign({}, defaultOptions, {
+	const nullCovTransitionOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			transition() {
 				return [
@@ -226,7 +226,7 @@ test('Non null covariance', t => {
 	// Verify that the covariance between alpha and Valpha is greater
 	// when both covariances are non null
 	const kf1 = new CoreKalmanFilter(defaultOptions);
-	const kf2 = new CoreKalmanFilter(nullCovTransitionOpts);
+	const kf2 = new CoreKalmanFilter(nullCovTransitionOptions);
 
 	const predicted1 = kf1.predict({
 		previousCorrected: previousCorrected1

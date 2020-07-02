@@ -133,7 +133,7 @@ test('Fitted observation', t => {
 // Test 2: Impact of stateProjection on the model
 
 test('stateProjection', t => {
-	const otherStateProjectionOpts = Object.assign({}, defaultOptions, {
+	const otherStateProjectionOptions = Object.assign({}, defaultOptions, {
 		observation: Object.assign({}, defaultOptions.observation, {
 			stateProjection() {
 				return [
@@ -162,7 +162,7 @@ test('stateProjection', t => {
 		]
 	});
 	const kf1 = new CoreKalmanFilter(defaultOptions);
-	const kf2 = new CoreKalmanFilter(otherStateProjectionOpts);
+	const kf2 = new CoreKalmanFilter(otherStateProjectionOptions);
 	const predicted1 = kf1.predict({
 		previousCorrected: firstState
 	});

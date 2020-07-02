@@ -60,7 +60,6 @@ const defaultOptions = {
 };
 
 const huge = 1000;
-const tiny = 0.001;
 const timeStep = 0.1;
 
 const observations = [
@@ -153,7 +152,7 @@ test('Balanced and unbalanced', t => {
 test('Impact of timeStep', t => {
 	const timeStep1 = 1;
 	const timeStep2 = 2;
-	const smallTimeStepOpts = Object.assign({}, defaultOptions, {
+	const smallTimeStepOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			transition() {
 				return [
@@ -165,7 +164,7 @@ test('Impact of timeStep', t => {
 			}
 		})
 	});
-	const bigTimeStepOpts = Object.assign({}, defaultOptions, {
+	const bigTimeStepOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			transition() {
 				return [
@@ -177,8 +176,8 @@ test('Impact of timeStep', t => {
 			}
 		})
 	});
-	const kf1 = new CoreKalmanFilter({smallTimeStepOpts});
-	const kf2 = new CoreKalmanFilter({bigTimeStepOpts});
+	const kf1 = new CoreKalmanFilter({smallTimeStepOptions});
+	const kf2 = new CoreKalmanFilter({bigTimeStepOptions});
 	const predicted1 = kf1.predict();
 	const predicted2 = kf2.predict();
 	t.true(predicted1 instanceof State);
