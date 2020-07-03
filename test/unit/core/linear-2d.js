@@ -107,7 +107,7 @@ test('Fitted observation', t => {
 
 test('Covariance between position and speed', t => {
 	const kf = new CoreKalmanFilter(defaultOptions);
-	const {covariance} = kf.predict({});
+	const {covariance} = kf.predict();
 	t.not(covariance[1][3], 0); // Check if the covariance between x and Vx is not zero
 	t.not(covariance[2][4], 0);
 });
@@ -177,8 +177,8 @@ test('Impact of timeStep', t => {
 	});
 	const kf1 = new CoreKalmanFilter(smallTimeStepOptions);
 	const kf2 = new CoreKalmanFilter(bigTimeStepOptions);
-	const predicted1 = kf1.predict({});
-	const predicted2 = kf2.predict({});
+	const predicted1 = kf1.predict();
+	const predicted2 = kf2.predict();
 	t.true(predicted1 instanceof State);
 	t.true(predicted2 instanceof State);
 	// Verify that the variance on x is bigger when timeStep increases
