@@ -10,7 +10,6 @@ const test = require('ava');
 
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
-const trace = require('../../../lib/linalgebra/trace.js');
 const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
 const getCorrelation = require('../../helpers/get-correlation.js');
 

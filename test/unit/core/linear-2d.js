@@ -4,7 +4,6 @@ const test = require('ava');
 
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
-const trace = require('../../../lib/linalgebra/trace.js');
 const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
 
 const huge = 1000;
@@ -59,7 +58,6 @@ const defaultOptions = {
 	}
 
 };
-
 
 const timeStep = 0.1;
 
@@ -184,7 +182,6 @@ test('Impact of timeStep', t => {
 	t.true(predicted1 instanceof State);
 	t.true(predicted2 instanceof State);
 	// Verify that the variance on x is bigger when timeStep increases
-	console.log('Variances: ', predicted1.covariance, predicted2.covariance)
 	t.true(predicted1.covariance[0][0] < predicted2.covariance[0][0]);
 	// Verify that the predicted covariance between x and Vx is also bigger when timeStep increases
 	t.true(predicted1.covariance[0][2] < predicted2.covariance[0][2]);
