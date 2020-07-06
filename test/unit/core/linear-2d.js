@@ -4,9 +4,9 @@ const test = require('ava');
 
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
-const trace = require('../../../lib/linalgebra/trace.js');
 const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
 
+const huge = 1000;
 const defaultOptions = {
 	observation: {
 		dimension: 2,
@@ -59,8 +59,6 @@ const defaultOptions = {
 
 };
 
-const huge = 1000;
-const tiny = 0.001;
 const timeStep = 0.1;
 
 const observations = [
@@ -97,7 +95,7 @@ test('Fitted observation', t => {
 	});
 	t.true(corrected1 instanceof State);
 	t.true(corrected2 instanceof State);
-	t.true(trace(corrected1.covariance) < trace(corrected2.covariance));
+
 	const dist1 = distanceMat(firstState.mean, corrected1.mean);
 	const dist2 = distanceMat(firstState.mean, corrected2.mean);
 
@@ -106,12 +104,13 @@ test('Fitted observation', t => {
 });
 
 // Test 2: Covariance position/speed in one direction: the correlation between position
-//and speed emerges because of the transition matrix (and especially timeStep)
+// and speed emerges because of the transition matrix (and especially timeStep)
 
 test('Covariance between position and speed', t => {
 	const kf = new CoreKalmanFilter(defaultOptions);
 	const {covariance} = kf.predict();
-	t.not(covariance[1][3], 0); // Check if the covariance between x and Vx is not zero
+	// Check if the covariance between x and Vx is not zero
+	t.not(covariance[1][3], 0);
 	t.not(covariance[2][4], 0);
 });
 
@@ -154,7 +153,7 @@ test('Balanced and unbalanced', t => {
 test('Impact of timeStep', t => {
 	const timeStep1 = 1;
 	const timeStep2 = 2;
-	const smallTimeStepOpts = Object.assign({}, defaultOptions, {
+	const smallTimeStepOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			transition() {
 				return [
@@ -166,7 +165,7 @@ test('Impact of timeStep', t => {
 			}
 		})
 	});
-	const bigTimeStepOpts = Object.assign({}, defaultOptions, {
+	const bigTimeStepOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			transition() {
 				return [
@@ -178,14 +177,14 @@ test('Impact of timeStep', t => {
 			}
 		})
 	});
-	const kf1 = new CoreKalmanFilter({smallTimeStepOpts});
-	const kf2 = new CoreKalmanFilter({bigTimeStepOpts});
+	const kf1 = new CoreKalmanFilter(smallTimeStepOptions);
+	const kf2 = new CoreKalmanFilter(bigTimeStepOptions);
 	const predicted1 = kf1.predict();
 	const predicted2 = kf2.predict();
 	t.true(predicted1 instanceof State);
 	t.true(predicted2 instanceof State);
-	// Verify that the variance on Vx is bigger when timeStep increases
-	t.true(predicted1.covariance[2][2] < predicted2.covariance[2][2]);
+	// Verify that the variance on x is bigger when timeStep increases
+	t.true(predicted1.covariance[0][0] < predicted2.covariance[0][0]);
 	// Verify that the predicted covariance between x and Vx is also bigger when timeStep increases
 	t.true(predicted1.covariance[0][2] < predicted2.covariance[0][2]);
 });
