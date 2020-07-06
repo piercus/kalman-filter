@@ -257,7 +257,7 @@ test('getValue function', t => {
 		],
 		index: 1
 	});
-	const multiParameterTransition = function({previousCorrected, index}) {
+	const multiParameterTransition = function ({previousCorrected, index}) {
 		const timeStep = (index % 2) ? 1 : 0.5;
 		// We consider a resistance from the air, proportionnal to v*v
 		// NB: this model is not a good physical modeling
@@ -266,7 +266,8 @@ test('getValue function', t => {
 			[1, timeStep],
 			[0, 1 - speedSlowDownFactor]
 		];
-	}
+	};
+
 	const multiParameterTransitionOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			transition: multiParameterTransition
@@ -285,7 +286,7 @@ test('getValue function', t => {
 		index: 1
 	});
 
-	//With a high speed, our predicted should be a constant-position
+	// With a high speed, our predicted should be a constant-position
 	const predicted2 = kf.predict({previousCorrected: previousCorrected2});
 	t.is(predicted2.mean[1][0], 0);
 });

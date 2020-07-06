@@ -103,7 +103,7 @@ test('Fitted observation', t => {
 	t.true(dist1 < dist2);
 });
 
-// Test 2: Covariance position/speed in one direction
+// Test 2: Covariance position / speed in one direction
 
 test('Covariance between position and speed', t => {
 	const kf = new CoreKalmanFilter(defaultOptions);
