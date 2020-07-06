@@ -197,7 +197,7 @@ test('Observation covariance test', t => {
 	});
 	t.true(trace(corrected1.covariance) > trace(corrected2.covariance));
 
-	const kalmanGain1 = kfSmall.getGain({predicted: normalPredicted, stateProjection: [[1]]});
+	const kalmanGain1 = kfSmall.getGain({predicted: normalPredicted});
 	const kalmanGain2 = kfDefault.getGain({predicted: normalPredicted, stateProjection: [[1]]});
 
 	// Verify that the kalman gain is greater when we are more confident in Observation
