@@ -245,3 +245,47 @@ test('Non null covariance', t => {
 	t.true(Math.abs(predicted1.covariance[0][0]) > Math.abs(predicted2.covariance[0][0]));
 	t.true(Math.abs(predicted1.covariance[0][0]) > Math.abs(predicted3.covariance[0][0]));
 });
+
+// Test the getValue function:
+
+test('getValue function', t => {
+	const previousCorrected1 = new State({
+		mean: [[0.1], [0.5]],
+		covariance: [
+			[1, 0.005],
+			[0.005, 0.01]
+		],
+		index: 1
+	});
+	const multiParameterTransition = function({previousCorrected, index}) {
+		const timeStep = (index % 2) ? 1 : 0.5;
+		// We consider a resistance from the air, proportionnal to v*v
+		// NB: this model is not a good physical modeling
+		const speedSlowDownFactor = Math.min(previousCorrected.mean[1][0] ^ 2 * 0.01, 1);
+		return [
+			[1, timeStep],
+			[0, 1 - speedSlowDownFactor]
+		];
+	}
+	const multiParameterTransitionOptions = Object.assign({}, defaultOptions, {
+		dynamic: Object.assign({}, defaultOptions.dynamic, {
+			transition: multiParameterTransition
+		})
+	});
+	const kf = new CoreKalmanFilter(multiParameterTransitionOptions);
+	const predicted = kf.predict({previousCorrected: previousCorrected1});
+	t.true(predicted instanceof State);
+
+	const previousCorrected2 = new State({
+		mean: [[0.1], [3]],
+		covariance: [
+			[1, 0.005],
+			[0.005, 0.01]
+		],
+		index: 1
+	});
+
+	//With a high speed, our predicted should be a constant-position
+	const predicted2 = kf.predict({previousCorrected: previousCorrected2});
+	t.is(predicted2.mean[1][0], 0);
+});
