@@ -108,7 +108,8 @@ test('Fitted observation', t => {
 test('Covariance between position and speed', t => {
 	const kf = new CoreKalmanFilter(defaultOptions);
 	const {covariance} = kf.predict();
-	t.not(covariance[1][3], 0); // Check if the covariance between x and Vx is not zero
+	// Check if the covariance between x and Vx is not zero
+	t.not(covariance[1][3], 0);
 	t.not(covariance[2][4], 0);
 });
 
