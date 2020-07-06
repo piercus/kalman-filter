@@ -104,8 +104,7 @@ test('Fitted observation', t => {
 });
 
 // Test 2: Covariance position/speed in one direction: the correlation between position
-//and speed emerges because of the transition matrix (and especially timeStep)
-
+// and speed emerges because of the transition matrix (and especially timeStep)
 
 test('Covariance between position and speed', t => {
 	const kf = new CoreKalmanFilter(defaultOptions);
