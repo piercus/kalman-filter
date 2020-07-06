@@ -60,14 +60,13 @@ const defaultOptions = {
 
 };
 
-
 const observations = [
 	[[1], [2]],
 	[[2.1], [3.9]],
 	[[3], [6]]
 ];
 
-//Test 1: Verify polymorphism in a dynamic parameter
+// Test 1: Verify polymorphism in a dynamic parameter
 
 test('Polymorphism', t => {
 	const kf1 = new KalmanFilter(defaultOptions);
@@ -91,9 +90,9 @@ test('Polymorphism', t => {
 	const kf2 = new KalmanFilter(matrixOptions);
 	const kf3 = new KalmanFilter(simpleArrayOptions);
 
-	//Verify that the transition is a function even if constructor's option is a matrixOptions
-	t.true(typeof(kf3.dynamic.transition), 'function');
-	t.true(typeof(kf2.dynamic.covariance), 'function');
+	// Verify that the transition is a function even if constructor's option is a matrixOptions
+	t.true(typeof (kf3.dynamic.transition), 'function');
+	t.true(typeof (kf2.dynamic.covariance), 'function');
 
 	const predicted1 = kf1.predict();
 	const predicted2 = kf2.predict();
@@ -107,7 +106,7 @@ test('Polymorphism', t => {
 		predicted: predicted2,
 		observation: observations[0]
 	});
-	const corrected2 = kf2.correct({
+	const corrected3 = kf2.correct({
 		predicted: predicted3,
 		observation: observations[0]
 	});
@@ -128,8 +127,7 @@ test('Polymorphism', t => {
 	t.true(equalState(corrected3, corrected2));
 });
 
-
-//Test 2: Verify polymorphism on observation
+// Test 2: Verify polymorphism on observation
 
 test('Polymorphism on observation', t => {
 	const arrayObservation = [1, 2];
@@ -138,7 +136,7 @@ test('Polymorphism on observation', t => {
 	const predicted = kf.predict();
 	const corrected1 = kf.correct({
 		predicted,
-		observation: observation[1]
+		observation: observations[1]
 	});
 	const corrected2 = kf.correct({
 		predicted,
