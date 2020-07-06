@@ -103,7 +103,7 @@ test('Huge predicted covariance', t => {
 		predicted,
 		observation
 	});
-	const kalmanGain = kf.getGain({predicted});
+	const kalmanGain = kf.getGain({predicted, stateProjection: [[1]]});
 	t.true(corrected instanceof State);
 	t.true(kalmanGain > 0.99);
 });
@@ -197,8 +197,8 @@ test('Observation covariance test', t => {
 	});
 	t.true(trace(corrected1.covariance) > trace(corrected2.covariance));
 
-	const kalmanGain1 = kfSmall.getGain({predicted: normalPredicted});
-	const kalmanGain2 = kfDefault.getGain({predicted: normalPredicted});
+	const kalmanGain1 = kfSmall.getGain({predicted: normalPredicted, stateProjection: [[1]]});
+	const kalmanGain2 = kfDefault.getGain({predicted: normalPredicted, stateProjection: [[1]]});
 
 	// Verify that the kalman gain is greater when we are more confident in Observation
 	t.true(sum(kalmanGain1) > sum(kalmanGain2));
