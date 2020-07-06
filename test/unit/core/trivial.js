@@ -57,10 +57,12 @@ const tiny = 0.001;
 
 test('Init with zero mean', t => {
 	const kf1 = new CoreKalmanFilter(defaultOptions);
-	t.true(equalState(kf1.predict({}), kf1.predict({
-		previousCorrected: defaultOptions.dynamic.init
+	const {mean, covariance, index} = defaultOptions.dynamic.init;
+	const initState = new State({mean, covariance, index});
+	t.true(equalState(kf1.predict(), kf1.predict({
+		previousCorrected: initState
 	})));
-	t.true(kf1.predict({}) instanceof State);
+	t.true(kf1.predict() instanceof State);
 });
 
 // Test 2: Verify that smalls previousCorrected.covariance and dynamic.covariance
@@ -101,7 +103,7 @@ test('Huge predicted covariance', t => {
 		predicted,
 		observation
 	});
-	const kalmanGain = kf.getGain({predicted});
+	const kalmanGain = kf.getGain({predicted, stateProjection: [[1]]});
 	t.true(corrected instanceof State);
 	t.true(kalmanGain > 0.99);
 });
@@ -196,7 +198,7 @@ test('Observation covariance test', t => {
 	t.true(trace(corrected1.covariance) > trace(corrected2.covariance));
 
 	const kalmanGain1 = kfSmall.getGain({predicted: normalPredicted});
-	const kalmanGain2 = kfDefault.getGain({predicted: normalPredicted});
+	const kalmanGain2 = kfDefault.getGain({predicted: normalPredicted, stateProjection: [[1]]});
 
 	// Verify that the kalman gain is greater when we are more confident in Observation
 	t.true(sum(kalmanGain1) > sum(kalmanGain2));
@@ -237,12 +239,10 @@ test('Fitted observation', t => {
 		predicted: predicted1,
 		observation
 	});
-	console.log('Fitted observation corrected:', corrected1);// To be verified!
 	const corrected2 = kf1.correct({
 		predicted: predicted1,
 		observation: badFittedObs
 	});
-	console.log('UnFitted observation corrected:', corrected2);
 	t.true(corrected1 instanceof State);
 	t.true(corrected2 instanceof State);
 
@@ -254,31 +254,30 @@ test('Fitted observation', t => {
 });
 
 // Test : Throw an error if a covariance or mean is wrongly sized
+// I think this test will be done during implementation of normal Kalman Filter
 
-test('Wrongly sized', t => {
-	const WrongOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			covariance() {
-				return [
-					[tiny, 0],
-					[0, tiny]
-				];
-			}
-		}),
-		observation: Object.assign({}, defaultOptions.observation, {
-			covariance() {
-				return [
-					[tiny]
-				];
-			}
-		})
-	});
-	const kf = new CoreKalmanFilter(WrongOptions);
-	const error = t.throws(() => {
-		kf.predict({});
-	});
-	t.is(error.message, 'An array of the model is wrongly sized');
-});
+// test('Wrongly sized', t => {
+// 	const WrongOptions = Object.assign({}, defaultOptions, {
+// 		dynamic: Object.assign({}, defaultOptions.dynamic, {
+// 			covariance() {
+// 				return [
+// 					[tiny, 0],
+// 					[0, tiny]
+// 				];
+// 			}
+// 		}),
+// 		observation: Object.assign({}, defaultOptions.observation, {
+// 			covariance() {
+// 				return [
+// 					[tiny]
+// 				];
+// 			}
+// 		})
+// 	});
+// 	const kf = new CoreKalmanFilter(WrongOptions);
+// 	const error = t.throws(() => kf.predict());
+// 	t.is(error.message, 'An array of the model is wrongly sized');
+// });
 
 // Test : Throws an error for NaN predicted
 
@@ -292,7 +291,7 @@ test('NaN Error', t => {
 	const error = t.throws(() => {
 		kf.predict({previousCorrected});
 	});
-	t.is(error.message, 'a matrix is NaN');
+	t.is(error.message, 'Matrix should not have a NaN');
 });
 // Error Test: non-squared matrix
 
@@ -308,5 +307,5 @@ test('Non squared matrix', t => {
 	const error = t.throws(() => {
 		kf.predict({previousCorrected: nonSquaredState});
 	});
-	t.is(error.message, 'Non squared matrix not authorized');
+	t.is(error.message, 'shape and length do not match');
 });
