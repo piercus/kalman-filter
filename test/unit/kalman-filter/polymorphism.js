@@ -3,7 +3,7 @@ const test = require('ava');
 const equalState = require('../../../test/helpers/equal-state.js');
 
 const KalmanFilter = require('../../../lib/kalman-filter.js');
-const State = require('./state.js');
+const State = require('../../../lib/state.js');
 
 const huge = 1000;
 const timeStep = 0.1;
@@ -90,9 +90,10 @@ test('Polymorphism', t => {
 	const kf2 = new KalmanFilter(matrixOptions);
 	const kf3 = new KalmanFilter(simpleArrayOptions);
 
+
 	// Verify that the transition is a function even if constructor's option is a matrixOptions
-	t.true(typeof (kf3.dynamic.transition), 'function');
-	t.true(typeof (kf2.dynamic.covariance), 'function');
+	t.is(typeof (kf2.dynamic.transition), 'function');
+	t.is(typeof (kf3.dynamic.covariance), 'function');
 
 	const predicted1 = kf1.predict();
 	const predicted2 = kf2.predict();
