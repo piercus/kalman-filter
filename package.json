@@ -4,7 +4,7 @@
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
   "main": "index.js",
   "scripts": {
-    "test": "xo && ava test/unit/core/*"
+    "test": "xo && ava test/unit/kalman-filter/*"
   },
   "repository": {
     "type": "git",
@@ -58,26 +58,26 @@
   "dependencies": {
     "matrix-inverse": "^1.0.1"
   },
-	"xo": {
-	 "rules": {
-		 "no-multi-assign": 0,
-		 "unicorn/no-reduce": 0,
-		 "import/no-unresolved": 0,
-		 "ava/prefer-async-await": 0,
-		 "ava/no-skip-test": 1,
-		 "camelcase": [
-			 0,
-			 {
-				 "ignoreDestructuring": true
-			 }
-		 ],
-		 "valid-jsdoc": [
-			 1,
-			 {
-				 "requireParamDescription": false,
-				 "requireReturnDescription": false
-			 }
-		 ]
-	 }
- }
+  "xo": {
+    "rules": {
+      "no-multi-assign": 0,
+      "unicorn/no-reduce": 0,
+      "import/no-unresolved": 0,
+      "ava/prefer-async-await": 0,
+      "ava/no-skip-test": 1,
+      "camelcase": [
+        0,
+        {
+          "ignoreDestructuring": true
+        }
+      ],
+      "valid-jsdoc": [
+        1,
+        {
+          "requireParamDescription": false,
+          "requireReturnDescription": false
+        }
+      ]
+    }
+  }
 }
