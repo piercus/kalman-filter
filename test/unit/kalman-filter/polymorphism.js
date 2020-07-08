@@ -162,9 +162,23 @@ test('Dynamic init', t => {
 	t.true(predicted instanceof State);
 	t.true(corrected instanceof State);
 
+	// We verify that init has been correctly initialized
+	t.not(kf.dynamic.init, undefined);
+	const huge = 1e6;
+	const initObjective = {
+		mean: [[0], [0], [0], [0]],
+		covariance: [
+			[huge, 0, 0, 0],
+			[0, huge, 0, 0],
+			[0, 0, huge, 0],
+			[0, 0, 0, huge]
+		]
+	};
+	t.deepEqual(kf.dynamic.init, initObjective);
+
 	const kf2 = new KalmanFilter(defaultOptions);
 	const predicted2 = kf2.predict();
-	const corrected2 = kf2.correct({predicted2, observation: observations[0]});
+	const corrected2 = kf2.correct({predicted: predicted2, observation: observations[0]});
 
 	t.true(equalState(predicted, predicted2));
 	t.true(equalState(corrected, corrected2));
@@ -227,7 +241,7 @@ test('Building stateProjection', t => {
 		[1, 0, 0, 0],
 		[0, 1, 0, 0]
 	];
-	t.is(kf.stateProjection, stateProjectionObjective);
+	t.deepEqual(kf.observation.stateProjection(), stateProjectionObjective);
 });
 
 // Test Error 1: Verify that an error if thrown when there is a difference between
