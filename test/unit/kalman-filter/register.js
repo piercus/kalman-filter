@@ -13,14 +13,13 @@ test('Check constant position', t => {
 	});
 	const kf = new KalmanFilter({
 		observation: {
-			sensorDimension: 1,
+			dimension: 1,
 			covariance: [[1]],
 			stateProjection: [[1]]
 		},
 		dynamic: {
 			dimension: 1,
-			name: 'constant-position',
-			covariance: [[1]]
+			name: 'constant-position'
 		}
 	});
 	const observations = [[0.1], [0.2], [0.1]];
@@ -44,11 +43,10 @@ test('Check constant speed', t => {
 	});
 	const kf = new KalmanFilter({
 		observation: {
-			sensorDimension: 1,
+			dimension: 1,
 			covariance: [[1]]
 		},
 		dynamic: {
-			dimension: 2,
 			name: 'constant-speed',
 			covariance: [
 				[1, 0],
