@@ -183,5 +183,5 @@ test('Registering custom speed', t => {
 	t.true(equalState(predicted1, predicted2));
 
 	// Verify that the model had been correctly added to the list of exiting models
-	//t.true(KalmanFilter.registeredModels.some(model => model.name === 'custom-speed'));
+	// t.true(KalmanFilter.registeredModels.some(model => model.name === 'custom-speed'));
 });
