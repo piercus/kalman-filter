@@ -33,7 +33,7 @@ test('FilterAll', t => {
 			name: 'sensors'
 		}
 	});
-	const allFiltered = kf.filterAll({observations});
+	const allFiltered = kf.filterAll(observations);
 	t.is(allFiltered.length, 3);
 	const filtered = kf.filter({observation: observations[0]});
 	const firstMean = filtered.mean;

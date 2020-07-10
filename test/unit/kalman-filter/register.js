@@ -72,7 +72,6 @@ test('Check constant speed', t => {
 	});
 	t.true(predicted instanceof State);
 	t.true(corrected instanceof State);
-	console.log('Corrected', corrected);
 	// We verify that the registered model returns the good result
 	t.true(equalState(corrected, stateObjective, 0.1));
 });

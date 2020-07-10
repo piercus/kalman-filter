@@ -8,7 +8,7 @@ test('Logger.debug', t => {
 			name: 'sensors'
 		},
 		dynamic: {
-			name: 'constant-position'
+			name: 'constant-speed'
 		},
 		logger: {
 			info: (...args) => console.log(...args),
