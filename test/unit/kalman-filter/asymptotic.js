@@ -26,7 +26,7 @@ test('Convergence', t => {
 
 // Test 2: Assert that if both dynamic.covariance and observation.covariance are huge, the covarianceConvergence is very huge
 
-test('Error when not converging', t => {
+test('Large covariances', t => {
 	const kf = new KalmanFilter({
 		dynamic: {
 			name: 'constant-speed',
@@ -43,4 +43,33 @@ test('Error when not converging', t => {
 		}
 	});
 	t.true(sum(kf.asymptoticStateCovariance()) > 1e6);
+});
+
+// Test Error 1 : Assert that an error is raised when matrices are not linear functions
+
+test('Error when not converging', t => {
+	const multiParameterCovariance = function ({previousCorrected}) {
+		const changingParameter = previousCorrected.covariance[0][0] ** 2;
+		return [
+			[1, 0],
+			[0, changingParameter]
+		];
+	};
+
+	const kf = new KalmanFilter({
+		dynamic: {
+			dimension: 2,
+			name: 'constant-speed',
+			covariance: multiParameterCovariance
+		},
+		observation: {
+			dimension: 1,
+			stateProjection: [[1, 0]],
+			covariance: [[1e6]]
+		}
+	});
+	const error = t.throws(() => {
+		kf.asymptoticStateCovariance();
+	});
+	t.is(error.message, 'The state covariance does not converge asymptotically');
 });
