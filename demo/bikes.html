@@ -23,63 +23,6 @@
         <img src="https://www.simply.science/images/content/physics/mechanics/kinematics/Concept_map/image1.gif">
     </div>
 </body>
-<script src="demo.js">
-	const img = document.getElementById('bikes')
-	const boxes = [
-		[
-			849, 294, 86, 83
-		],
-		[
-			705, 186, 101, 86
-		],
-		[
-			564, 108, 108, 109
-		],
-		[
-			427, 100, 87, 101
-		],
-		[
-			285, 132, 84, 89
-		],
-		[
-			152, 195, 84, 77
-		],
-		[
-			21, 302, 83, 83
-		]
-	];
-	const delay = 1000;
-	let kf = new KalmanFilter({
-		dynamic: {
-			name:'constant-speed',
-			dimension: 8,
-			covariance: [1, 1, 0.1, 0.1, 0.01, 0.01, 0.001, 0.0001]
-		},
-		observation: {
-			name: 'sensors',
-			dimension: 4
-		}
-	})
-	let promise = Promise.resolve();
-
-	boxes.forEach((box, index) => {
-		promise = promise.then(function(b, index){
-			const el = document.createElement('div');
-			el.className = 'box';
-			el.style.width=b[2]+'px';
-			el.style.height=b[3]+'px';
-			el.style.top=b[1]+'px';
-			el.style.left=b[0]+'px';
-			img.append(el);
-			return new Promise((resolve, reject) => {
-				setTimeout(() => {
-					resolve()
-				}, delay);
-			})
-		}.bind(null, box, index))
-	});
-
-	promise.then(() => console.log('done'))
-
+<script src= 'demo.js'>
 </script>
 </html>
