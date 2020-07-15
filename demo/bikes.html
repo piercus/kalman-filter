@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Placing Text Over an Image in CSS</title>
+<style>
+    .img{
+        position: relative;
+        display: inline-block; /* Make the width of box same as image */
+    }
+    .img .box{
+        position: absolute;
+        z-index: 999;
+        margin: 0 auto;
+				border: 1px solid white;
+    }
+</style>
+
+
+</head> 
+<body>
+    <div class="img" id='bikes'>
+        <img src="https://www.simply.science/images/content/physics/mechanics/kinematics/Concept_map/image1.gif">
+    </div>
+</body>
+<script>
+	const img = document.getElementById('bikes')
+	const boxes = [
+		[
+			200, 180, 100, 200
+		],
+		[
+			400, 480, 200, 200
+		]
+	];
+	const delay = 1000;
+	let promise = Promise.resolve();
+	
+	boxes.forEach((box, index) => {
+		promise = promise.then(function(b, index){
+			const el = document.createElement('div');
+			el.className = 'box';
+			el.style.width=b[2]+'px';
+			el.style.height=b[3]+'px';
+			el.style.top=b[1]+'px';
+			el.style.left=b[0]+'px';
+			img.append(el);
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve()
+				}, delay);
+			})
+		}.bind(null, box, index))
+	});
+	
+	promise.then(() => console.log('done'))
+	
+</script>
+</html>
