@@ -8,12 +8,58 @@
         position: relative;
         display: inline-block; /* Make the width of box same as image */
     }
-    .img .box{
+    .img .box1{
         position: absolute;
         z-index: 999;
         margin: 0 auto;
 				border: 1px solid white;
     }
+		.img .box2{
+        position: absolute;
+        z-index: 999;
+        margin: 0 auto;
+				border: 1px solid blue;
+    }
+		.img .box3{
+        position: absolute;
+        z-index: 999;
+        margin: 0 auto;
+				border: 1px solid red;
+    }
+		.img .box4{
+        position: absolute;
+        z-index: 999;
+        margin: 0 auto;
+				border: 1px dotted blue;
+    }
+		.img .circle {
+			position: relative;
+			z-index: 999;
+			margin: 0 auto;
+			border: 10px solid red;
+			border-radius: 50%;
+		}
+		.top-right {
+			position: absolute;
+			top: 20px;
+	    right: 20px;
+	    background-color: grey;
+	    color: white;
+	    padding-left: 20px;
+	    padding-right: 20px;
+		}
+		.img .cross {
+			background: linear-gradient(to bottom, transparent 35%,
+                                         #d00 35%,
+                                         #d00 65%,
+                                         transparent 65%),
+
+              linear-gradient(to right, transparent 35%,
+                                         #d00 35%,
+                                         #d00 65%,
+                                         transparent 65%),
+		}
+
 </style>
 
 
@@ -21,8 +67,182 @@
 <body>
     <div class="img" id='bikes'>
         <img src="https://www.simply.science/images/content/physics/mechanics/kinematics/Concept_map/image1.gif">
+				<div class="top-right">
+					<h4 style="color: red;"> Prediction
+					</h4>
+					<h4 style="color: white;"> Observation
+					</h4>
+					<h4 style="color: blue;"> Correction
+					</h4>
+				</div>
     </div>
 </body>
-<script src= 'kalman-filter.js'>
+<script src="kalman-filter.js">
 </script>
+<script>
+	var KalmanFilter = require('KalmanFilter');
+	const timeStep = 0.1;
+	const huge = 1e6;
+	const defaultOptions = {
+		observation: {
+			dimension: 4,
+			stateProjection() {
+				return [
+					[1, 0, 0, 0, 0, 0, 0, 0],
+					[0, 1, 0, 0, 0, 0, 0, 0],
+					[0, 0, 1, 0, 0, 0, 0, 0],
+					[0, 0, 0, 1, 0, 0, 0, 0]
+				];
+			},
+
+			covariance() {
+				return [
+					[1, 0, 0, 0],
+					[0, 1, 0, 0],
+					[0, 0, 1, 0],
+					[0, 0, 0, 1]
+				];
+			}
+		},
+
+		dynamic: {
+			init: {
+				mean: [[500], [500], [100], [100], [0], [0], [0], [0]],
+
+				covariance: [
+					[huge, 0, 0, 0, 0, 0, 0, 0],
+					[0, huge, 0, 0, 0, 0, 0, 0],
+					[0, 0, huge, 0, 0, 0, 0, 0],
+					[0, 0, 0, huge, 0, 0, 0, 0],
+					[0, 0, 0, 0, huge, 0, 0, 0],
+					[0, 0, 0, 0, 0, huge, 0, 0],
+					[0, 0, 0, 0, 0, 0, huge, 0],
+					[0, 0, 0, 0, 0, 0, 0, huge]
+				]
+			},
+
+			dimension: 8,
+
+			transition() {
+				return [
+					[1, 0, 0, 0, timeStep, 0, 0, 0],
+					[0, 1, 0, 0, 0, timeStep, 0, 0],
+					[0, 0, 1, 0, 0, 0, timeStep, 0],
+					[0, 0, 0, 1, 0, 0, 0, timeStep],
+					[0, 0, 0, 0, 1, 0, 0, 0],
+					[0, 0, 0, 0, 0, 1, 0, 0],
+					[0, 0, 0, 0, 0, 0, 1, 0],
+					[0, 0, 0, 0, 0, 0, 0, 1]
+
+				];
+			},
+
+			covariance() {
+				// We consider a screen having 1280*720 pixels and a size of a box of 100*100 pixels
+				return [
+					[1, 0, 0, 0, 0, 0, 0, 0],
+					[0, 1, 0, 0, 0, 0, 0, 0],
+					[0, 0, 0.1, 0, 0, 0, 0, 0],
+					[0, 0, 0, 0.1, 0, 0, 0, 0],
+					[0, 0, 0, 0, 0.01, 0, 0, 0],
+					[0, 0, 0, 0, 0, 0.01, 0, 0],
+					[0, 0, 0, 0, 0, 0, 0.001, 0],
+					[0, 0, 0, 0, 0, 0, 0, 0.001]
+				];
+			}
+		}
+	};
+
+	const kf = new KalmanFilter(defaultOptions);
+	let previousCorrected;
+	let predicted = kf.predict();
+	const img = document.getElementById('bikes')
+	const boxes = [
+		[
+			849, 294, 86, 83
+		],
+		[
+			705, 186, 101, 86
+		],
+		[
+			564, 108, 108, 109
+		],
+		[
+			427, 100, 87, 101
+		],
+		[
+			285, 132, 84, 89
+		],
+		[
+			152, 195, 84, 77
+		],
+		[
+			21, 302, 83, 83
+		]
+	];
+	const delay = 1000;
+	let promise = Promise.resolve();
+
+	boxes.forEach((box, index) => {
+		promise = promise.then(function(b, index){
+			const el = document.createElement('div');
+			const {mean, covariance} = predicted;
+			el.className = 'box3';
+			el.style.width= Math.round(mean[2][0])+ 'px';
+			el.style.height= Math.round(mean[3][0]) + 'px';
+			el.style.top= Math.round(mean[1][0]) + 'px';
+			el.style.left= Math.round(mean[0][0]) + 'px';
+			img.append(el);
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve()
+				}, delay);
+			})
+		}.bind(null, box, index))
+		.then(function(b, index){
+			const el = document.createElement('div');
+			el.className = 'box1';
+			el.style.width=b[2]+'px';
+			el.style.height=b[3]+'px';
+			el.style.top=b[1]+'px';
+			el.style.left=b[0]+'px';
+			img.append(el);
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve()
+				}, delay);
+			})
+		}.bind(null, box, index))
+		.then(function(b, index){
+			previousCorrected = kf.correct({predicted, observation: b});
+			const {mean, covariance} = previousCorrected
+			console.log('Mean', mean[0], mean[1], mean[2], mean[3])
+			const el1 = document.createElement('div');
+			el1.className = 'box2';
+			el1.style.width= Math.round(mean[2][0])+ 'px';
+			el1.style.height= Math.round(mean[3][0]) + 'px';
+			el1.style.top= Math.round(mean[1][0]) + 'px';
+			el1.style.left= Math.round(mean[0][0]) + 'px';
+			img.append(el1);
+			const el2 = document.createElement('div');
+			el2.className = 'box4';
+			console.log(covariance[0][0], covariance[1][1], covariance[2][2], covariance[3][3])
+			el2.style.width= Math.round(mean[2][0])+ Math.round(Math.sqrt(covariance[2][2]))+ 'px';
+			el2.style.height= Math.round(mean[3][0])+ Math.round(Math.sqrt(covariance[3][3]))+ 'px';
+			el2.style.top= Math.round(mean[1][0])- Math.sqrt(covariance[2][2]) + 'px';
+			el2.style.left= Math.round(mean[0][0])- Math.sqrt(covariance[2][2]) + 'px';
+			img.append(el2);
+			predicted = kf.predict({previousCorrected})
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve()
+			}, delay);
+		})
+	}.bind(null, box, index))
+	})
+
+
+
+</script>
+
 </html>
