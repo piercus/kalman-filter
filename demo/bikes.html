@@ -48,17 +48,21 @@
 	    padding-left: 20px;
 	    padding-right: 20px;
 		}
-		.img .cross {
-			background: linear-gradient(to bottom, transparent 35%,
-                                         #d00 35%,
-                                         #d00 65%,
-                                         transparent 65%),
-
-              linear-gradient(to right, transparent 35%,
-                                         #d00 35%,
-                                         #d00 65%,
-                                         transparent 65%),
+		.img .boxPlainRed{
+        position: absolute;
+        z-index: 999;
+        margin: 0 auto;
+				border: 2px solid red;
+				background-color: red;
+    }
+		.img .boxPlainBlue{
+				position: absolute;
+				z-index: 999;
+				margin: 0 auto;
+				border: 2px solid blue;
+				background-color: blue;
 		}
+
 
 </style>
 
@@ -86,14 +90,12 @@
 	const defaultOptions = {
 		observation: {
 			dimension: 4,
-			stateProjection() {
-				return [
+			stateProjection: [
 					[1, 0, 0, 0, 0, 0, 0, 0],
 					[0, 1, 0, 0, 0, 0, 0, 0],
 					[0, 0, 1, 0, 0, 0, 0, 0],
 					[0, 0, 0, 1, 0, 0, 0, 0]
-				];
-			},
+				],
 
 			covariance() {
 				return [
@@ -123,19 +125,7 @@
 
 			dimension: 8,
 
-			transition() {
-				return [
-					[1, 0, 0, 0, timeStep, 0, 0, 0],
-					[0, 1, 0, 0, 0, timeStep, 0, 0],
-					[0, 0, 1, 0, 0, 0, timeStep, 0],
-					[0, 0, 0, 1, 0, 0, 0, timeStep],
-					[0, 0, 0, 0, 1, 0, 0, 0],
-					[0, 0, 0, 0, 0, 1, 0, 0],
-					[0, 0, 0, 0, 0, 0, 1, 0],
-					[0, 0, 0, 0, 0, 0, 0, 1]
-
-				];
-			},
+			name: 'constant-speed',
 
 			covariance() {
 				// We consider a screen having 1280*720 pixels and a size of a box of 100*100 pixels
@@ -186,6 +176,7 @@
 	boxes.forEach((box, index) => {
 		promise = promise.then(function(b, index){
 			const el = document.createElement('div');
+			const el2 = document.createElement('div');
 			const {mean, covariance} = predicted;
 			el.className = 'box3';
 			el.style.width= Math.round(mean[2][0])+ 'px';
@@ -193,6 +184,12 @@
 			el.style.top= Math.round(mean[1][0]) + 'px';
 			el.style.left= Math.round(mean[0][0]) + 'px';
 			img.append(el);
+			el2.className = 'boxPlainRed';
+			el2.style.width= 2 + 'px';
+			el2.style.height= 2 + 'px';
+			el2.style.top= Math.round(mean[1][0])+(Math.round(mean[3][0])/2) + 'px';
+			el2.style.left= Math.round(mean[0][0]) +(Math.round(mean[2][0])/2) + 'px';
+			img.append(el2);
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve()
@@ -232,6 +229,13 @@
 			el2.style.top= Math.round(mean[1][0])- Math.sqrt(covariance[2][2]) + 'px';
 			el2.style.left= Math.round(mean[0][0])- Math.sqrt(covariance[2][2]) + 'px';
 			img.append(el2);
+			const el3 = document.createElement('div');
+			el3.className = 'boxPlainBlue';
+			el3.style.width= 2 + 'px';
+			el3.style.height= 2 + 'px';
+			el3.style.top= Math.round(mean[1][0])+(Math.round(mean[3][0])/2) + 'px';
+			el3.style.left= Math.round(mean[0][0]) +(Math.round(mean[2][0])/2) + 'px';
+			img.append(el3);
 			predicted = kf.predict({previousCorrected})
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
