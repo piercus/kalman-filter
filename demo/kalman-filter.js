@@ -530,7 +530,6 @@ module.exports = function(elements) {
 
 },{}]},{},[1]);
 
-
 const img = document.getElementById('bikes')
 const boxes = [
 	[
