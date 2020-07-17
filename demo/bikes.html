@@ -80,14 +80,14 @@
 					[0, 0, 1, 0, 0, 0, 0, 0],
 					[0, 0, 0, 1, 0, 0, 0, 0]
 				],
-			covariance: [2, 2, 2, 2],
+			covariance: [20, 20, 20, 20],
 		},
 
 		dynamic: {
 			name: 'constant-speed',
 			timeStep: 0.2,
 			init: {
-				mean: [[943], [385], [75], [65], [100], [100], [0], [0]],
+				mean: [[943], [385], [75], [65], [-200], [-200], [0], [0]],
 
 				covariance: [
 					[huge, 0, 0, 0, 0, 0, 0, 0],
@@ -156,7 +156,7 @@
 
 	boxes.forEach((box, index) => {
 		promise = promise.then(function(b, index){
-			console.log(predicted)
+			console.log("Predicted", predicted)
 			const {mean, covariance} = predicted;
 			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 
@@ -167,8 +167,19 @@
 				color: 'red',
 				lineStyle: 'solid'
 			})
-
 			const el2 = createElement({
+				className: 'box',
+				bbox: [
+					center[0],
+					center[1],
+					mean[2][0] + 2*3*Math.sqrt(covariance[2][2]),
+					mean[3][0] +2*3*Math.sqrt(covariance[3][3])
+				],
+				parent: img,
+				color: 'red',
+				lineStyle: 'dotted'
+			});
+			const el3 = createElement({
 				className: 'boxPlainRed',
 				bbox: [center[0], center[1], 2, 2],
 				parent: img
@@ -201,6 +212,8 @@
 		}.bind(null, box, index))
 		.then(function(b, index){
 			previousCorrected = kf.correct({predicted, observation: b});
+			console.log("box", b);
+			console.log("Corrected", previousCorrected)
 			const {mean, covariance} = previousCorrected
 			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 			const el1 = createElement({
