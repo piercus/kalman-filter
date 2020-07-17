@@ -198,7 +198,51 @@ class CoreKalmanFilter {
 
 module.exports = CoreKalmanFilter;
 
-},{"../lib/linalgebra/add.js":4,"../lib/linalgebra/identity.js":8,"../lib/linalgebra/invert.js":9,"../lib/linalgebra/mat-mul.js":10,"../lib/linalgebra/sub.js":12,"../lib/linalgebra/transpose.js":15,"./state.js":23}],2:[function(require,module,exports){
+},{"../lib/linalgebra/add.js":5,"../lib/linalgebra/identity.js":9,"../lib/linalgebra/invert.js":10,"../lib/linalgebra/mat-mul.js":11,"../lib/linalgebra/sub.js":13,"../lib/linalgebra/transpose.js":16,"./state.js":24}],2:[function(require,module,exports){
+const identity = require('../linalgebra/identity.js');
+
+/**
+*Creates a dynamic model, following constant acceleration model with respect with the dimensions provided in the observation parameters
+* @param {DynamicConfig} dynamic
+* @param {ObservationConfig} observation
+* @returns {DynamicConfig}
+*/
+
+module.exports = function (dynamic, observation) {
+	const timeStep = dynamic.timeStep || 1;
+	const observedProjection = observation.observedProjection;
+	const stateProjection = observation.stateProjection;
+	const observationDimension = observation.dimension;
+	let dimension;
+
+	if (stateProjection && Number.isInteger(stateProjection[0].length / 3)) {
+		dimension = observation.stateProjection[0].length;
+	} else if (observedProjection) {
+		dimension = observedProjection[0].length * 3;
+	} else if (observationDimension) {
+		dimension = observationDimension * 3;
+	} else {
+		throw (new Error('observedProjection or stateProjection should be defined in observation in order to use constant-speed filter'));
+	}
+
+	const baseDimension = dimension / 3;
+	// We construct the transition and covariance matrices
+	const transition = identity(dimension);
+	for (let i = 0; i < baseDimension; i++) {
+		transition[i][i + baseDimension] = timeStep;
+		transition[i][i + (2 * baseDimension)] = 0.5 * timeStep**2;
+		transition[i + baseDimension][i + (2 * baseDimension)] = timeStep;
+	}
+
+	const arrayCovariance = new Array(baseDimension).fill(1)
+		.concat(new Array(baseDimension).fill(timeStep * timeStep))
+		.concat(new Array(baseDimension).fill(timeStep ** 4));
+	const covariance = dynamic.covariance || arrayCovariance;
+	const init = dynamic.init;
+	return {dimension, transition, covariance, init};
+};
+
+},{"../linalgebra/identity.js":9}],3:[function(require,module,exports){
 const identity = require('../linalgebra/identity.js');
 /**
 *Creates a dynamic model, following constant position model with respect with the dimensions provided in the observation parameters
@@ -230,7 +274,7 @@ module.exports = function (dynamic, observation) {
 	return {dimension, transition, covariance, init};
 };
 
-},{"../linalgebra/identity.js":8}],3:[function(require,module,exports){
+},{"../linalgebra/identity.js":9}],4:[function(require,module,exports){
 const identity = require('../linalgebra/identity.js');
 
 /**
@@ -270,7 +314,7 @@ module.exports = function (dynamic, observation) {
 	return {dimension, transition, covariance, init};
 };
 
-},{"../linalgebra/identity.js":8}],4:[function(require,module,exports){
+},{"../linalgebra/identity.js":9}],5:[function(require,module,exports){
 const elemWise = require('./elem-wise');
 /**
 * Add matrixes together
@@ -283,7 +327,7 @@ module.exports = function (...args) {
 	});
 };
 
-},{"./elem-wise":7}],5:[function(require,module,exports){
+},{"./elem-wise":8}],6:[function(require,module,exports){
 const zeros = require('./zeros');
 
 module.exports = function (mat) {
@@ -296,7 +340,7 @@ module.exports = function (mat) {
 	return result;
 };
 
-},{"./zeros":16}],6:[function(require,module,exports){
+},{"./zeros":17}],7:[function(require,module,exports){
 const trace = require('./trace.js');
 const transpose = require('./transpose.js');
 const matSub = require('./sub.js');
@@ -318,7 +362,7 @@ module.exports = function (array1, array2) {
 	return Math.sqrt(trace(p));
 };
 
-},{"./mat-mul.js":10,"./sub.js":12,"./sum.js":13,"./trace.js":14,"./transpose.js":15}],7:[function(require,module,exports){
+},{"./mat-mul.js":11,"./sub.js":13,"./sum.js":14,"./trace.js":15,"./transpose.js":16}],8:[function(require,module,exports){
 /**
 * @callback elemWiseCb
 * @param {Array.<Number>} arr
@@ -347,7 +391,7 @@ module.exports = function (arrayMatrixes, fn) {
 };
 
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = function (stateSize) {
 	const identityArray = [];
 	for (let i = 0; i < stateSize; i++) {
@@ -366,14 +410,14 @@ module.exports = function (stateSize) {
 	return identityArray;
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 const matrixInverse = require('matrix-inverse');
 
 module.exports = function (m) {
 	return matrixInverse(m);
 };
 
-},{"matrix-inverse":29}],10:[function(require,module,exports){
+},{"matrix-inverse":30}],11:[function(require,module,exports){
 /**
 * Multiply 2 matrixes together
 * @param {<Array.<Array.<Number>>} m1
@@ -398,7 +442,7 @@ module.exports = function (m1, m2) {
 	return result;
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /**
 *This function returns the stateProjection paded with zeros with respect to a given
 *observedProjection
@@ -421,14 +465,14 @@ module.exports = function (array, {dimension}) {
 	return array;
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 const elemWise = require('./elem-wise');
 
 module.exports = function (...args) {
 	return elemWise(args, ([a, b]) => a - b);
 };
 
-},{"./elem-wise":7}],13:[function(require,module,exports){
+},{"./elem-wise":8}],14:[function(require,module,exports){
 // Sum all the terms of a given matrix
 module.exports = function (array) {
 	let s = 0;
@@ -441,7 +485,7 @@ module.exports = function (array) {
 	return s;
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = function (array) {
 	let diag = 0;
 	for (const [row, element] of array.entries()) {
@@ -451,20 +495,21 @@ module.exports = function (array) {
 	return diag;
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = function (array) {
 	return array[0].map((col, i) => array.map(row => row[i]));
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = function (rows, cols) {
 	return new Array(rows).fill(1).map(() => new Array(cols).fill(0));
 };
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 const registeredDynamicModels = {
 	'constant-position': require('../lib/dynamic/constant-position.js'),
-	'constant-speed': require('../lib/dynamic/constant-speed.js')
+	'constant-speed': require('../lib/dynamic/constant-speed.js'),
+	'constant-acceleration': require('../lib/dynamic/constant-acceleration.js')
 };
 const registeredObservationModels = {
 	sensors: require('../lib/observation/sensor.js')
@@ -518,7 +563,7 @@ module.exports = {
 	}
 };
 
-},{"../lib/dynamic/constant-position.js":2,"../lib/dynamic/constant-speed.js":3,"../lib/observation/sensor.js":18}],18:[function(require,module,exports){
+},{"../lib/dynamic/constant-acceleration.js":2,"../lib/dynamic/constant-position.js":3,"../lib/dynamic/constant-speed.js":4,"../lib/observation/sensor.js":19}],19:[function(require,module,exports){
 const identity = require('../linalgebra/identity.js');
 const polymorphMatrix = require('../utils/polymorph-matrix.js');
 
@@ -548,7 +593,7 @@ module.exports = function (options) {
 	});
 };
 
-},{"../linalgebra/identity.js":8,"../utils/polymorph-matrix.js":26}],19:[function(require,module,exports){
+},{"../linalgebra/identity.js":9,"../utils/polymorph-matrix.js":27}],20:[function(require,module,exports){
 const padWithZeros = require('../linalgebra/pad-with-zeros.js');
 const identity = require('../linalgebra/identity.js');
 /**
@@ -588,7 +633,7 @@ module.exports = function ({observation, dynamic}) {
 	return {observation, dynamic};
 };
 
-},{"../linalgebra/identity.js":8,"../linalgebra/pad-with-zeros.js":11}],20:[function(require,module,exports){
+},{"../linalgebra/identity.js":9,"../linalgebra/pad-with-zeros.js":12}],21:[function(require,module,exports){
 /**
 *Verifies that dynamic.dimension and observation.dimension are set
 *@param {ObservationConfig} observation
@@ -605,7 +650,7 @@ module.exports = function ({observation, dynamic}) {
 	return {observation, dynamic};
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 const diag = require('../linalgebra/diag.js');
 
 /**
@@ -636,7 +681,7 @@ module.exports = function ({observation, dynamic}) {
 	return {observation, dynamic};
 };
 
-},{"../linalgebra/diag.js":5}],22:[function(require,module,exports){
+},{"../linalgebra/diag.js":6}],23:[function(require,module,exports){
 /**
 *Verifies that dimensions are matching and set dynamic.dimension and observation.dimension
 * with respect of stateProjection and transition dimensions
@@ -686,7 +731,7 @@ module.exports = function ({observation, dynamic}) {
 	return {observation, dynamic};
 };
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 const checkMatrix = function (matrix, shape) {
 	if (matrix.reduce((a, b) => a.concat(b)).filter(a => Number.isNaN(a)).length > 0) {
 		throw (new Error('Matrix should not have a NaN'));
@@ -754,7 +799,7 @@ class State {
 
 module.exports = State;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 /**
 *Returns the corresponding matrix in dim*1, given an dim matrix, and checks
 * if corresponding with the observation dimension
@@ -779,7 +824,7 @@ module.exports = function ({observation, dimension}) {
 	return observation;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 const uniq = require('./uniq.js');
 const limit = 100;
 
@@ -823,7 +868,7 @@ const deepAssign = function (args, step) {
 
 module.exports = ((...args) => deepAssign(args, 0));
 
-},{"./uniq.js":28}],26:[function(require,module,exports){
+},{"./uniq.js":29}],27:[function(require,module,exports){
 /**
 * @typedef {Number | Array.<Number> | Array.<Array.<Number>>} CovarianceParam
 */
@@ -854,7 +899,7 @@ module.exports = function (array, {dimension} = {}) {
 	return array;
 };
 
-},{"../linalgebra/diag":5}],27:[function(require,module,exports){
+},{"../linalgebra/diag":6}],28:[function(require,module,exports){
 // Const diag = require('../linalgebra/diag.js');
 
 /**
@@ -884,14 +929,14 @@ module.exports = function (array) {
 	throw (new Error('Only arrays and functions are authorized'));
 };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = function (array) {
 	return array.filter((value, index) =>
 		array.indexOf(value) === index
 	);
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 var Sylvester = {}
 
 Sylvester.Matrix = function() {}
@@ -1242,4 +1287,4 @@ class KalmanFilter extends CoreKalmanFilter {
 
 module.exports = KalmanFilter;
 
-},{"../lib/linalgebra/distance-mat.js":6,"../lib/setup/build-state-projection.js":19,"../lib/setup/check-dimensions.js":20,"../lib/setup/extend-dynamic-init.js":21,"../lib/setup/set-dimensions.js":22,"../lib/utils/array-to-matrix.js":24,"../lib/utils/deep-assign.js":25,"../lib/utils/polymorph-matrix.js":26,"../lib/utils/to-function.js":27,"./core-kalman-filter.js":1,"./model-collection.js":17,"./state.js":23}]},{},[]);
+},{"../lib/linalgebra/distance-mat.js":7,"../lib/setup/build-state-projection.js":20,"../lib/setup/check-dimensions.js":21,"../lib/setup/extend-dynamic-init.js":22,"../lib/setup/set-dimensions.js":23,"../lib/utils/array-to-matrix.js":25,"../lib/utils/deep-assign.js":26,"../lib/utils/polymorph-matrix.js":27,"../lib/utils/to-function.js":28,"./core-kalman-filter.js":1,"./model-collection.js":18,"./state.js":24}]},{},[]);
