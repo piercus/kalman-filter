@@ -184,3 +184,36 @@ test('Registering custom speed', t => {
 	// Verify that the model had been correctly added to the list of exiting models
 	// t.true(KalmanFilter.registeredModels.some(model => model.name === 'custom-speed'));
 });
+
+//Verify that init is conserved if defined
+
+test('Init and registered model', t => {
+	const kf = new KalmanFilter({
+		observation: {
+			dimension: 1,
+			covariance: [[1]],
+			stateProjection: [[1, 0]]
+		},
+		dynamic: {
+			name: 'constant-speed',
+			covariance: [
+				[1, 0],
+				[0, 0.01]
+			],
+			timeStep: 0.1,
+			init: {
+				mean: [[0], [1]],
+				covariance: [
+					[1, 0],
+					[0, 1]
+				]
+			}
+		}
+	});
+	console.log(kf.dynamic.init.covariance)
+	t.deepEqual(
+		kf.dynamic.init.covariance,
+		[[1, 0],
+			[0, 1]]
+	 )
+});

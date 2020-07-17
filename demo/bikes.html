@@ -8,37 +8,12 @@
         position: relative;
         display: inline-block; /* Make the width of box same as image */
     }
-    .img .box1{
+    .img .box{
         position: absolute;
         z-index: 999;
         margin: 0 auto;
-				border: 1px solid white;
     }
-		.img .box2{
-        position: absolute;
-        z-index: 999;
-        margin: 0 auto;
-				border: 1px solid blue;
-    }
-		.img .box3{
-        position: absolute;
-        z-index: 999;
-        margin: 0 auto;
-				border: 1px solid red;
-    }
-		.img .box4{
-        position: absolute;
-        z-index: 999;
-        margin: 0 auto;
-				border: 1px dotted blue;
-    }
-		.img .circle {
-			position: relative;
-			z-index: 999;
-			margin: 0 auto;
-			border: 10px solid red;
-			border-radius: 50%;
-		}
+
 		.top-right {
 			position: absolute;
 			top: 20px;
@@ -61,6 +36,13 @@
 				margin: 0 auto;
 				border: 2px solid blue;
 				background-color: blue;
+		}
+		.img .ellipse {
+			position: absolute;
+			z-index: 999;
+			margin: 0 auto;
+			border: 1px dotted blue;
+			border-radius: 50%;
 		}
 
 
@@ -85,8 +67,10 @@
 </script>
 <script>
 	var KalmanFilter = require('KalmanFilter');
-	const timeStep = 0.1;
-	const huge = 1e6;
+	const timeStep = 0.2;
+	const huge = 1;
+	const posVar = 100;
+	const sizeVar = 1;
 	const defaultOptions = {
 		observation: {
 			dimension: 4,
@@ -96,20 +80,14 @@
 					[0, 0, 1, 0, 0, 0, 0, 0],
 					[0, 0, 0, 1, 0, 0, 0, 0]
 				],
-
-			covariance() {
-				return [
-					[1, 0, 0, 0],
-					[0, 1, 0, 0],
-					[0, 0, 1, 0],
-					[0, 0, 0, 1]
-				];
-			}
+			covariance: [2, 2, 2, 2],
 		},
 
 		dynamic: {
+			name: 'constant-speed',
+			timeStep: 0.2,
 			init: {
-				mean: [[500], [500], [100], [100], [0], [0], [0], [0]],
+				mean: [[943], [385], [75], [65], [100], [100], [0], [0]],
 
 				covariance: [
 					[huge, 0, 0, 0, 0, 0, 0, 0],
@@ -125,21 +103,10 @@
 
 			dimension: 8,
 
-			name: 'constant-speed',
-
-			covariance() {
-				// We consider a screen having 1280*720 pixels and a size of a box of 100*100 pixels
-				return [
-					[1, 0, 0, 0, 0, 0, 0, 0],
-					[0, 1, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0.1, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0.1, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0.01, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0.01, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0.001, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0.001]
-				];
-			}
+			covariance: [
+				posVar, posVar, sizeVar, sizeVar,
+				posVar*timeStep*timeStep, posVar*timeStep*timeStep, sizeVar*timeStep*timeStep, sizeVar*timeStep*timeStep
+			]
 		}
 	};
 
@@ -173,23 +140,39 @@
 	const delay = 1000;
 	let promise = Promise.resolve();
 
+	const createElement = function({className, tag = 'div', bbox, parent, color, lineStyle}) {
+		const el = document.createElement(tag);
+		el.className = className;
+		if (color && lineStyle) {
+			el.style.border = `1px ${lineStyle} ${color}`
+		}
+		el.style.width= Math.round(bbox[2])+ 'px';
+		el.style.height= Math.round(bbox[3]) + 'px';
+		el.style.top= Math.round(bbox[1] -bbox[3]/2) + 'px';
+		el.style.left= Math.round(bbox[0] - bbox[2]/2) + 'px';
+		parent.append(el);
+		return el;
+	}
+
 	boxes.forEach((box, index) => {
 		promise = promise.then(function(b, index){
-			const el = document.createElement('div');
-			const el2 = document.createElement('div');
+			console.log(predicted)
 			const {mean, covariance} = predicted;
-			el.className = 'box3';
-			el.style.width= Math.round(mean[2][0])+ 'px';
-			el.style.height= Math.round(mean[3][0]) + 'px';
-			el.style.top= Math.round(mean[1][0]) + 'px';
-			el.style.left= Math.round(mean[0][0]) + 'px';
-			img.append(el);
-			el2.className = 'boxPlainRed';
-			el2.style.width= 2 + 'px';
-			el2.style.height= 2 + 'px';
-			el2.style.top= Math.round(mean[1][0])+(Math.round(mean[3][0])/2) + 'px';
-			el2.style.left= Math.round(mean[0][0]) +(Math.round(mean[2][0])/2) + 'px';
-			img.append(el2);
+			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
+
+			const el = createElement({
+				className: 'box',
+				bbox: [center[0], center[1], mean[2][0], mean[3][0]],
+				parent: img,
+				color: 'red',
+				lineStyle: 'solid'
+			})
+
+			const el2 = createElement({
+				className: 'boxPlainRed',
+				bbox: [center[0], center[1], 2, 2],
+				parent: img
+			})
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve()
@@ -197,13 +180,19 @@
 			})
 		}.bind(null, box, index))
 		.then(function(b, index){
-			const el = document.createElement('div');
-			el.className = 'box1';
-			el.style.width=b[2]+'px';
-			el.style.height=b[3]+'px';
-			el.style.top=b[1]+'px';
-			el.style.left=b[0]+'px';
-			img.append(el);
+			const el = createElement({
+				className: 'box',
+				bbox: [
+					b[0] +b[2]/2,
+					b[1] +b[3]/2,
+					b[2],
+					b[3]
+				],
+				parent: img,
+				color: 'white',
+				lineStyle: 'solid'
+			})
+
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve()
@@ -213,29 +202,54 @@
 		.then(function(b, index){
 			previousCorrected = kf.correct({predicted, observation: b});
 			const {mean, covariance} = previousCorrected
-			console.log('Mean', mean[0], mean[1], mean[2], mean[3])
-			const el1 = document.createElement('div');
-			el1.className = 'box2';
-			el1.style.width= Math.round(mean[2][0])+ 'px';
-			el1.style.height= Math.round(mean[3][0]) + 'px';
-			el1.style.top= Math.round(mean[1][0]) + 'px';
-			el1.style.left= Math.round(mean[0][0]) + 'px';
-			img.append(el1);
-			const el2 = document.createElement('div');
-			el2.className = 'box4';
-			console.log(covariance[0][0], covariance[1][1], covariance[2][2], covariance[3][3])
-			el2.style.width= Math.round(mean[2][0])+ Math.round(Math.sqrt(covariance[2][2]))+ 'px';
-			el2.style.height= Math.round(mean[3][0])+ Math.round(Math.sqrt(covariance[3][3]))+ 'px';
-			el2.style.top= Math.round(mean[1][0])- Math.sqrt(covariance[2][2]) + 'px';
-			el2.style.left= Math.round(mean[0][0])- Math.sqrt(covariance[2][2]) + 'px';
-			img.append(el2);
-			const el3 = document.createElement('div');
-			el3.className = 'boxPlainBlue';
-			el3.style.width= 2 + 'px';
-			el3.style.height= 2 + 'px';
-			el3.style.top= Math.round(mean[1][0])+(Math.round(mean[3][0])/2) + 'px';
-			el3.style.left= Math.round(mean[0][0]) +(Math.round(mean[2][0])/2) + 'px';
-			img.append(el3);
+			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
+			const el1 = createElement({
+				className: 'box',
+				bbox:[
+					center[0],
+					center[1],
+					mean[2][0],
+					mean[3][0]
+				],
+				parent: img,
+				color: 'blue',
+				lineStyle:'solid'
+			});
+
+			const el2 = createElement({
+				className: 'box',
+				bbox: [
+					center[0],
+					center[1],
+					mean[2][0] + 2*3*Math.sqrt(covariance[2][2]),
+					mean[3][0] +2*3*Math.sqrt(covariance[3][3])
+				],
+				parent: img,
+				color: 'blue',
+				lineStyle: 'dotted'
+			});
+
+			const el3 = createElement({
+				className: 'boxPlainBlue',
+				bbox: [
+					center[0],
+					center[1],
+					2,
+					2
+				],
+				parent: img
+			})
+
+			const el4 = createElement({
+				className: 'ellipse',
+				bbox: [
+					center[0],
+					center[1],
+					3*Math.sqrt(covariance[0][0]),
+					3*Math.sqrt(covariance[1][1])
+				],
+				parent: img
+			})
 			predicted = kf.predict({previousCorrected})
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {

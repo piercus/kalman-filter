@@ -226,7 +226,8 @@ module.exports = function (dynamic, observation) {
 
 	const transition = identity(dimension);
 	covariance = covariance || identity(dimension);
-	return {dimension, transition, covariance};
+	const init = dynamic.init;
+	return {dimension, transition, covariance, init};
 };
 
 },{"../linalgebra/identity.js":8}],3:[function(require,module,exports){
@@ -265,7 +266,8 @@ module.exports = function (dynamic, observation) {
 
 	const arrayCovariance = new Array(baseDimension).fill(1).concat(new Array(baseDimension).fill(timeStep * timeStep));
 	const covariance = dynamic.covariance || arrayCovariance;
-	return {dimension, transition, covariance};
+	const init = dynamic.init;
+	return {dimension, transition, covariance, init};
 };
 
 },{"../linalgebra/identity.js":8}],4:[function(require,module,exports){
