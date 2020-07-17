@@ -51,7 +51,6 @@
 		  border-style: solid;
 		  border-bottom-color: transparent;
 		  border-left-color: transparent;
-		  position: relative;
 		  display: inline-block;
 		  vertical-align: middle;
 		  color: #666;
@@ -108,30 +107,30 @@
 					[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 					[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
 				],
-			covariance: [20, 20, 20, 20],
+			covariance: [posVar, posVar, posVar, posVar],
 		},
 
 		dynamic: {
 			name: 'constant-acceleration',
 			timeStep: 0.2,
-			init: {
-				mean: [[943], [385], [75], [65], [-200], [-200], [0], [0], [-20], [-20], [0], [0]],
-
-				covariance: [
-					[huge, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, huge, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, huge, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, huge, 0, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, huge, 0, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, huge, 0, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, huge, 0, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, huge, 0, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, huge, 0, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0, huge, 0, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, huge, 0],
-					[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, huge],
-				]
-			},
+			// init: {
+			// 	mean: [[943], [385], [75], [65], [-200], [-200], [0], [0], [-20], [-20], [0], [0]],
+			//
+			// 	covariance: [
+			// 		[huge, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			// 		[0, huge, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			// 		[0, 0, huge, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+			// 		[0, 0, 0, huge, 0, 0, 0, 0, 0, 0, 0, 0],
+			// 		[0, 0, 0, 0, huge, 0, 0, 0, 0, 0, 0, 0],
+			// 		[0, 0, 0, 0, 0, huge, 0, 0, 0, 0, 0, 0],
+			// 		[0, 0, 0, 0, 0, 0, huge, 0, 0, 0, 0, 0],
+			// 		[0, 0, 0, 0, 0, 0, 0, huge, 0, 0, 0, 0],
+			// 		[0, 0, 0, 0, 0, 0, 0, 0, huge, 0, 0, 0],
+			// 		[0, 0, 0, 0, 0, 0, 0, 0, 0, huge, 0, 0],
+			// 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, huge, 0],
+			// 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, huge],
+			// 	]
+			// },
 
 			dimension: 12,
 
@@ -193,8 +192,8 @@
 	const createArrow = function({className, tag = 'div', bbox, parent, rotationCoefficient}) {
 		const el = document.createElement(tag);
 		el.className = className;
-		el.style.top= Math.round(bbox[1] -bbox[3]/2) + 'px';
-		el.style.left= Math.round(bbox[0] - bbox[2]/2) + 'px';
+		el.style.top= Math.round(bbox[1]) + 'px';
+		el.style.left= Math.round(bbox[0]) + 'px';
 		if (rotationCoefficient) {
 			el.style.transform = `rotate(${rotationCoefficient}deg)`
 		}
