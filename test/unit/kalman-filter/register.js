@@ -76,6 +76,49 @@ test('Check constant speed', t => {
 	t.true(equalState(corrected, stateObjective, 0.1));
 });
 
+test('Check constant acceleration', t => {
+	const previousCorrected = new State({
+		mean: [[0], [1], [1]],
+		covariance: [
+			[1, 0, 0],
+			[0, 1, 0],
+			[0, 0, 1]
+		]
+	});
+	const kf = new KalmanFilter({
+		observation: {
+			dimension: 1,
+			covariance: [[1]],
+			stateProjection: [[1, 0, 0]]
+		},
+		dynamic: {
+			name: 'constant-acceleration',
+			covariance: [
+				[1, 0, 0],
+				[0, 0.01, 0],
+				[0, 0, 0.0001]
+			],
+			timeStep: 0.1
+		}
+	});
+	const observations = [[0.11], [0.21], [0.3]];
+	const predicted = kf.predict({previousCorrected});
+	const corrected = kf.correct({predicted, observation: observations[0]});
+	// Result calculated by hand
+	const timeStep = 0.1;
+	// const stateObjective = new State({
+	// 	mean: [[timeStep + 0.006], [1]],
+	// 	covariance: [
+	// 		[0.66, 0.33 * timeStep],
+	// 		[0, 1.01]
+	// 	]
+	// });
+	t.true(predicted instanceof State);
+	t.true(corrected instanceof State);
+	// We verify that the registered model returns the good result
+	// t.true(equalState(corrected, stateObjective, 0.1));
+});
+
 test('Check sensor', t => {
 	const previousCorrected = new State({
 		mean: [[0], [1]],
