@@ -23,37 +23,28 @@
 	    padding-left: 20px;
 	    padding-right: 20px;
 		}
-		.img .boxPlainRed{
+		.img .point{
         position: absolute;
         z-index: 999;
         margin: 0 auto;
 				border: 2px solid red;
 				background-color: red;
     }
-		.img .boxPlainBlue{
-				position: absolute;
-				z-index: 999;
-				margin: 0 auto;
-				border: 2px solid blue;
-				background-color: blue;
-		}
 		.img .ellipse {
 			position: absolute;
 			z-index: 999;
 			margin: 0 auto;
-			border: 1px dotted blue;
 			border-radius: 50%;
 		}
 		.arrow {
 		  position: absolute;
 		  color: black;
-		  border-width: 6px;
+		  border-width: 4px;
 		  border-style: solid;
 		  border-bottom-color: transparent;
 		  border-left-color: transparent;
 		  display: inline-block;
 		  vertical-align: middle;
-		  color: #666;
 		  box-sizing: border-box;
 		}
 
@@ -61,7 +52,7 @@
 		    right: 0;
 		    top: -3px;
 		    position: absolute;
-		    height: 4px;
+		    height: 3px;
 		    box-shadow: inset 0 0 0 32px;
 		    transform: rotate(-45deg);
 		    width: 15px;
@@ -94,10 +85,37 @@
 </script>
 <script>
 	var KalmanFilter = require('KalmanFilter');
+	var generateNoisyObservation = require('generateNoisyObservation');
+	var calculateObservationCovariance = require ('calculateObservationCovariance');
 	const timeStep = 0.2;
 	const huge = 1;
 	const posVar = 100;
 	const sizeVar = 1;
+	const boxes = [
+		[
+			849, 294, 86, 83
+		],
+		[
+			705, 186, 101, 86
+		],
+		[
+			564, 108, 108, 109
+		],
+		[
+			427, 100, 87, 101
+		],
+		[
+			285, 132, 84, 89
+		],
+		[
+			152, 195, 84, 77
+		],
+		[
+			21, 302, 83, 83
+		]
+	];
+	console.log(calculateObservationCovariance({groundTruths: boxes}));
+	const noisyObservations = generateNoisyObservation({groundTruths: boxes})[0];
 	const defaultOptions = {
 		observation: {
 			dimension: 4,
@@ -107,7 +125,10 @@
 					[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 					[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
 				],
-			covariance: [posVar, posVar, posVar, posVar],
+			//Covariance generated thanks to getCovariance
+			covariance: calculateObservationCovariance({groundTruths: boxes})[0]
+			//covariance: [posVar, posVar, posVar, posVar],
+
 		},
 
 		dynamic: {
@@ -146,29 +167,7 @@
 	let previousCorrected;
 	let predicted = kf.predict();
 	const img = document.getElementById('bikes')
-	const boxes = [
-		[
-			849, 294, 86, 83
-		],
-		[
-			705, 186, 101, 86
-		],
-		[
-			564, 108, 108, 109
-		],
-		[
-			427, 100, 87, 101
-		],
-		[
-			285, 132, 84, 89
-		],
-		[
-			152, 195, 84, 77
-		],
-		[
-			21, 302, 83, 83
-		]
-	];
+
 	const delay = 1000;
 	let promise = Promise.resolve();
 
@@ -188,8 +187,22 @@
 		parent.append(el);
 		return el;
 	}
+	const createPoint = function({className = 'point', tag = 'div', bbox, parent, color}) {
+		const el = document.createElement(tag);
+		el.className = className;
+		if (color) {
+			el.style.border = `2px solid ${color}`,
+			el.style.backgroundColor = `${color}`
+		}
+		el.style.width= Math.round(bbox[2])+ 'px';
+		el.style.height= Math.round(bbox[3]) + 'px';
+		el.style.top= Math.round(bbox[1] -bbox[3]/2) + 'px';
+		el.style.left= Math.round(bbox[0] - bbox[2]/2) + 'px';
+		parent.append(el);
+		return el;
+	}
 
-	const createArrow = function({className, tag = 'div', bbox, parent, rotationCoefficient}) {
+	const createArrow = function({className, tag = 'div', bbox, parent, rotationCoefficient, length}) {
 		const el = document.createElement(tag);
 		el.className = className;
 		el.style.top= Math.round(bbox[1]) + 'px';
@@ -197,40 +210,75 @@
 		if (rotationCoefficient) {
 			el.style.transform = `rotate(${rotationCoefficient}deg)`
 		}
+		el.style.height = length
 		parent.append(el);
 		return el;
 	}
 
-	boxes.forEach((box, index) => {
+	const createCustomDashedLine = function({className, tag = 'div', bbox, parent, percentage}) {
+		// bbox contains 3 elements: left, top and bottom of the dashed line
+		const el = document.createElement(tag);
+		el.className = className;
+		el.style.width = 4 +'px';
+		el.style.height= Math.abs(bbox[1] - bbox[2]) + 'px';
+		el.style.top= bbox[1] + 'px';
+		el.style.left = bbox[0] + 'px'
+		el.style.backgroundImage = "url(`data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='10' stroke-dasharray='10%2c$10' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e`)"
+		parent.append(el);
+		return el;
+	}
+
+	const createGroupBoxes = function({mean, covariance, color}) {
+		const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
+		const el = createElement({
+			className: 'box',
+			bbox: [center[0], center[1], mean[2][0], mean[3][0]],
+			parent: img,
+			color,
+			lineStyle: 'solid',
+		})
+		const el2 = createElement({
+			className: 'box',
+			bbox: [
+				center[0],
+				center[1],
+				mean[2][0] + 2*3*Math.sqrt(covariance[2][2]),
+				mean[3][0] +2*3*Math.sqrt(covariance[3][3])
+			],
+			parent: img,
+			color,
+			lineStyle: 'dotted'
+		});
+		const el3 = createPoint({
+			bbox: [center[0], center[1], 2, 2],
+			parent: img,
+			color
+		});
+		const correlationXY = covariance[0][1]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[1][1]))
+		const el4 = createElement({
+			className: 'ellipse',
+			bbox: [
+				center[0],
+				center[1],
+				2*3*Math.sqrt(covariance[0][0]),
+				2*3*Math.sqrt(covariance[1][1])
+			],
+			parent: img,
+			rotationCoefficient: correlationXY,
+			color,
+			lineStyle: 'dotted'
+		});
+	}
+
+	noisyObservations.forEach((box, index) => {
 		promise = promise.then(function(b, index){
 			console.log("Predicted", predicted)
 			const {mean, covariance} = predicted;
 			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 
-			const el = createElement({
-				className: 'box',
-				bbox: [center[0], center[1], mean[2][0], mean[3][0]],
-				parent: img,
-				color: 'red',
-				lineStyle: 'solid',
-			})
-			const el2 = createElement({
-				className: 'box',
-				bbox: [
-					center[0],
-					center[1],
-					mean[2][0] + 2*3*Math.sqrt(covariance[2][2]),
-					mean[3][0] +2*3*Math.sqrt(covariance[3][3])
-				],
-				parent: img,
-				color: 'red',
-				lineStyle: 'dotted'
-			});
-			const el3 = createElement({
-				className: 'boxPlainRed',
-				bbox: [center[0], center[1], 2, 2],
-				parent: img
-			})
+			const predictedGroupBoxes = createGroupBoxes({mean, covariance, color: 'red'})
+
+
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve()
@@ -262,52 +310,32 @@
 			console.log("box", b);
 			console.log("Corrected", previousCorrected)
 			const {mean, covariance} = previousCorrected
+
+			const correctedGroupBoxes = createGroupBoxes({mean, covariance, color: 'blue'})
 			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
-			const el1 = createElement({
-				className: 'box',
-				bbox:[
-					center[0],
-					center[1],
-					mean[2][0],
-					mean[3][0]
-				],
-				parent: img,
-				color: 'blue',
-				lineStyle:'solid'
-			});
 
-			const el2 = createElement({
-				className: 'box',
-				bbox: [
-					center[0],
-					center[1],
-					mean[2][0] + 2*3*Math.sqrt(covariance[2][2]),
-					mean[3][0] +2*3*Math.sqrt(covariance[3][3])
-				],
-				parent: img,
-				color: 'blue',
-				lineStyle: 'dotted'
-			});
-
-			const el3 = createElement({
-				className: 'boxPlainBlue',
-				bbox: [
-					center[0]-1,
-					center[1]-1,
-					2,
-					2
-				],
-				parent: img
-			})
-			const correlationXY = covariance[0][1]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[1][1]))
-			const el4 = createArrow({
+			const arrowRotation = -Math.atan(mean[4][0]/mean[5][0])*180/Math.PI -45;
+			const arrowLength = Math.sqrt(mean[4][0]**2 + mean[5][0]**2);
+			const el5 = createArrow({
 				className: 'arrow',
 				bbox: [
-					center[0],
-					center[1]
+					center[0] -15,
+					center[1] -9
 				],
 				parent: img,
-				rotationCoefficient: 45
+				rotationCoefficient: arrowRotation,
+				length: arrowLength
+			})
+			const correlationXW = covariance[0][2]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[2][2]))
+			const dashedLine = createCustomDashedLine({
+				className: 'box',
+				bbox: [
+					center[0],
+					center[0] - 3*Math.sqrt(covariance[1][1]),
+					center[0] - mean[3][0]/2 - 3*Math.sqrt(covariance[3][3]),
+				],
+				parent: img,
+				percentage: Math.abs(correlationXW) * 100
 			})
 			predicted = kf.predict({previousCorrected})
 		return new Promise((resolve, reject) => {

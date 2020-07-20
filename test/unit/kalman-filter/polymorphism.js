@@ -326,9 +326,9 @@ test('Index initialization', t => {
 	});
 	const predicted1 = kf.predict();
 	const predicted2 = kf.predict({previousCorrected: firstState});
-	console.log('Index', Number.isNaN(predicted1.index))
+	console.log('Index', Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted2.index));
-	t.deepEqual(predicted1.index, 'Index key is not defined');
-	t.deepEqual(predicted2.index, 'Index key is not defined');
-})
+	t.is(predicted1.index, 'Index key is not defined');
+	t.is(predicted2.index, 'Index key is not defined');
+});
