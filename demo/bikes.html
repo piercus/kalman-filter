@@ -87,6 +87,7 @@
 	var KalmanFilter = require('KalmanFilter');
 	var generateNoisyObservation = require('generateNoisyObservation');
 	var calculateObservationCovariance = require ('calculateObservationCovariance');
+	//var url = require('url');
 	const timeStep = 0.2;
 	const huge = 1;
 	const posVar = 100;
@@ -209,21 +210,35 @@
 		el.style.left= Math.round(bbox[0]) + 'px';
 		if (rotationCoefficient) {
 			el.style.transform = `rotate(${rotationCoefficient}deg)`
+			el.style.transformOrigin = 'center left'
 		}
 		el.style.height = length
 		parent.append(el);
 		return el;
 	}
 
-	const createCustomDashedLine = function({className, tag = 'div', bbox, parent, percentage}) {
-		// bbox contains 3 elements: left, top and bottom of the dashed line
+	const createCustomDashedLine = function({className, tag = 'div', bbox, parent, color, percentage, position = 'vertical'}) {
+		// bbox contains 3 elements: left, top and bottom of the dashed line or top, left and right
 		const el = document.createElement(tag);
+		if (color) {
+			el.style.backgroundColor = color
+		}
 		el.className = className;
-		el.style.width = 4 +'px';
-		el.style.height= Math.abs(bbox[1] - bbox[2]) + 'px';
-		el.style.top= bbox[1] + 'px';
-		el.style.left = bbox[0] + 'px'
-		el.style.backgroundImage = "url(`data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='10' stroke-dasharray='10%2c$10' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e`)"
+		if (position === 'vertical') {
+			el.style.width = 1 +'px';
+			el.style.height= Math.abs(bbox[1] - bbox[2]) + 'px';
+			el.style.top= bbox[1] + 'px';
+			el.style.left = bbox[0] + 'px'
+		}
+		if (position === 'horizontal') {
+			el.style.height = 1 +'px';
+			el.style.width= Math.abs(bbox[1] - bbox[2]) + 'px';
+			el.style.left= bbox[1] + 'px';
+			el.style.top = bbox[0] + 'px'
+		}
+
+		el.style.opacity = 1-percentage
+		//el.style.backgroundImage = url(`data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='10' stroke-dasharray='10%2c${percentage}' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e`);
 		parent.append(el);
 		return el;
 	}
@@ -319,23 +334,38 @@
 			const el5 = createArrow({
 				className: 'arrow',
 				bbox: [
-					center[0] -15,
-					center[1] -9
+					center[0] - 5,
+					center[1] - 5
 				],
 				parent: img,
 				rotationCoefficient: arrowRotation,
 				length: arrowLength
 			})
-			const correlationXW = covariance[0][2]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[2][2]))
-			const dashedLine = createCustomDashedLine({
+			const correlationXW = covariance[0][2]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[2][2]));
+			console.log(correlationXW)
+			const dashedLineXW = createCustomDashedLine({
 				className: 'box',
 				bbox: [
 					center[0],
-					center[0] - 3*Math.sqrt(covariance[1][1]),
-					center[0] - mean[3][0]/2 - 3*Math.sqrt(covariance[3][3]),
+					center[1] +3*Math.sqrt(covariance[1][1]),
+					center[1] + mean[3][0]/2 +3*Math.sqrt(covariance[3][3]),
 				],
 				parent: img,
-				percentage: Math.abs(correlationXW) * 100
+				percentage: Math.abs(correlationXW),
+				color: 'black'
+			});
+			const correlationYH = covariance[1][3]/(Math.sqrt(covariance[1][1])*Math.sqrt(covariance[3][3]));
+			const dashedLineYH = createCustomDashedLine({
+				className: 'box',
+				bbox: [
+					center[1],
+					center[0] +3*Math.sqrt(covariance[0][0]),
+					center[0] + mean[2][0]/2 +3*Math.sqrt(covariance[2][2]),
+				],
+				parent: img,
+				percentage: Math.abs(correlationYH),
+				color: 'black',
+				position: 'horizontal'
 			})
 			predicted = kf.predict({previousCorrected})
 		return new Promise((resolve, reject) => {
