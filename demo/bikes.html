@@ -12,6 +12,7 @@
         position: absolute;
         z-index: 999;
         margin: 0 auto;
+				border: 1px solid white;
     }
 
 		.top-right {
@@ -28,7 +29,7 @@
         z-index: 999;
         margin: 0 auto;
 				border: 2px solid red;
-				background-color: red;
+
     }
 		.img .ellipse {
 			position: absolute;
@@ -59,6 +60,15 @@
 		    transform-origin: right top;
 		    content: "";
 		    box-sizing: border-box;
+		}
+		div.img .stdDev{
+			border-style: dotted;
+		}
+		.img .predicted .box,.img .predicted .ellipse, .img .predicted .point{
+			border-color: red;
+		}
+		.img .corrected .box,.img .corrected .ellipse, .img .corrected .point{
+			border-color: blue;
 		}
 
 
@@ -117,6 +127,8 @@
 	];
 	console.log(calculateObservationCovariance({groundTruths: boxes}));
 	const noisyObservations = generateNoisyObservation({groundTruths: boxes})[0];
+	const observationCovariance = [[35,26.857142857142858,3,24.428571428571427],[26.857142857142858,34.57142857142857,-0.2857142857142857,17.857142857142858],[3,-0.2857142857142857,33,-6.571428571428571],[24.428571428571427,17.857142857142858,-6.571428571428571,41.142857142857146]]
+	console.log(observationCovariance);
 	const defaultOptions = {
 		observation: {
 			dimension: 4,
@@ -127,7 +139,7 @@
 					[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
 				],
 			//Covariance generated thanks to getCovariance
-			covariance: calculateObservationCovariance({groundTruths: boxes})[0]
+			covariance: observationCovariance
 			//covariance: [posVar, posVar, posVar, posVar],
 
 		},
@@ -175,9 +187,9 @@
 	const createElement = function({className, tag = 'div', bbox, parent, color, lineStyle, rotationCoefficient}) {
 		const el = document.createElement(tag);
 		el.className = className;
-		if (color && lineStyle) {
-			el.style.border = `1px ${lineStyle} ${color}`
-		}
+		// if (color && lineStyle) {
+		// 	el.style.border = `1px ${lineStyle} ${color}`
+		// }
 		el.style.width= Math.round(bbox[2])+ 'px';
 		el.style.height= Math.round(bbox[3]) + 'px';
 		el.style.top= Math.round(bbox[1] -bbox[3]/2) + 'px';
@@ -191,10 +203,10 @@
 	const createPoint = function({className = 'point', tag = 'div', bbox, parent, color}) {
 		const el = document.createElement(tag);
 		el.className = className;
-		if (color) {
-			el.style.border = `2px solid ${color}`,
-			el.style.backgroundColor = `${color}`
-		}
+		// if (color) {
+		// 	el.style.border = `2px solid ${color}`,
+		// 	el.style.backgroundColor = `${color}`
+		// }
 		el.style.width= Math.round(bbox[2])+ 'px';
 		el.style.height= Math.round(bbox[3]) + 'px';
 		el.style.top= Math.round(bbox[1] -bbox[3]/2) + 'px';
@@ -210,7 +222,7 @@
 		el.style.left= Math.round(bbox[0]) + 'px';
 		if (rotationCoefficient) {
 			el.style.transform = `rotate(${rotationCoefficient}deg)`
-			el.style.transformOrigin = 'center left'
+			el.style.transformOrigin = "-5px 12px"
 		}
 		el.style.height = length
 		parent.append(el);
@@ -220,9 +232,9 @@
 	const createCustomDashedLine = function({className, tag = 'div', bbox, parent, color, percentage, position = 'vertical'}) {
 		// bbox contains 3 elements: left, top and bottom of the dashed line or top, left and right
 		const el = document.createElement(tag);
-		if (color) {
-			el.style.backgroundColor = color
-		}
+		// if (color) {
+		// 	el.style.backgroundColor = color
+		// }
 		el.className = className;
 		if (position === 'vertical') {
 			el.style.width = 1 +'px';
@@ -237,52 +249,71 @@
 			el.style.top = bbox[0] + 'px'
 		}
 
-		el.style.opacity = 1-percentage
-		//el.style.backgroundImage = url(`data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='black' stroke-width='10' stroke-dasharray='10%2c${percentage}' stroke-dashoffset='0' stroke-linecap='round'/%3e%3c/svg%3e`);
+		//el.style.opacity = 1-percentage
+		const urlString = `data:image/svg+xml,%3csvg `+
+			`width='100%25' `+
+			`height='100%25' `+
+			`xmlns='http://www.w3.org/2000/svg'%3e%3crect `+
+			`width='100%25' `+
+			`height='100%25' `+
+			`fill='none' `+
+			`stroke='black' `+
+			`stroke-width='4' `+
+			`stroke-dasharray='10%2c${Math.floor(percentage*100)}' `+
+			`stroke-dashoffset='0' `+
+			`stroke-linecap='round'/%3e%3c/svg%3e`;
+
+		const backgroundImage1 = `url("${urlString}")`;
+
+		// const backgroundImage2 = "url(\"data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23333' stroke-width='4' stroke-dasharray='10%2c20' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e\")"
+		// console.log(backgroundImage1, backgroundImage2, backgroundImage1===backgroundImage2)
+		el.style.backgroundImage = backgroundImage1 ;
 		parent.append(el);
 		return el;
 	}
 
-	const createGroupBoxes = function({mean, covariance, color}) {
+	const createGroupBoxes = function({mean, covariance, color, parent, className}) {
+		const container = document.createElement('div');
+		container.className = className;
 		const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 		const el = createElement({
 			className: 'box',
 			bbox: [center[0], center[1], mean[2][0], mean[3][0]],
-			parent: img,
+			parent: container,
 			color,
 			lineStyle: 'solid',
 		})
 		const el2 = createElement({
-			className: 'box',
+			className: 'box stdDev',
 			bbox: [
 				center[0],
 				center[1],
 				mean[2][0] + 2*3*Math.sqrt(covariance[2][2]),
 				mean[3][0] +2*3*Math.sqrt(covariance[3][3])
 			],
-			parent: img,
+			parent: container,
 			color,
-			lineStyle: 'dotted'
 		});
 		const el3 = createPoint({
 			bbox: [center[0], center[1], 2, 2],
-			parent: img,
+			parent: container,
 			color
 		});
 		const correlationXY = covariance[0][1]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[1][1]))
 		const el4 = createElement({
-			className: 'ellipse',
+			className: 'ellipse stdDev',
 			bbox: [
 				center[0],
 				center[1],
 				2*3*Math.sqrt(covariance[0][0]),
 				2*3*Math.sqrt(covariance[1][1])
 			],
-			parent: img,
+			parent: container,
 			rotationCoefficient: correlationXY,
-			color,
-			lineStyle: 'dotted'
+			color
 		});
+		parent.appendChild(container);
+		return container;
 	}
 
 	noisyObservations.forEach((box, index) => {
@@ -291,7 +322,7 @@
 			const {mean, covariance} = predicted;
 			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 
-			const predictedGroupBoxes = createGroupBoxes({mean, covariance, color: 'red'})
+			const predictedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "predicted"})
 
 
 			return new Promise((resolve, reject) => {
@@ -326,7 +357,7 @@
 			console.log("Corrected", previousCorrected)
 			const {mean, covariance} = previousCorrected
 
-			const correctedGroupBoxes = createGroupBoxes({mean, covariance, color: 'blue'})
+			const correctedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "corrected"})
 			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 
 			const arrowRotation = -Math.atan(mean[4][0]/mean[5][0])*180/Math.PI -45;
@@ -334,15 +365,14 @@
 			const el5 = createArrow({
 				className: 'arrow',
 				bbox: [
-					center[0] - 5,
-					center[1] - 5
+					center[0]+6,
+					center[1] -9
 				],
 				parent: img,
 				rotationCoefficient: arrowRotation,
 				length: arrowLength
 			})
 			const correlationXW = covariance[0][2]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[2][2]));
-			console.log(correlationXW)
 			const dashedLineXW = createCustomDashedLine({
 				className: 'box',
 				bbox: [
