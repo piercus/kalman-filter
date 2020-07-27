@@ -14,7 +14,11 @@
         margin: 0 auto;
 				border: 1px solid white;
     }
-
+		.img .dashedLine{
+        position: absolute;
+        z-index: 999;
+        margin: 0 auto;
+    }
 		.top-right {
 			position: absolute;
 			top: 20px;
@@ -37,9 +41,8 @@
 			margin: 0 auto;
 			border-radius: 50%;
 		}
-		.arrow {
+		.img .arrow {
 		  position: absolute;
-		  color: black;
 		  border-width: 4px;
 		  border-style: solid;
 		  border-bottom-color: transparent;
@@ -49,7 +52,7 @@
 		  box-sizing: border-box;
 		}
 
-		.arrow:before{
+		.img .arrow:before{
 		    right: 0;
 		    top: -3px;
 		    position: absolute;
@@ -65,10 +68,10 @@
 			border-style: dotted;
 		}
 		.img .predicted .box,.img .predicted .ellipse, .img .predicted .point{
-			border-color: red;
+			border-color: blue;
 		}
 		.img .corrected .box,.img .corrected .ellipse, .img .corrected .point{
-			border-color: blue;
+			border-color: red;
 		}
 
 
@@ -80,20 +83,45 @@
     <div class="img" id='bikes'>
         <img src="https://www.simply.science/images/content/physics/mechanics/kinematics/Concept_map/image1.gif">
 				<div class="top-right">
-					<h4 style="color: red;"> Prediction
+					<h4 style="color: blue;"> Prediction
 					</h4>
 					<h4 style="color: white;"> Observation
 					</h4>
-					<h4 style="color: blue;"> Correction
+					<h4 style="color: red;"> Correction
 					</h4>
 				</div>
 				<div class="arrow">
 				</div>
     </div>
+
+		<!-- <div class="C selectt">
+          <strong>C</strong>
+          is a procedural programming language</div>
+        <div class="Cplus selectt">
+          <strong>C++</strong>
+          is a general purpose programming language</div>
+        <div class="Python selectt">
+          <strong>Python</strong>
+          is a widely used general-purpose, high level
+          programming language.</div> -->
+
+	  <input type="checkbox" id="checkbox1" name="prediction" value="Prediction" onlick="predict();">
+	  <label for="checkbox1"> Prediction </label><br>
+	  <input type="checkbox" id="checkbox2" name="observation" value="Observation">
+	  <label for="checkbox2"> Observation </label><br>
+	  <input type="checkbox" id="checkbox3" name="correction" value="Correction">
+	  <label for="checkbox3"> Correction </label><br><br>
+	  <input id="clickMe" type="button" value="Run Kalman Filter" onclick="run();" />
+		<input type="button" value="Stop" onclick="stop()">
+
 </body>
 <script src="kalman-filter.js">
 </script>
 <script>
+
+
+
+const run = function() {
 	var KalmanFilter = require('KalmanFilter');
 	var generateNoisyObservation = require('generateNoisyObservation');
 	var calculateObservationCovariance = require ('calculateObservationCovariance');
@@ -215,7 +243,7 @@
 		return el;
 	}
 
-	const createArrow = function({className, tag = 'div', bbox, parent, rotationCoefficient, length}) {
+	const createArrow = function({className, tag = 'div', bbox, parent, rotationCoefficient, scale, color}) {
 		const el = document.createElement(tag);
 		el.className = className;
 		el.style.top= Math.round(bbox[1]) + 'px';
@@ -224,12 +252,13 @@
 			el.style.transform = `rotate(${rotationCoefficient}deg)`
 			el.style.transformOrigin = "-5px 12px"
 		}
-		el.style.height = length
+		el.style.scale = scale;
+		el.style.color = color;
 		parent.append(el);
 		return el;
 	}
 
-	const createCustomDashedLine = function({className, tag = 'div', bbox, parent, color, percentage, position = 'vertical'}) {
+	const createCustomDashedLine = function({className, tag = 'div', bbox, parent, color, percentage, position = 'vertical', scale}) {
 		// bbox contains 3 elements: left, top and bottom of the dashed line or top, left and right
 		const el = document.createElement(tag);
 		// if (color) {
@@ -257,7 +286,7 @@
 			`width='100%25' `+
 			`height='100%25' `+
 			`fill='none' `+
-			`stroke='black' `+
+			`stroke='${color}' `+
 			`stroke-width='4' `+
 			`stroke-dasharray='10%2c${Math.floor(percentage*100)}' `+
 			`stroke-dashoffset='0' `+
@@ -312,17 +341,71 @@
 			rotationCoefficient: correlationXY,
 			color
 		});
+		const correlationXW = covariance[0][2]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[2][2]));
+		const dashedLineXW = createCustomDashedLine({
+			className: 'dashedLine',
+			bbox: [
+				center[0],
+				center[1] +3*Math.sqrt(covariance[1][1]),
+				center[1] + mean[3][0]/2 +3*Math.sqrt(covariance[3][3]),
+			],
+			parent: container,
+			percentage: Math.abs(correlationXW),
+			color
+		});
+		const correlationYH = covariance[1][3]/(Math.sqrt(covariance[1][1])*Math.sqrt(covariance[3][3]));
+		const dashedLineYH = createCustomDashedLine({
+			className: 'dashedLine',
+			bbox: [
+				center[1],
+				center[0] +3*Math.sqrt(covariance[0][0]),
+				center[0] + mean[2][0]/2 +3*Math.sqrt(covariance[2][2]),
+			],
+			parent: container,
+			percentage: Math.abs(correlationYH),
+			position: 'horizontal',
+			color
+		});
+		const arrowRotation = -Math.atan(mean[4][0]/mean[5][0])*180/Math.PI -45;
+		const arrowScale = Math.sqrt(mean[4][0]**2 + mean[5][0]**2);
+		const el5 = createArrow({
+			className: 'arrow',
+			bbox: [
+				center[0]+6,
+				center[1] -9
+			],
+			parent: img,
+			rotationCoefficient: arrowRotation,
+			scale: arrowScale
+		})
 		parent.appendChild(container);
 		return container;
 	}
 
-	noisyObservations.forEach((box, index) => {
+	const showPrediction = function() {
+		promise = promise.then(function(b, index){
+		const {mean, covariance} = predicted;
+		const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
+
+		const predictedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "predicted", color: 'blue'})
+
+
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				resolve()
+			}, delay);
+		})
+	}.bind(null, box, index))
+
+}
+
+		noisyObservations.forEach((box, index) => {
 		promise = promise.then(function(b, index){
 			console.log("Predicted", predicted)
 			const {mean, covariance} = predicted;
 			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 
-			const predictedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "predicted"})
+			const predictedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "predicted", color: 'blue'})
 
 
 			return new Promise((resolve, reject) => {
@@ -357,46 +440,9 @@
 			console.log("Corrected", previousCorrected)
 			const {mean, covariance} = previousCorrected
 
-			const correctedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "corrected"})
-			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
+			const correctedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "corrected", color: 'red'})
+			//const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 
-			const arrowRotation = -Math.atan(mean[4][0]/mean[5][0])*180/Math.PI -45;
-			const arrowLength = Math.sqrt(mean[4][0]**2 + mean[5][0]**2);
-			const el5 = createArrow({
-				className: 'arrow',
-				bbox: [
-					center[0]+6,
-					center[1] -9
-				],
-				parent: img,
-				rotationCoefficient: arrowRotation,
-				length: arrowLength
-			})
-			const correlationXW = covariance[0][2]/(Math.sqrt(covariance[0][0])*Math.sqrt(covariance[2][2]));
-			const dashedLineXW = createCustomDashedLine({
-				className: 'box',
-				bbox: [
-					center[0],
-					center[1] +3*Math.sqrt(covariance[1][1]),
-					center[1] + mean[3][0]/2 +3*Math.sqrt(covariance[3][3]),
-				],
-				parent: img,
-				percentage: Math.abs(correlationXW),
-				color: 'black'
-			});
-			const correlationYH = covariance[1][3]/(Math.sqrt(covariance[1][1])*Math.sqrt(covariance[3][3]));
-			const dashedLineYH = createCustomDashedLine({
-				className: 'box',
-				bbox: [
-					center[1],
-					center[0] +3*Math.sqrt(covariance[0][0]),
-					center[0] + mean[2][0]/2 +3*Math.sqrt(covariance[2][2]),
-				],
-				parent: img,
-				percentage: Math.abs(correlationYH),
-				color: 'black',
-				position: 'horizontal'
-			})
 			predicted = kf.predict({previousCorrected})
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
@@ -405,6 +451,7 @@
 		})
 	}.bind(null, box, index))
 	})
+}
 
 
 

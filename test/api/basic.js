@@ -4,8 +4,8 @@ const test = require('ava');
 
 const KalmanFilter = require('../../lib/kalman-filter.js');
 const State = require('../../lib/state.js');
-// Const getCovariance = require('../../lib/utils/get-covariance.js');
-
+// const getCovariance = require('../../lib/utils/get-covariance.js');
+const identity = require('../../lib/linalgebra/identity.js')
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 test('Constant-position on 2D Data', t => {
@@ -43,7 +43,8 @@ test('Constant-speed on 3D Data', t => {
 			[0, 0, 0, 0.01, 0, 0],
 			[0, 0, 0, 0, 0.01, 0],
 			[0, 0, 0, 0, 0, 0.01]
-		]
+		],
+		index: 1
 	});
 	const kFilter = new KalmanFilter({
 		observation: {
@@ -86,40 +87,40 @@ test('Constant-speed on 3D Data', t => {
 	t.deepEqual(kFilter2.predict({previousCorrected}), kFilter.predict({previousCorrected}));
 });
 
-// Test('Constant acceleration on 2D Data', t => {
-// 	const kFilter = new KalmanFilter({
-// 		observation: {
-// 			sensorDimension: 2,
-// 			name: 'sensors'
-// 		},
-// 		dynamic: {
-// 			name: 'constant-acceleration', // Observation.sensorDimension * 3 == state.dimension
-// 			timeStep: 0.1,
-// 			covariance: [3, 3, 4, 4, 5, 5]// Equivalent to diag([3, 3, 4, 4, 5, 5])
-// 		}
-// 	});
-// 	const previousCorrected = new State({
-// 		mean: [[100], [100], [10], [10], [0], [0]],
-// 		covariance: [
-// 			[1, 0, 0, 0, 0, 0],
-// 			[0, 1, 0, 0, 0, 0],
-// 			[0, 0, 0.01, 0, 0, 0],
-// 			[0, 0, 0, 0.01, 0, 0],
-// 			[0, 0, 0, 0, 0.0001, 0],
-// 			[0, 0, 0, 0, 0, 0.0001]
-// 		]
-// 	});
-// 	const obs = [[102], [101]];
-// 	const predicted = kFilter.predict({previousCorrected});
-// 	const corrected = kFilter.correct({
-// 		predicted,
-// 		observation: obs
-// 	});
-// 	t.true(predicted instanceof State);
-// 	t.is(predicted.mean.length, 6);
-// 	t.true(corrected instanceof State);
-// 	t.is(corrected.mean.length, 6);
-// });
+test('Constant acceleration on 2D Data', t => {
+	const kFilter = new KalmanFilter({
+		observation: {
+			sensorDimension: 2,
+			name: 'sensors'
+		},
+		dynamic: {
+			name: 'constant-acceleration', // Observation.sensorDimension * 3 == state.dimension
+			timeStep: 0.1,
+			covariance: [3, 3, 4, 4, 5, 5]// Equivalent to diag([3, 3, 4, 4, 5, 5])
+		}
+	});
+	const previousCorrected = new State({
+		mean: [[100], [100], [10], [10], [0], [0]],
+		covariance: [
+			[1, 0, 0, 0, 0, 0],
+			[0, 1, 0, 0, 0, 0],
+			[0, 0, 0.01, 0, 0, 0],
+			[0, 0, 0, 0.01, 0, 0],
+			[0, 0, 0, 0, 0.0001, 0],
+			[0, 0, 0, 0, 0, 0.0001]
+		]
+	});
+	const obs = [[102], [101]];
+	const predicted = kFilter.predict({previousCorrected});
+	const corrected = kFilter.correct({
+		predicted,
+		observation: obs
+	});
+	t.true(predicted instanceof State);
+	t.is(predicted.mean.length, 6);
+	t.true(corrected instanceof State);
+	t.is(corrected.mean.length, 6);
+});
 
 test('Sensor observation', t => {
 	const kFilter = new KalmanFilter({
@@ -176,7 +177,7 @@ test('Simple Batch Usage', t => {
 	t.is(results.length, 4);
 });
 
-// Test('getCovariance', t => {
+// test('getCovariance', t => {
 //
 // 	// Ground truth values in the dynamic model hidden state
 // 	const groundTruthStates = [ // Here this is (x, vx)
@@ -190,7 +191,7 @@ test('Simple Batch Usage', t => {
 // 		[[8.1], [9.3], [10.4], [10.6], [11.8]] // Example 2
 // 	];
 //
-// 	const kFilter = new KalmanFilter({
+// 	let kFilter = new KalmanFilter({
 // 		observation: {
 // 			name: 'sensors',
 // 			sensorDimension: 1
@@ -199,11 +200,16 @@ test('Simple Batch Usage', t => {
 // 			name: 'constant-speed'
 // 		}
 // 	});
-//
 // 	const dynamicCovariance = getCovariance({
 // 		measures: groundTruthStates.map(ex => {
 // 			return ex.slice(1).map((_, index) => {
-// 				return kFilter.predict({previousCorrected: new State({mean: ex[index - 1]})});
+// 				console.log('mean', ex[0]);
+// 				console.log('covariance', identity(groundTruthStates[0][0].length))
+// 				const previousCorrected = new State({
+// 					mean: ex[index],
+// 					covariance: identity(groundTruthStates[0][0].length)
+// 				});
+// 				return kFilter.predict({previousCorrected}).mean;
 // 			});
 // 		}).reduce((a, b) => a.concat(b)),
 // 		averages: groundTruthStates.map(ex => {
@@ -216,8 +222,18 @@ test('Simple Batch Usage', t => {
 // 		averages: groundTruthStates.map(a => a[0]).reduce((a, b) => a.concat(b))
 // 	});
 //
+// 	kFilter = Object.assign({}, kFilter, {
+// 		observation: {
+// 			covariance: observationCovariance
+// 		},
+// 		dynamic: {
+// 			covariance: dynamicCovariance
+// 		}
+// 	})
+// 	const predicted = kFilter.predict();
 // 	t.is(observationCovariance.length, 1);
 // 	t.is(dynamicCovariance.length, 2);
+// 	t.is(predcited instanceof State);
 // });
 
 // test('Model fits ', t => {
