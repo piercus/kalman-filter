@@ -14,6 +14,12 @@
         margin: 0 auto;
 				border: 1px solid white;
     }
+		.img .observation{
+        position: absolute;
+        z-index: 999;
+        margin: 0 auto;
+				border: 1px solid white;
+    }
 		.img .dashedLine{
         position: absolute;
         z-index: 999;
@@ -82,7 +88,7 @@
 <body>
     <div class="img" id='bikes'>
         <img src="https://www.simply.science/images/content/physics/mechanics/kinematics/Concept_map/image1.gif">
-				<div class="top-right">
+				<div class="top-right" id='legend'>
 					<h4 style="color: blue;"> Prediction
 					</h4>
 					<h4 style="color: white;"> Observation
@@ -90,36 +96,56 @@
 					<h4 style="color: red;"> Correction
 					</h4>
 				</div>
-				<div class="arrow">
-				</div>
     </div>
 
-		<!-- <div class="C selectt">
-          <strong>C</strong>
-          is a procedural programming language</div>
-        <div class="Cplus selectt">
-          <strong>C++</strong>
-          is a general purpose programming language</div>
-        <div class="Python selectt">
-          <strong>Python</strong>
-          is a widely used general-purpose, high level
-          programming language.</div> -->
-
-	  <input type="checkbox" id="checkbox1" name="prediction" value="Prediction" onlick="predict();">
-	  <label for="checkbox1"> Prediction </label><br>
-	  <input type="checkbox" id="checkbox2" name="observation" value="Observation">
-	  <label for="checkbox2"> Observation </label><br>
-	  <input type="checkbox" id="checkbox3" name="correction" value="Correction">
-	  <label for="checkbox3"> Correction </label><br><br>
 	  <input id="clickMe" type="button" value="Run Kalman Filter" onclick="run();" />
-		<input type="button" value="Stop" onclick="stop()">
+		<input type="button" value="Stop" >
+		<input id="clickMe" type="button" value="Show/Hide Predictions" onclick="showHide('predicted');" />
+		<input id="clickMe" type="button" value="Show/Hide Observations" onclick="showHide('observation');" />
+		<input id="clickMe" type="button" value="Show/Hide Corrections" onclick="showHide('corrected');" />
+
+		<input type="checkbox"  id="speedVectors" onclick="show('speedVectors', 'arrow');">
+	  <label for="checkbox1"> Speed Vectors </label>
+		<input type="checkbox"  id="Variances" onclick="show('Variances', 'stdDev');">
+	  <label for="checkbox1"> Variances </label>
+		<input type="checkbox"  id="Covariances" onclick="show('Covariances', 'dashedLine');">
+	  <label for="checkbox1"> Covariances </label>
 
 </body>
 <script src="kalman-filter.js">
 </script>
 <script>
+//
+// const btn = document.querySelector('button');
 
+const showHide = function(id) {
+	const allCorrections = document.getElementById("bikes").getElementsByClassName(id);
+	for (let i=0; i<allCorrections.length; i++){
+		if (allCorrections[i].style.display === "none"){
+			allCorrections[i].style.display = "block";
+		}
+		else {
+			allCorrections[i].style.display = "none";
+		}
+	}
+}
 
+const show = function(checkBoxId, id) {
+	var checkBox = document.getElementById(checkBoxId);
+	const allVectors = document.getElementById("bikes").getElementsByClassName(id);
+	for (let i=0; i<allVectors.length; i++){
+		if (checkBox.checked === true){
+			allVectors[i].style.display = "block";
+		}
+		else {
+			allVectors[i].style.display = "none";
+		}
+	}
+};
+
+</script>
+</script>
+<script>
 
 const run = function() {
 	var KalmanFilter = require('KalmanFilter');
@@ -205,16 +231,17 @@ const run = function() {
 	};
 
 	const kf = new KalmanFilter(defaultOptions);
-	let previousCorrected;
-	let predicted = kf.predict();
+	let previousCorrected = null;
+	let predicted = kf.predict({previousCorrected});
 	const img = document.getElementById('bikes')
 
 	const delay = 1000;
 	let promise = Promise.resolve();
 
-	const createElement = function({className, tag = 'div', bbox, parent, color, lineStyle, rotationCoefficient}) {
+	const createElement = function({id, className, tag = 'div', bbox, parent, color, lineStyle, rotationCoefficient}) {
 		const el = document.createElement(tag);
 		el.className = className;
+		el.id = id;
 		// if (color && lineStyle) {
 		// 	el.style.border = `1px ${lineStyle} ${color}`
 		// }
@@ -245,6 +272,7 @@ const run = function() {
 
 	const createArrow = function({className, tag = 'div', bbox, parent, rotationCoefficient, scale, color}) {
 		const el = document.createElement(tag);
+		el.id = 'arrow';
 		el.className = className;
 		el.style.top= Math.round(bbox[1]) + 'px';
 		el.style.left= Math.round(bbox[0]) + 'px';
@@ -301,8 +329,11 @@ const run = function() {
 		return el;
 	}
 
-	const createGroupBoxes = function({mean, covariance, color, parent, className}) {
-		const container = document.createElement('div');
+	// Create all the elements of the prediction or correction phase
+
+	const createGroupBoxes = function({mean, covariance, color, parent, className, tag='div'}) {
+		const container = document.createElement(tag);
+
 		container.className = className;
 		const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 		const el = createElement({
@@ -374,34 +405,19 @@ const run = function() {
 				center[0]+6,
 				center[1] -9
 			],
-			parent: img,
+			parent: container,
 			rotationCoefficient: arrowRotation,
-			scale: arrowScale
-		})
+			scale: arrowScale,
+			color
+		});
+		container.style.display = "none";
 		parent.appendChild(container);
-		return container;
+
 	}
-
-	const showPrediction = function() {
-		promise = promise.then(function(b, index){
-		const {mean, covariance} = predicted;
-		const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
-
-		const predictedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "predicted", color: 'blue'})
-
-
-		return new Promise((resolve, reject) => {
-			setTimeout(() => {
-				resolve()
-			}, delay);
-		})
-	}.bind(null, box, index))
-
-}
 
 		noisyObservations.forEach((box, index) => {
 		promise = promise.then(function(b, index){
-			console.log("Predicted", predicted)
+			predicted = kf.predict({previousCorrected})
 			const {mean, covariance} = predicted;
 			const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
 
@@ -416,7 +432,7 @@ const run = function() {
 		}.bind(null, box, index))
 		.then(function(b, index){
 			const el = createElement({
-				className: 'box',
+				className: 'observation',
 				bbox: [
 					b[0] +b[2]/2,
 					b[1] +b[3]/2,
@@ -436,14 +452,11 @@ const run = function() {
 		}.bind(null, box, index))
 		.then(function(b, index){
 			previousCorrected = kf.correct({predicted, observation: b});
-			console.log("box", b);
-			console.log("Corrected", previousCorrected)
 			const {mean, covariance} = previousCorrected
 
-			const correctedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "corrected", color: 'red'})
-			//const center = [mean[0][0] + mean[2][0]/2, mean[1][0] + mean[3][0]/2];
+			const correctedGroupBoxes = createGroupBoxes({mean, covariance, parent: img, className: "corrected", color: 'red'});
 
-			predicted = kf.predict({previousCorrected})
+			// predicted = kf.predict({previousCorrected});
 		return new Promise((resolve, reject) => {
 			setTimeout(() => {
 				resolve()
@@ -456,5 +469,6 @@ const run = function() {
 
 
 </script>
+
 
 </html>
