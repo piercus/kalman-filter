@@ -54,7 +54,7 @@
     "browserify": "^16.5.2",
     "cholesky": "^1.2.0",
     "hasard": "^1.6.1",
-    "semantic-release": "^17.0.8",
+    "semantic-release": "^17.1.1",
     "xo": "^0.32.0"
   },
   "dependencies": {
