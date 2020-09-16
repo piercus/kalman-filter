@@ -1,3 +1,5 @@
+![Kalman Filter Gif](./demo/demo.gif)
+
 # kalman-filter
 
 [Kalman Filter](https://en.wikipedia.org/wiki/Kalman_filter) in JavaScript
