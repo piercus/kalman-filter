@@ -5,11 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "xo && ava",
+    "semantic-release": "semantic-release",
     "build-demo": "browserify -d -r ./demo/src/main.js:main > demo/dist/demo.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/piercus/kalman-filter.git"
+  },
+  "release": {
+    "branches": ["master"]
   },
   "keywords": [
     "kalman",
