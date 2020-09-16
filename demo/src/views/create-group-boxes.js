@@ -82,6 +82,5 @@ module.exports = function ({mean, covariance, color, parent, className, tag = 'd
 		scale: arrowScale,
 		color
 	});
-	container.style.display = 'none';
 	parent.append(container);
 };

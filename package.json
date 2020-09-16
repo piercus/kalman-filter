@@ -4,7 +4,8 @@
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
   "main": "index.js",
   "scripts": {
-    "test": "xo && ava test/unit/kalman-filter/*"
+    "test": "xo && ava test/unit/kalman-filter/*",
+    "build-demo": "browserify -d -r ./demo/src/main.js:main > demo/dist/demo.js"
   },
   "repository": {
     "type": "git",
@@ -59,6 +60,7 @@
     "matrix-inverse": "^1.0.1"
   },
   "xo": {
+    "ignores": ["./demo/dist/**"],
     "rules": {
       "no-multi-assign": 0,
       "unicorn/no-reduce": 0,

@@ -3,85 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <title>Kalman Filter Demo on Bike Image</title>
-<style>
-    .img{
-        position: relative;
-        display: inline-block; /* Make the width of box same as image */
-    }
-    .img .box{
-        position: absolute;
-        z-index: 999;
-        margin: 0 auto;
-				border: 1px solid white;
-    }
-		.img .observation{
-        position: absolute;
-        z-index: 999;
-        margin: 0 auto;
-				border: 1px solid white;
-    }
-		.img .dashedLine{
-        position: absolute;
-        z-index: 999;
-        margin: 0 auto;
-    }
-		.top-right {
-			position: absolute;
-			top: 20px;
-	    right: 20px;
-	    background-color: grey;
-	    color: white;
-	    padding-left: 20px;
-	    padding-right: 20px;
-		}
-		.img .point{
-        position: absolute;
-        z-index: 999;
-        margin: 0 auto;
-				border: 2px solid red;
-
-    }
-		.img .ellipse {
-			position: absolute;
-			z-index: 999;
-			margin: 0 auto;
-			border-radius: 50%;
-		}
-		.img .arrow {
-		  position: absolute;
-		  border-width: 4px;
-		  border-style: solid;
-		  border-bottom-color: transparent;
-		  border-left-color: transparent;
-		  display: inline-block;
-		  vertical-align: middle;
-		  box-sizing: border-box;
-		}
-
-		.img .arrow:before{
-		    right: 0;
-		    top: -3px;
-		    position: absolute;
-		    height: 3px;
-		    box-shadow: inset 0 0 0 32px;
-		    transform: rotate(-45deg);
-		    width: 15px;
-		    transform-origin: right top;
-		    content: "";
-		    box-sizing: border-box;
-		}
-		div.img .stdDev{
-			border-style: dotted;
-		}
-		.img .predicted .box,.img .predicted .ellipse, .img .predicted .point{
-			border-color: blue;
-		}
-		.img .corrected .box,.img .corrected .ellipse, .img .corrected .point{
-			border-color: red;
-		}
-
-
-</style>
+<link rel="stylesheet" type="text/css" href="./style.css">
 
 
 </head>
@@ -97,53 +19,59 @@
 					</h4>
 				</div>
     </div>
+    <div class="controls" id='controls'>
+  	  <input id="clickMe" type="button" value="Run Kalman Filter" onclick="run();" />
+  		<input type="button" value="Stop" >
+  		<input id="clickMe" type="button" value="Show/Hide Predictions" onclick="showHide('predicted');" />
+  		<input id="clickMe" type="button" value="Show/Hide Observations" onclick="showHide('observation');" />
+  		<input id="clickMe" type="button" value="Show/Hide Corrections" onclick="showHide('corrected');" />
 
-	  <input id="clickMe" type="button" value="Run Kalman Filter" onclick="run();" />
-		<input type="button" value="Stop" >
-		<input id="clickMe" type="button" value="Show/Hide Predictions" onclick="showHide('predicted');" />
-		<input id="clickMe" type="button" value="Show/Hide Observations" onclick="showHide('observation');" />
-		<input id="clickMe" type="button" value="Show/Hide Corrections" onclick="showHide('corrected');" />
+  		<input type="checkbox"  id="speedVectors" onclick="showHide('speedVectors');">
+  	  <label for="checkbox1"> Speed Vectors </label>
+  		<input type="checkbox"  id="Variances" onclick="showHide('variances');" checked="checked">
+  	  <label for="checkbox1"> Variances </label>
+  		<input type="checkbox"  id="Covariances" onclick="showHide('covariances');">
+  	  <label for="checkbox1"> Covariances </label>
+    </div>
 
-		<input type="checkbox"  id="speedVectors" onclick="show('speedVectors', 'arrow');">
-	  <label for="checkbox1"> Speed Vectors </label>
-		<input type="checkbox"  id="Variances" onclick="show('Variances', 'stdDev');">
-	  <label for="checkbox1"> Variances </label>
-		<input type="checkbox"  id="Covariances" onclick="show('Covariances', 'dashedLine');">
-	  <label for="checkbox1"> Covariances </label>
 
 </body>
-<script src="kalman-filter.js"></script>
+<script src="dist/demo.js"></script>
+
 <script>
 //
 // const btn = document.querySelector('button');
-
-const showHide = function(id) {
-	const allCorrections = document.getElementById("bikes").getElementsByClassName(id);
-	for (let i=0; i<allCorrections.length; i++){
-		if (allCorrections[i].style.display === "none"){
-			allCorrections[i].style.display = "block";
-		}
-		else {
-			allCorrections[i].style.display = "none";
-		}
-	}
-}
-
-const show = function(checkBoxId, id) {
-	var checkBox = document.getElementById(checkBoxId);
-	const allVectors = document.getElementById("bikes").getElementsByClassName(id);
-	for (let i=0; i<allVectors.length; i++){
-		if (checkBox.checked === true){
-			allVectors[i].style.display = "block";
-		}
-		else {
-			allVectors[i].style.display = "none";
-		}
-	}
+const status = {
+  'predicted': false,
+  'observation': true,
+  'corrected': true,
+  'speedVectors': false,
+  'variances': true,
+  'covariances': false
 };
+const removeClass = function(el, className) {
+  el.classList.remove(className);
+};
+const addClass = function(el, className) {
+  el.classList.add(className);
+};
+const showHide = function(id) {
+  const toRemove = status[id] ? id : 'not-'+id;
+  const toAdd = !(status[id]) ? id : 'not-'+id;
+  
+	removeClass(document.getElementById("bikes"), toRemove);
+  addClass(document.getElementById("bikes"), toAdd);
+  status[id] = !(status[id]) 
+}
+Object.keys(status).forEach(k => {
+  showHide(k)
+  showHide(k)
+})
 
+const run = function(){
+  require('main').run()
+}
 </script>
-<script src="main.js"></script>
 
 
 </html>

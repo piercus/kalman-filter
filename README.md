@@ -12,9 +12,7 @@ This library implements following features:
 
 ## Demo
 
-see `./demo` folder
-
-Regenerate demo using `browserify -r ./lib/kalman-filter.js:KalmanFilter -r ./script/demo/generate-noisy-observation.js:generateNoisyObservation -r ./script/demo/calculate-observation-covariance.js:calculateObservationCovariance > demo/kalman-filter.js`
+See a demo in the web browser [here](http://piercus.github.io/kalman-filter)
 
 ## Installation
 

@@ -1,4 +1,5 @@
-var generateNoisyObservation = require('./helpers/generate-noisy-observation');
+const generateNoisyObservation = require('./helpers/generate-noisy-observation');
+const calculateObservationCovariance = require('./helpers/calculate-observation-covariance');
 const fs = require('fs');
 
 const boxes = [
@@ -25,5 +26,9 @@ const boxes = [
 	]
 ];
 
-const noisyObservations = generateNoisyObservation({groundTruths: boxes});
-fs.writeFileSync('./demo/observations.json', JSON.stringify({observations: noisyObservations}));
+const noisyObservations = generateNoisyObservation({groundTruths: boxes})[0];
+fs.writeFileSync('./demo/src/observations.json', JSON.stringify({observations: noisyObservations}));
+
+const observationCovariance = calculateObservationCovariance({groundTruths: boxes, numberRun: 10});
+
+fs.writeFileSync('./demo/src/observation-covariance.json', JSON.stringify(observationCovariance));

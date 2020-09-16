@@ -4,8 +4,7 @@ const test = require('ava');
 
 const KalmanFilter = require('../../lib/kalman-filter.js');
 const State = require('../../lib/state.js');
-// const getCovariance = require('../../lib/utils/get-covariance.js');
-const identity = require('../../lib/linalgebra/identity.js')
+// Const getCovariance = require('../../lib/utils/get-covariance.js');
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 test('Constant-position on 2D Data', t => {
@@ -177,97 +176,38 @@ test('Simple Batch Usage', t => {
 	t.is(results.length, 4);
 });
 
-// test('getCovariance', t => {
-//
-// 	// Ground truth values in the dynamic model hidden state
-// 	const groundTruthStates = [ // Here this is (x, vx)
-// 		[[0, 1.1], [1.1, 1], [2.1, 0.9], [3, 1], [4, 1.2]], // Example 1
-// 		[[8, 1.1], [9.1, 1], [10.1, 0.9], [11, 1], [12, 1.2]] // Example 2
-// 	];
-//
-// 	// Observations of this values
-// 	const measures = [ // Here this is x only
-// 		[[0.1], [1.3], [2.4], [2.6], [3.8]], // Example 1
-// 		[[8.1], [9.3], [10.4], [10.6], [11.8]] // Example 2
-// 	];
-//
-// 	let kFilter = new KalmanFilter({
-// 		observation: {
-// 			name: 'sensors',
-// 			sensorDimension: 1
-// 		},
-// 		dynamic: {
-// 			name: 'constant-speed'
-// 		}
-// 	});
-// 	const dynamicCovariance = getCovariance({
-// 		measures: groundTruthStates.map(ex => {
-// 			return ex.slice(1).map((_, index) => {
-// 				console.log('mean', ex[0]);
-// 				console.log('covariance', identity(groundTruthStates[0][0].length))
-// 				const previousCorrected = new State({
-// 					mean: ex[index],
-// 					covariance: identity(groundTruthStates[0][0].length)
-// 				});
-// 				return kFilter.predict({previousCorrected}).mean;
-// 			});
-// 		}).reduce((a, b) => a.concat(b)),
-// 		averages: groundTruthStates.map(ex => {
-// 			return ex.slice(1);
-// 		}).reduce((a, b) => a.concat(b))
-// 	});
-//
-// 	const observationCovariance = getCovariance({
-// 		measures: measures.reduce((a, b) => a.concat(b)),
-// 		averages: groundTruthStates.map(a => a[0]).reduce((a, b) => a.concat(b))
-// 	});
-//
-// 	kFilter = Object.assign({}, kFilter, {
-// 		observation: {
-// 			covariance: observationCovariance
-// 		},
-// 		dynamic: {
-// 			covariance: dynamicCovariance
-// 		}
-// 	})
-// 	const predicted = kFilter.predict();
-// 	t.is(observationCovariance.length, 1);
-// 	t.is(dynamicCovariance.length, 2);
-// 	t.is(predcited instanceof State);
-// });
+test('Model fits ', t => {
+	const kFilter = new KalmanFilter({
+		observation: {
+			sensorDimension: 2,
+			name: 'sensors'
+		},
+		dynamic: {
+			name: 'constant-speed', // Observation.sensorDimension == dynamic.dimension
+			covariance: [3, 4]// Equivalent to diag([3, 4])
+		}
+	});
+	const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
-// test('Model fits ', t => {
-// 	const kFilter = new KalmanFilter({
-// 		observation: {
-// 			sensorDimension: 2,
-// 			name: 'sensors'
-// 		},
-// 		dynamic: {
-// 			name: 'constant-speed', // Observation.sensorDimension == dynamic.dimension
-// 			covariance: [3, 4]// Equivalent to diag([3, 4])
-// 		}
-// 	});
-// 	const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
-//
-// 	// Online kalman filter
-// 	let previousCorrected = null;
-// 	const distances = [];
-// 	observations.forEach(observation => {
-// 		const predicted = kFilter.predict({
-// 			previousCorrected
-// 		});
-//
-// 		const dist = predicted.mahalanobis(observation);
-//
-// 		previousCorrected = kFilter.correct({
-// 			predicted,
-// 			observation
-// 		});
-//
-// 		distances.push(dist);
-// 	});
-//
-// 	const distance = distances.reduce((d1, d2) => d1 + d2, 0);
-//
-// 	t.true(distance > 0);
-// });
+	// Online kalman filter
+	let previousCorrected = null;
+	const distances = [];
+	observations.forEach(observation => {
+		const predicted = kFilter.predict({
+			previousCorrected
+		});
+
+		const dist = predicted.mahalanobis(observation);
+
+		previousCorrected = kFilter.correct({
+			predicted,
+			observation
+		});
+
+		distances.push(dist);
+	});
+
+	const distance = distances.reduce((d1, d2) => d1 + d2, 0);
+
+	t.true(distance > 0);
+});
