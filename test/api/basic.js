@@ -7,6 +7,14 @@ const State = require('../../lib/state.js');
 // Const getCovariance = require('../../lib/utils/get-covariance.js');
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
+test('Default filter : Constant-position on 1D Data', t => {
+	const observations = [0, 0.1, 0.5, 0.2];
+	const kFilter = new KalmanFilter();
+	const res = kFilter.filterAll(observations)
+	t.true(Array.isArray(res));
+	t.is(res.length, observations.length);
+});
+
 test('Constant-position on 2D Data', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
@@ -126,7 +134,7 @@ test('Sensor observation', t => {
 		observation: {
 			sensorDimension: 2, // Observation.dimension == observation.sensorDimension * observation.nSensors
 			nSensors: 2,
-			sensorCovariance: [3, 4], // Equivalent to diag([3, 3, 4, 4])
+			sensorCovariance: [3, 3, 4, 4], 
 			name: 'sensors'
 		},
 		dynamic: {
@@ -136,7 +144,7 @@ test('Sensor observation', t => {
 	});
 	t.is(kFilter.observation.stateProjection().length,
 		kFilter.observation.sensorDimension * kFilter.observation.nSensors);
-	t.is(kFilter.observation.covariance().length, 4);
+	t.is(kFilter.observation.covariance().length, 8);
 
 	const observations = [[[102], [101], [98], [105]]];
 	const previousCorrected = new State({
