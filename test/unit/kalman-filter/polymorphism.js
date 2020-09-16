@@ -310,3 +310,24 @@ test('Observed and State Projections', t => {
 	});
 	t.is(error.message, 'You cannot use both observedProjection and stateProjection');
 });
+
+// Test index is not NaN if undefined
+
+test('Index initialization', t => {
+	const kf = new KalmanFilter(defaultOptions);
+	const firstState = new State({
+		mean: [[0], [0], [0], [0]],
+		covariance: [
+			[1, 0, 0, 0],
+			[0, 1, 0, 0],
+			[0, 0, 1, 0],
+			[0, 0, 0, 1]
+		]
+	});
+	const predicted1 = kf.predict();
+	const predicted2 = kf.predict({previousCorrected: firstState});
+	t.false(Number.isNaN(predicted1.index));
+	t.false(Number.isNaN(predicted2.index));
+	t.is(predicted1.index, null);
+	t.is(predicted2.index, null);
+});

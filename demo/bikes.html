@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Kalman Filter Demo on Bike Image</title>
+<link rel="stylesheet" type="text/css" href="./style.css">
+
+
+</head>
+<body>
+    <div class="img" id='bikes'>
+        <img src="https://www.simply.science/images/content/physics/mechanics/kinematics/Concept_map/image1.gif">
+				<div class="top-right" id='legend'>
+					<h4 style="color: blue;"> Prediction
+					</h4>
+					<h4 style="color: white;"> Observation
+					</h4>
+					<h4 style="color: red;"> Correction
+					</h4>
+				</div>
+    </div>
+    <div class="controls" id='controls'>
+  	  <input id="clickMe" type="button" value="Run Kalman Filter" onclick="run();" />
+  		<input type="button" value="Stop" >
+  		<input id="clickMe" type="button" value="Show/Hide Predictions" onclick="showHide('predicted');" />
+  		<input id="clickMe" type="button" value="Show/Hide Observations" onclick="showHide('observation');" />
+  		<input id="clickMe" type="button" value="Show/Hide Corrections" onclick="showHide('corrected');" />
+
+  		<input type="checkbox"  id="speedVectors" onclick="showHide('speedVectors');">
+  	  <label for="checkbox1"> Speed Vectors </label>
+  		<input type="checkbox"  id="Variances" onclick="showHide('variances');" checked="checked">
+  	  <label for="checkbox1"> Variances </label>
+  		<input type="checkbox"  id="Covariances" onclick="showHide('covariances');">
+  	  <label for="checkbox1"> Covariances </label>
+    </div>
+
+
+</body>
+<script src="dist/demo.js"></script>
+
+<script>
+//
+// const btn = document.querySelector('button');
+const status = {
+  'predicted': false,
+  'observation': true,
+  'corrected': true,
+  'speedVectors': false,
+  'variances': true,
+  'covariances': false
+};
+const removeClass = function(el, className) {
+  el.classList.remove(className);
+};
+const addClass = function(el, className) {
+  el.classList.add(className);
+};
+const showHide = function(id) {
+  const toRemove = status[id] ? id : 'not-'+id;
+  const toAdd = !(status[id]) ? id : 'not-'+id;
+  
+	removeClass(document.getElementById("bikes"), toRemove);
+  addClass(document.getElementById("bikes"), toAdd);
+  status[id] = !(status[id]) 
+}
+Object.keys(status).forEach(k => {
+  showHide(k)
+  showHide(k)
+})
+
+const run = function(){
+  require('main').run()
+}
+</script>
+
+
+</html>
