@@ -329,6 +329,6 @@ test('Index initialization', t => {
 	console.log('Index', Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted2.index));
-	t.is(predicted1.index, 'Index key is not defined');
-	t.is(predicted2.index, 'Index key is not defined');
+	t.is(predicted1.index, null);
+	t.is(predicted2.index, null);
 });
