@@ -29,14 +29,29 @@ npm install kalman-filter
 ```js
 const {KalmanFilter} = require('kalman-filter');
 
-const observations = [0, 0.1, 0.5, 0.2];
+const observations = [0, 0.1, 0.5, 0.2, 3, 4, 2, 1, 2, 3, 5, 6];
 const kFilter = new KalmanFilter();
 const res = kFilter.filterAll(observations)
-
-console.log(res);
+// res is a list of 1x1 matrices
+// [
+//   [ [ 0 ] ],
+//   [ [ 0.06666665555510715 ] ],
+//   [ [ 0.3374999890620582 ] ],
+//   [ [ 0.25238094852592136 ] ],
+//   [ [ 1.9509090885288296 ] ],
+//   [ [ 3.2173611101031616 ] ],
+//   [ [ 2.4649867370240965 ] ],
+//   [ [ 1.5595744679428254 ] ],
+//   [ [ 1.831772445766021 ] ],
+//   [ [ 2.5537767922925685 ] ],
+//   [ [ 4.065625882212133 ] ],
+//   [ [ 5.26113483436549 ] ]
+// ]
 ```
+Result is :
 
-**TO DO** add a screenshot of the resulting curve
+![Kalman Filter 1d example](./demo/example-1D.png)
+
 
 ## How to instantiate your kalman filter
 

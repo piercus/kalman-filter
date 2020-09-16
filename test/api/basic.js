@@ -8,11 +8,11 @@ const State = require('../../lib/state.js');
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 test('Default filter : Constant-position on 1D Data', t => {
-	const observations = [0, 0.1, 0.5, 0.2];
+	const observations = [0, 0.1, 0.5, 0.2, 3, 4, 2, 1, 2, 3, 5, 6];
 	const kFilter = new KalmanFilter();
-	const res = kFilter.filterAll(observations)
-	t.true(Array.isArray(res));
-	t.is(res.length, observations.length);
+	const result = kFilter.filterAll(observations);
+	t.true(Array.isArray(result));
+	t.is(result.length, observations.length);
 });
 
 test('Constant-position on 2D Data', t => {
@@ -134,7 +134,7 @@ test('Sensor observation', t => {
 		observation: {
 			sensorDimension: 2, // Observation.dimension == observation.sensorDimension * observation.nSensors
 			nSensors: 2,
-			sensorCovariance: [3, 3, 4, 4], 
+			sensorCovariance: [3, 3, 4, 4],
 			name: 'sensors'
 		},
 		dynamic: {
@@ -192,7 +192,7 @@ test('Model fits ', t => {
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension == dynamic.dimension
-			covariance: [3, 4]// Equivalent to diag([3, 4])
+			covariance: [3, 3, 4, 4]
 		}
 	});
 	const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
@@ -205,7 +205,7 @@ test('Model fits ', t => {
 			previousCorrected
 		});
 
-		const dist = predicted.mahalanobis(observation);
+		const dist = predicted.mahalanobis({observation, kf: kFilter});
 
 		previousCorrected = kFilter.correct({
 			predicted,
