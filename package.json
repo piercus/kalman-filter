@@ -51,6 +51,7 @@
   "homepage": "https://github.com/piercus/kalman-filter#readme",
   "devDependencies": {
     "ava": "^3.8.2",
+    "browserify": "^16.5.2",
     "cholesky": "^1.2.0",
     "hasard": "^1.6.1",
     "semantic-release": "^17.0.8",
@@ -60,7 +61,9 @@
     "matrix-inverse": "^1.0.1"
   },
   "xo": {
-    "ignores": ["./demo/dist/**"],
+    "ignores": [
+      "./demo/dist/**"
+    ],
     "rules": {
       "no-multi-assign": 0,
       "unicorn/no-reduce": 0,

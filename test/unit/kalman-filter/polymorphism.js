@@ -326,7 +326,6 @@ test('Index initialization', t => {
 	});
 	const predicted1 = kf.predict();
 	const predicted2 = kf.predict({previousCorrected: firstState});
-	console.log('Index', Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted2.index));
 	t.is(predicted1.index, null);
