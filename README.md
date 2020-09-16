@@ -10,6 +10,12 @@ This library implements following features:
 * Extended Kalman Filter (when using functions for dynamics and observation matrixes)
 * Correlation Matrix
 
+## Demo
+
+see `./demo` folder
+
+Regenerate demo using `browserify -r ./lib/kalman-filter.js:KalmanFilter -r ./script/demo/generate-noisy-observation.js:generateNoisyObservation -r ./script/demo/calculate-observation-covariance.js:calculateObservationCovariance > demo/kalman-filter.js`
+
 ## Installation
 
 ```sh
