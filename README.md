@@ -2,7 +2,7 @@
 
 # kalman-filter
 
-[Kalman Filter](https://en.wikipedia.org/wiki/Kalman_filter) in JavaScript
+[Kalman Filter](https://en.wikipedia.org/wiki/Kalman_filter) in JavaScript (for both node.js and the browser)
 
 This library implements following features:
 * N-dimensional Kalman Filter (for [multivariate Gaussian](https://en.wikipedia.org/wiki/Multivariate_normal_distribution))
@@ -51,7 +51,6 @@ const res = kFilter.filterAll(observations)
 Result is :
 
 ![Kalman Filter 1d example](./demo/example-1D.png)
-
 
 ## How to instantiate your kalman filter
 
