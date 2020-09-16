@@ -11,7 +11,7 @@ let predicted = kf.predict();
 const img = document.querySelector('#bikes');// eslint-disable-line no-undef
 
 // Create all the elements of the prediction or correction phase
-const delay = 100;
+const delay = 200;
 
 let promise = Promise.resolve();
 let previousCorrected = null;
