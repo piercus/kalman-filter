@@ -575,3 +575,7 @@ observations.forEach(observation => {
 const distance = distances.reduce((d1, d2) => d1 + d2, 0);
 
 ```
+
+### Credits
+
+Thanks to _Adrien Pellissier_ for his hard work on this library.
