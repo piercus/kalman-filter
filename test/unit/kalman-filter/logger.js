@@ -5,7 +5,7 @@ test('Logger.debug', t => {
 	let hasDebug = false;
 	const kf = new KalmanFilter({
 		observation: {
-			name: 'sensors'
+			name: 'sensor'
 		},
 		dynamic: {
 			name: 'constant-speed'

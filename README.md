@@ -30,27 +30,68 @@ npm install kalman-filter
 const {KalmanFilter} = require('kalman-filter');
 
 const observations = [0, 0.1, 0.5, 0.2, 3, 4, 2, 1, 2, 3, 5, 6];
+// this is creating a smoothing
 const kFilter = new KalmanFilter();
 const res = kFilter.filterAll(observations)
-// res is a list of 1x1 matrices
+// res is a list of list (for multidimensional filters)
 // [
-//   [ [ 0 ] ],
-//   [ [ 0.06666665555510715 ] ],
-//   [ [ 0.3374999890620582 ] ],
-//   [ [ 0.25238094852592136 ] ],
-//   [ [ 1.9509090885288296 ] ],
-//   [ [ 3.2173611101031616 ] ],
-//   [ [ 2.4649867370240965 ] ],
-//   [ [ 1.5595744679428254 ] ],
-//   [ [ 1.831772445766021 ] ],
-//   [ [ 2.5537767922925685 ] ],
-//   [ [ 4.065625882212133 ] ],
-//   [ [ 5.26113483436549 ] ]
+//   [ 0 ] ],
+//   [ 0.06666665555510715 ],
+//   [ 0.3374999890620582 ],
+//   [ 0.25238094852592136 ],
+//   [ 1.9509090885288296 ],
+//   [ 3.2173611101031616 ],
+//   [ 2.4649867370240965 ],
+//   [ 1.5595744679428254 ],
+//   [ 1.831772445766021 ],
+//   [ 2.5537767922925685 ],
+//   [ 4.065625882212133 ],
+//   [ 5.26113483436549 ]
 // ]
 ```
 Result is :
 
 ![Kalman Filter 1d example](./demo/example-1D.png)
+
+### 2D Smoothing Usage
+
+```js
+const {KalmanFilter} = require('kalman-filter');
+
+const observations = [[0, 1], [0.1, 0.5], [0.2, 3], [4, 2], [1, 2]];
+const kFilter = new KalmanFilter({observation: 2}); 
+// equivalent to 
+// new KalmanFilter({
+// 	observation: {
+// 		name: 'sensor',
+// 		sensorDimension: 2
+// 	}
+// });
+const res = kFilter.filterAll(observations)
+```
+
+### 2D Smoothing with constant-speed model
+
+```js
+const {KalmanFilter} = require('kalman-filter');
+
+const observations = [[0, 1], [0.1, 0.5], [0.2, 3], [4, 2], [1, 2]];
+const kFilter = new KalmanFilter({
+	observation: 2,
+	dynamic: 'constant-speed'
+});
+// equivalent to 
+// new KalmanFilter({
+// 	observation: {
+// 		name: 'sensor',
+// 		sensorDimension: 2
+// 	},
+// 	dynamic: {
+// 		name: 'constant-speed'
+// 	},
+// });
+const res = kFilter.filterAll(observations)
+```
 
 ## How to instantiate your kalman filter
 
@@ -73,7 +114,7 @@ const {KalmanFilter} = require('kalman-filter');
 const kFilter = new KalmanFilter({
 	observation: {
 		sensorDimension: 2,
-		name: 'sensors'
+		name: 'sensor'
 	},
 	dynamic: {
 		name: 'constant-position',// observation.sensorDimension == dynamic.dimension
@@ -92,7 +133,7 @@ const {KalmanFilter} = require('kalman-filter');
 const kFilter = new KalmanFilter({
 	observation: {
 		sensorDimension: 3,
-		name: 'sensors'
+		name: 'sensor'
 	},
 	dynamic: {
 		name: 'constant-speed',// observation.sensorDimension * 2 == state.dimension
@@ -112,7 +153,7 @@ const {KalmanFilter} = require('kalman-filter');
 const kFilter = new KalmanFilter({
 	observation: {
 		sensorDimension: 2,
-		name: 'sensors'
+		name: 'sensor'
 	},
 	dynamic: {
 		name: 'constant-acceleration',// observation.sensorDimension * 3 == state.dimension
@@ -194,7 +235,7 @@ const kFilter = new KalmanFilter({
 		sensorDimension: 2,// observation.dimension == observation.sensorDimension * observation.nSensors
 		nSensors: 2,
 		sensorCovariance: [3, 4], // equivalent to diag([3, 3, 4, 4])
-		name: 'sensors'
+		name: 'sensor'
 	},
 	dynamic: {
 		name: 'constant-speed',// observation.sensorDimension * 2 == state.dimension

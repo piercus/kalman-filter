@@ -124,7 +124,7 @@ test('Check sensor', t => {
 			covariance: [1, 0.01]
 		},
 		observation: {
-			name: 'sensors',
+			name: 'sensor',
 			nSensors: 2,
 			sensorDimension: 1,
 			covariance: [1] // Equivalent to diag(1,1)
@@ -166,7 +166,7 @@ test('Registering custom speed', t => {
 			covariance: [1, 0.01]
 		},
 		observation: {
-			name: 'sensors'
+			name: 'sensor'
 		}
 	});
 	modelCollection.registerDynamic('custom-speed', (dynamic, observation) => {
@@ -204,7 +204,7 @@ test('Registering custom speed', t => {
 			covariance: [1, 0.01]
 		},
 		observation: {
-			name: 'sensors'
+			name: 'sensor'
 		}
 	});
 	const predicted1 = kf.predict();

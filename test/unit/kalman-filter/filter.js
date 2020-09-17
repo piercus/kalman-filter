@@ -12,7 +12,7 @@ test('Filter method', t => {
 			name: 'constant-speed'
 		},
 		observation: {
-			name: 'sensors'
+			name: 'sensor'
 		}
 	});
 	const filtered = kf.filter({observation: observations[0]}); // eslint-disable-line unicorn/no-fn-reference-in-iterator
@@ -30,12 +30,12 @@ test('FilterAll', t => {
 			name: 'constant-speed'
 		},
 		observation: {
-			name: 'sensors'
+			name: 'sensor'
 		}
 	});
 	const allFiltered = kf.filterAll(observations);
 	t.is(allFiltered.length, 3);
 	const filtered = kf.filter({observation: observations[0]}); // eslint-disable-line unicorn/no-fn-reference-in-iterator
-	const firstMean = filtered.mean;
+	const firstMean = filtered.mean.map(m => m[0]);
 	t.deepEqual(firstMean, allFiltered[0]);
 });

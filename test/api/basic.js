@@ -15,11 +15,30 @@ test('Default filter : Constant-position on 1D Data', t => {
 	t.is(result.length, observations.length);
 });
 
+test('Simple constant-position 2d', t => {
+	const kf = new KalmanFilter({
+		observation: 2
+	});
+	const observations = [[0.11, 0.1], [0.21, 0.19], [0.3, 0.3]];
+	const result = kf.filterAll(observations);
+	t.true(Array.isArray(result));
+});
+
+test('Simple constant-speed 2d', t => {
+	const kf = new KalmanFilter({
+		observation: 2,
+		dynamic: 'constant-speed'
+	});
+	const observations = [[0.11, 0.1], [0.21, 0.19], [0.3, 0.3]];
+	const result = kf.filterAll(observations);
+	t.true(Array.isArray(result));
+});
+
 test('Constant-position on 2D Data', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2,
-			name: 'sensors'
+			name: 'sensor'
 		},
 		dynamic: {
 			name: 'constant-position', // Observation.sensorDimension == dynamic.dimension
@@ -56,7 +75,7 @@ test('Constant-speed on 3D Data', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 3,
-			name: 'sensors'
+			name: 'sensor'
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension * 2 == state.dimension
@@ -76,7 +95,7 @@ test('Constant-speed on 3D Data', t => {
 	const kFilter2 = new KalmanFilter({
 		observation: {
 			dimension: 3,
-			name: 'sensors'
+			name: 'sensor'
 		},
 		dynamic: {
 			dimension: 6, // (x, y, z, vx, vy, vz)
@@ -98,7 +117,7 @@ test('Constant acceleration on 2D Data', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2,
-			name: 'sensors'
+			name: 'sensor'
 		},
 		dynamic: {
 			name: 'constant-acceleration', // Observation.sensorDimension * 3 == state.dimension
@@ -135,7 +154,7 @@ test('Sensor observation', t => {
 			sensorDimension: 2, // Observation.dimension == observation.sensorDimension * observation.nSensors
 			nSensors: 2,
 			sensorCovariance: [3, 3, 4, 4],
-			name: 'sensors'
+			name: 'sensor'
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension * 2 == state.dimension
@@ -173,7 +192,7 @@ test('Simple Batch Usage', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2,
-			name: 'sensors'
+			name: 'sensor'
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension == dynamic.dimension
@@ -188,7 +207,7 @@ test('Model fits ', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2,
-			name: 'sensors'
+			name: 'sensor'
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension == dynamic.dimension
