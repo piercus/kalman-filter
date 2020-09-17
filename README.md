@@ -35,7 +35,7 @@ const kFilter = new KalmanFilter();
 const res = kFilter.filterAll(observations)
 // res is a list of list (for multidimensional filters)
 // [
-//   [ 0 ] ],
+//   [ 0 ],
 //   [ 0.06666665555510715 ],
 //   [ 0.3374999890620582 ],
 //   [ 0.25238094852592136 ],
@@ -495,13 +495,13 @@ const kFilter = new KalmanFilter({
 
 const dynamicCovariance = getCovariance({
 	measures: groundTruthStates.map(ex =>
-		return ex.slice(1).map((_, index) => {
-			return kFilter.predict({previousCorrected: ex[index - 1]}).av;
-		})
-	).reduce((a,b) => a.concat(b)),
-	averages: groundTruthStates.map(ex =>
 		return ex.slice(1)
 	).reduce((a,b) => a.concat(b)),
+	averages: groundTruthStates.map(ex =>
+		return ex.slice(1).map((_, index) => {
+			return kFilter.predict({previousCorrected: ex[index - 1]}).mean;
+		})
+	).reduce((a,b) => a.concat(b))
 });
 
 const observationCovariance = getCovariance({
