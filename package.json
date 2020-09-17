@@ -6,7 +6,8 @@
   "scripts": {
     "test": "xo && ava",
     "semantic-release": "semantic-release",
-    "build-demo": "browserify -d -r ./demo/src/main.js:main > demo/dist/demo.js"
+    "build-demo": "browserify -d -r ./demo/src/main.js:main > docs/demo.js",
+    "serve-demo": "http-server docs/"
   },
   "repository": {
     "type": "git",
@@ -66,7 +67,7 @@
   },
   "xo": {
     "ignores": [
-      "./demo/dist/**"
+      "./docs/**"
     ],
     "rules": {
       "no-multi-assign": 0,
