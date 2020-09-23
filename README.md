@@ -579,3 +579,7 @@ const distance = distances.reduce((d1, d2) => d1 + d2, 0);
 ### Credits
 
 Thanks to _Adrien Pellissier_ for his hard work on this library.
+
+### Similar Project
+
+For a simple 1D Kalman filter in javascript see https://github.com/wouterbulten/kalmanjs
