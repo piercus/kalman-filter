@@ -85,7 +85,7 @@ test('Impact previousCorrected and dynamic covariance', t => {
 	});
 	const predicted = kf.predict({previousCorrected});
 	t.true(predicted instanceof State);
-	t.is(predicted.index, null);
+	t.is(predicted.index, undefined);
 	t.true(2 / trace(predicted.covariance) > huge / 2); // Verifying that the sum of the variance is tiny
 });
 

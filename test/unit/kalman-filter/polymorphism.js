@@ -167,6 +167,7 @@ test('Dynamic init', t => {
 	const huge = 1e6;
 	const initObjective = {
 		mean: [[0], [0], [0], [0]],
+		index: -1,
 		covariance: [
 			[huge, 0, 0, 0],
 			[0, huge, 0, 0],
@@ -328,6 +329,6 @@ test('Index initialization', t => {
 	const predicted2 = kf.predict({previousCorrected: firstState});
 	t.false(Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted2.index));
-	t.is(predicted1.index, null);
-	t.is(predicted2.index, null);
+	t.is(predicted1.index, undefined);
+	t.is(predicted2.index, undefined);
 });
