@@ -14,7 +14,9 @@
     "url": "git+https://github.com/piercus/kalman-filter.git"
   },
   "release": {
-    "branches": ["master"]
+    "branches": [
+      "master"
+    ]
   },
   "keywords": [
     "kalman",
