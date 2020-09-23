@@ -299,9 +299,9 @@ const kFilter = new KalmanFilter({
 	observation: {
 		dimension: 2,
 		/**
-		* @param {State} predictedState
-		* @param {Array.<Number>} observation
-		* @param {Number} index		
+		* @param {State} opts.predicted
+		* @param {Array.<Number>} opts.observation
+		* @param {Number} opts.index
 		*/
 		stateProjection: function(opts){
 			return [
@@ -310,9 +310,9 @@ const kFilter = new KalmanFilter({
 			]
 		},
 		/**
-		* @param {State} predictedState
-		* @param {Array.<Number>} observation
-		* @param {Number} index
+		* @param {State} opts.predicted
+		* @param {Array.<Number>} opts.observation
+		* @param {Number} opts.index
 		*/		
 		covariance: function(opts){
 			return [
@@ -326,8 +326,8 @@ const kFilter = new KalmanFilter({
 	dynamic: {
 		dimension: 4, //(x, y, vx, vy)
 		/**
-		* @param {State} previousCorrected
-		* @param {Number} index
+		* @param {State} opts.previousCorrected
+		* @param {Number} opts.index
 		*/
 		transition: function(opts){
 			const dT = intervals[opts.index];
@@ -342,8 +342,8 @@ const kFilter = new KalmanFilter({
 			]
 		},
 		/**
-		* @param {State} previousCorrected
-		* @param {Number} index
+		* @param {State} opts.previousCorrected
+		* @param {Number} opts.index
 		*/		
 		covariance: function(opts){
 			const dT = intervals[opts.index];
