@@ -163,6 +163,9 @@ test('Sensor observation', t => {
 	});
 	t.is(kFilter.observation.stateProjection().length,
 		kFilter.observation.sensorDimension * kFilter.observation.nSensors);
+
+	t.is(kFilter.observation.stateProjection()[0].length, 4);
+
 	t.is(kFilter.observation.covariance().length, 8);
 
 	const observations = [[[102], [101], [98], [105]]];
