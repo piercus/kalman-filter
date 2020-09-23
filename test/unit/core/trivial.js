@@ -291,7 +291,7 @@ test('NaN Error', t => {
 	const error = t.throws(() => {
 		kf.predict({previousCorrected});
 	});
-	t.is(error.message, 'Matrix should not have a NaN');
+	t.is(error.message, '[checkMatrix] Matrix should not have a NaN');
 });
 // Error Test: non-squared matrix
 
@@ -307,5 +307,5 @@ test('Non squared matrix', t => {
 	const error = t.throws(() => {
 		kf.predict({previousCorrected: nonSquaredState});
 	});
-	t.is(error.message, 'shape and length do not match');
+	t.is(error.message, '[checkMatrix] expected size (1) and length (2) does not match');
 });

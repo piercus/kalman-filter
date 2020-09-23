@@ -91,8 +91,8 @@ test('Polymorphism', t => {
 	const kf3 = new KalmanFilter(simpleArrayOptions);
 
 	// Verify that the transition is a function even if constructor's option is a matrixOptions
-	t.is(typeof (kf2.dynamic.transition), 'function');
-	t.is(typeof (kf3.dynamic.covariance), 'function');
+	t.is(typeof (kf2.dynamic.transition), 'object');
+	t.is(typeof (kf3.dynamic.covariance), 'object');
 
 	const predicted1 = kf1.predict();
 	const predicted2 = kf2.predict();
@@ -242,7 +242,7 @@ test('Building stateProjection', t => {
 		[1, 0, 0, 0],
 		[0, 1, 0, 0]
 	];
-	t.deepEqual(kf.observation.stateProjection(), stateProjectionObjective);
+	t.deepEqual(kf.observation.stateProjection, stateProjectionObjective);
 });
 
 // Test Error 1: Verify that an error if thrown when there is a difference between

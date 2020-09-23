@@ -153,7 +153,7 @@ test('Sensor observation', t => {
 		observation: {
 			sensorDimension: 2, // Observation.dimension == observation.sensorDimension * observation.nSensors
 			nSensors: 2,
-			sensorCovariance: [3, 3, 4, 4],
+			sensorCovariance: [3, 4],
 			name: 'sensor'
 		},
 		dynamic: {
@@ -161,12 +161,12 @@ test('Sensor observation', t => {
 			covariance: [3, 3, 4, 4]// Equivalent to diag([3, 3, 4, 4])
 		}
 	});
-	t.is(kFilter.observation.stateProjection().length,
+	t.is(kFilter.observation.stateProjection.length,
 		kFilter.observation.sensorDimension * kFilter.observation.nSensors);
 
-	t.is(kFilter.observation.stateProjection()[0].length, 4);
+	t.is(kFilter.observation.stateProjection[0].length, 4);
 
-	t.is(kFilter.observation.covariance().length, 8);
+	t.is(kFilter.observation.covariance.length, 4);
 
 	const observations = [[[102], [101], [98], [105]]];
 	const previousCorrected = new State({
