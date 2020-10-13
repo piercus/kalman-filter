@@ -1,6 +1,6 @@
 {
   "name": "kalman-filter",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
   "main": "index.js",
   "scripts": {
