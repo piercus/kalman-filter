@@ -171,8 +171,8 @@ test('Registering custom speed', t => {
 	});
 	modelCollection.registerDynamic('custom-speed', (dynamic, observation) => {
 		const timeStep = dynamic.timeStep || 1;
-		const observedProjection = observation.observedProjection;
-		const stateProjection = observation.stateProjection;
+		const {observedProjection} = observation;
+		const {stateProjection} = observation;
 		const observationDimension = observation.dimension;
 		let dimension;
 		if (stateProjection && Number.isInteger(stateProjection[0].length / 2)) {
