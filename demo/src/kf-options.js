@@ -1,4 +1,5 @@
 const observationCovariance = require('./observation-covariance.json');
+
 const posVar = 100;
 const timeStep = 0.2;
 const sizeVar = 1;
