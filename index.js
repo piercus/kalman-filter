@@ -8,5 +8,7 @@ module.exports = {
 	buildDynamic: modelCollection.buildDynamic,
 	getCovariance: require('./lib/utils/get-covariance'),
 	State: require('./lib/state'),
-	checkCovariance: require('./lib/utils/check-covariance')
+	checkCovariance: require('./lib/utils/check-covariance'),
+	correlationToCovariance: require('./lib/utils/correlation-to-covariance'),
+	covarianceToCorrelation: require('./lib/utils/covariance-to-correlation')
 };
