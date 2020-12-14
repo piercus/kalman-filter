@@ -7,5 +7,6 @@ module.exports = {
 	buildObservation: modelCollection.buildObservation,
 	buildDynamic: modelCollection.buildDynamic,
 	getCovariance: require('./lib/utils/get-covariance'),
-	State: require('./lib/state')
+	State: require('./lib/state'),
+	checkCovariance: require('./lib/utils/check-covariance')
 };
