@@ -1,6 +1,6 @@
+const fs = require('fs');
 const generateNoisyObservation = require('./helpers/generate-noisy-observation');
 const calculateObservationCovariance = require('./helpers/calculate-observation-covariance');
-const fs = require('fs');
 
 const boxes = [
 	[
