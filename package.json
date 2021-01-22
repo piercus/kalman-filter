@@ -74,7 +74,7 @@
   },
   "dependencies": {
     "@rayyamhk/matrix": "^1.0.5",
-    "matrix-inverse": "^1.0.1"
+    "matrix-inverse": "^2.0.0"
   },
   "xo": {
     "ignores": [
