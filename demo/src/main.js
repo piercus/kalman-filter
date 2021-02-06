@@ -1,4 +1,4 @@
-const KalmanFilter = require('../../lib/kalman-filter');
+const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
 
 const noisyObservations = require('./observations.json').observations;
 const kfOptions = require('./kf-options.js');
@@ -57,4 +57,3 @@ module.exports = {
 		});
 	}
 };
-

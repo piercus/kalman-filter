@@ -6,8 +6,9 @@
   "scripts": {
     "test": "xo && ava",
     "semantic-release": "semantic-release",
-    "build-demo": "browserify -d -r ./demo/src/main.js:main > docs/demo.js",
-    "serve-demo": "http-server docs/"
+    "build-demo": "browserify -d -r ./demo/src/main.js:main > docs/demo.js && cp kalman-filter.js docs/dist/kalman-filter.js",
+    "serve-demo": "http-server docs/",
+    "build": "webpack --config webpack.dev.js && webpack --config webpack.min.js"
   },
   "repository": {
     "type": "git",
@@ -70,6 +71,8 @@
     "cholesky": "^1.2.0",
     "hasard": "^1.6.1",
     "semantic-release": "^17.1.1",
+    "webpack": "^5.21.1",
+    "webpack-cli": "^4.5.0",
     "xo": "^0.32.0"
   },
   "dependencies": {
@@ -78,7 +81,9 @@
   },
   "xo": {
     "ignores": [
-      "./docs/**"
+      "./docs/**",
+      "kalman-filter.js",
+      "kalman-filter.min.js"
     ],
     "rules": {
       "no-multi-assign": 0,
