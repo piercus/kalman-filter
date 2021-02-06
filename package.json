@@ -28,11 +28,11 @@
           "assets": [
             {
               "path": "dist/kalman-filter.js",
-              "label": "Raw JS distribution"
+              "label": "kalman-filter.js (Raw JS distribution)"
             },
             {
               "path": "dist/kalman-filter.min.js",
-              "label": "Minified JS distribution"
+              "label": "kalman-filter.min.js (Minified JS distribution)"
             }
           ]
         }
