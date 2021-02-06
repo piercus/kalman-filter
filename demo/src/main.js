@@ -1,4 +1,4 @@
-const KalmanFilter = require('../../lib/kalman-filter');
+const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
 
 const noisyObservations = require('./observations.json').observations;
 const kfOptions = require('./kf-options.js');
@@ -16,7 +16,9 @@ const delay = 200;
 let promise = Promise.resolve();
 let previousCorrected = null;
 
-const delayPromise = delay => new Promise(resolve => setTimeout(resolve, delay));
+const delayPromise = delay => new Promise(resolve => {
+	setTimeout(resolve, delay);
+});
 
 module.exports = {
 	run() {
@@ -57,4 +59,3 @@ module.exports = {
 		});
 	}
 };
-

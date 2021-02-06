@@ -36,6 +36,7 @@
 
 
 </body>
+<script src="dist/kalman-filter.js"></script>
 <script src="dist/demo.js"></script>
 
 <script>
@@ -58,10 +59,10 @@ const addClass = function(el, className) {
 const showHide = function(id) {
   const toRemove = status[id] ? id : 'not-'+id;
   const toAdd = !(status[id]) ? id : 'not-'+id;
-  
+
 	removeClass(document.getElementById("bikes"), toRemove);
   addClass(document.getElementById("bikes"), toAdd);
-  status[id] = !(status[id]) 
+  status[id] = !(status[id])
 }
 Object.keys(status).forEach(k => {
   showHide(k)

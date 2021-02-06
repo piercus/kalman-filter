@@ -6,8 +6,9 @@
   "scripts": {
     "test": "xo && ava",
     "semantic-release": "semantic-release",
-    "build-demo": "browserify -d -r ./demo/src/main.js:main > docs/demo.js",
-    "serve-demo": "http-server docs/"
+    "build-demo": "build && browserify -d -r ./demo/src/main.js:main > docs/demo.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
+    "serve-demo": "http-server docs/",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,21 @@
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
       "@semantic-release/npm",
-      "@semantic-release/github",
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "dist/kalman-filter.js",
+              "label": "Raw JS distribution"
+            },
+            {
+              "path": "dist/kalman-filter.min.js",
+              "label": "Minified JS distribution"
+            }
+          ]
+        }
+      ],
       "@semantic-release/git"
     ]
   },
@@ -70,7 +85,9 @@
     "cholesky": "^1.2.0",
     "hasard": "^1.6.1",
     "semantic-release": "^17.1.1",
-    "xo": "^0.32.0"
+    "webpack": "^5.21.1",
+    "webpack-cli": "^4.5.0",
+    "xo": "^0.37.1"
   },
   "dependencies": {
     "@rayyamhk/matrix": "^1.0.5",
@@ -78,9 +95,11 @@
   },
   "xo": {
     "ignores": [
-      "./docs/**"
+      "./docs/**",
+      "./dist/**"
     ],
     "rules": {
+      "unicorn/no-array-reduce": 0,
       "no-multi-assign": 0,
       "unicorn/no-reduce": 0,
       "import/no-unresolved": 0,
