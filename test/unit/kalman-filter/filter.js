@@ -15,7 +15,7 @@ test('Filter method', t => {
 			name: 'sensor'
 		}
 	});
-	const filtered = kf.filter({observation: observations[0]}); // eslint-disable-line unicorn/no-fn-reference-in-iterator
+	const filtered = kf.filter({observation: observations[0]});
 	t.true(filtered instanceof State);
 
 	const predicted = kf.predict();
@@ -35,7 +35,7 @@ test('FilterAll', t => {
 	});
 	const allFiltered = kf.filterAll(observations);
 	t.is(allFiltered.length, 3);
-	const filtered = kf.filter({observation: observations[0]}); // eslint-disable-line unicorn/no-fn-reference-in-iterator
+	const filtered = kf.filter({observation: observations[0]});
 	const firstMean = filtered.mean.map(m => m[0]);
 	t.deepEqual(firstMean, allFiltered[0]);
 });

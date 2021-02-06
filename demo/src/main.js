@@ -16,7 +16,9 @@ const delay = 200;
 let promise = Promise.resolve();
 let previousCorrected = null;
 
-const delayPromise = delay => new Promise(resolve => setTimeout(resolve, delay));
+const delayPromise = delay => new Promise(resolve => {
+	setTimeout(resolve, delay);
+});
 
 module.exports = {
 	run() {
