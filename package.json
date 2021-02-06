@@ -6,9 +6,9 @@
   "scripts": {
     "test": "xo && ava",
     "semantic-release": "semantic-release",
-    "build-demo": "browserify -d -r ./demo/src/main.js:main > docs/demo.js && cp kalman-filter.js docs/dist/kalman-filter.js",
+    "build-demo": "build && browserify -d -r ./demo/src/main.js:main > docs/demo.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
     "serve-demo": "http-server docs/",
-    "build": "webpack --config webpack.dev.js && webpack --config webpack.min.js"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,12 @@
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
       "@semantic-release/npm",
-      "@semantic-release/github",
+      ["@semantic-release/github", {
+        "assets": [
+          {"path": "dist/kalman-filter.js", "label": "Raw JS distribution"},
+          {"path": "dist/kalman-filter.min.js", "label": "Minified JS distribution"}
+        ]
+      }],
       "@semantic-release/git"
     ]
   },

@@ -12,9 +12,28 @@ This library implements following features:
 * Extended Kalman Filter (when using functions for dynamics and observation matrixes)
 * Correlation Matrix
 
-## Browser usage
+## Demo
 
-Download the file `kalman-filter.min.js` from Github and add in in your project like
+See a demo in the web browser [here](http://piercus.github.io/kalman-filter)
+
+## Installation
+
+### Npm
+
+
+```sh
+npm install kalman-filter
+```
+
+```js
+const {KalmanFilter} = require('kalman-filter');
+```
+
+### Browser usage
+
+Download the file `kalman-filter.min.js` from [Releases page](https://github.com/piercus/kalman-filter/releases)
+
+Add it to your project like :
 
 ```html
 <script src="dist/kalman-filter.min.js"></script>
@@ -26,17 +45,6 @@ var {KalmanFilter} = kalmanFilter;
 </script>
 ```
 
-**NB**: you can use `kalman-filter.js` for having a more readable version, and easier debugging.
-
-## Demo
-
-See a demo in the web browser [here](http://piercus.github.io/kalman-filter)
-
-## Installation
-
-```sh
-npm install kalman-filter
-```
 
 ## Simple Example
 
