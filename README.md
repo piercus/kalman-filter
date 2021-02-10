@@ -258,7 +258,7 @@ const kFilter = new KalmanFilter({
 	observation: {
 		sensorDimension: 2,// observation.dimension == observation.sensorDimension * observation.nSensors
 		nSensors: 2,
-		sensorCovariance: [3, 4], // equivalent to diag([3, 3, 4, 4])
+		sensorCovariance: [3, 4], // equivalent to diag([3, 4])
 		name: 'sensor'
 	},
 	dynamic: {
