@@ -21,9 +21,33 @@ This library implements following features:
 
 ## Installation
 
+### Npm
+
+
 ```sh
 npm install kalman-filter
 ```
+
+```js
+const {KalmanFilter} = require('kalman-filter');
+```
+
+### Browser usage
+
+Download the file `kalman-filter.min.js` from [Releases page](https://github.com/piercus/kalman-filter/releases)
+
+Add it to your project like :
+
+```html
+<script src="dist/kalman-filter.min.js"></script>
+<script>
+var {KalmanFilter} = kalmanFilter;
+
+// ... do whatever you want with KalmanFilter
+
+</script>
+```
+
 
 ## Simple Example
 
@@ -62,8 +86,8 @@ Result is :
 const {KalmanFilter} = require('kalman-filter');
 
 const observations = [[0, 1], [0.1, 0.5], [0.2, 3], [4, 2], [1, 2]];
-const kFilter = new KalmanFilter({observation: 2}); 
-// equivalent to 
+const kFilter = new KalmanFilter({observation: 2});
+// equivalent to
 // new KalmanFilter({
 // 	observation: {
 // 		name: 'sensor',
@@ -83,7 +107,7 @@ const kFilter = new KalmanFilter({
 	observation: 2,
 	dynamic: 'constant-speed'
 });
-// equivalent to 
+// equivalent to
 // new KalmanFilter({
 // 	observation: {
 // 		name: 'sensor',
@@ -191,11 +215,11 @@ const kFilter = new KalmanFilter({
 		init: {
 			// We just use random-guessed values here that seems reasonable
 			mean: [[500], [500], [500], [0], [0], [0]],
-			// We init the dynamic model with a huge covariance cause we don't 
+			// We init the dynamic model with a huge covariance cause we don't
 			// have any idea where my modeled object before the first observation is located
 			covariance: [
-				[huge, 0, 0, 0, 0, 0], 
-				[0, huge, 0, 0, 0, 0], 
+				[huge, 0, 0, 0, 0, 0],
+				[0, huge, 0, 0, 0, 0],
 				[0, 0, huge, 0, 0, 0],
 				[0, 0, 0, huge, 0, 0],
 				[0, 0, 0, 0, huge, 0],
@@ -203,7 +227,7 @@ const kFilter = new KalmanFilter({
 			],
 		},
 		// Corresponds to (x, y, z, vx, vy, vz)
-		dimension: 6, 
+		dimension: 6,
 		// This is a constant-speed model on 3D : [ [Id , timeStep*Id], [0, Id]]
 		transition: [
 			[1, 0, 0, timeStep, 0, 0],
@@ -214,7 +238,7 @@ const kFilter = new KalmanFilter({
 			[0, 0, 0, 0, 0, 1]
 		],
 		// Diagonal covariance for independant variables
-		// since timeStep = 0.1, 
+		// since timeStep = 0.1,
 		// it makes sense to consider speed variance to be ~ timeStep^2 * positionVariance
 		covariance: [1, 1, 1, 0.01, 0.01, 0.01]// equivalent to diag([1, 1, 1, 0.01, 0.01, 0.01])
 	}
@@ -237,7 +261,7 @@ const kFilter = new KalmanFilter({
 	observation: {
 		sensorDimension: 2,// observation.dimension == observation.sensorDimension * observation.nSensors
 		nSensors: 2,
-		sensorCovariance: [3, 4], // equivalent to diag([3, 3, 4, 4])
+		sensorCovariance: [3, 4], // equivalent to diag([3, 4])
 		name: 'sensor'
 	},
 	dynamic: {
