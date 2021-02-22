@@ -12,9 +12,12 @@ This library implements following features:
 * Extended Kalman Filter (when using functions for dynamics and observation matrixes)
 * Correlation Matrix
 
-## Demo
+## Demos
 
-See a demo in the web browser [here](http://piercus.github.io/kalman-filter)
+* [Browser interactive constant acceleration on bikes](http://piercus.github.io/kalman-filter)
+* [Code pen GPS Data smoothing with constant speed](https://codepen.io/piercus/pen/wvoqPww)
+
+[Open an issue](https://github.com/piercus/kalman-filter/issues/new) to add more examples in this section explaining how you use this library !
 
 ## Installation
 
