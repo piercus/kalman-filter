@@ -19,8 +19,8 @@ test('#34 1-D', t => {
 		}
 	});
 
-	const res = kf.filterAll(dataset);
-	t.is(res.length, dataset.length);
+	const response = kf.filterAll(dataset);
+	t.is(response.length, dataset.length);
 });
 
 test('#34 2D', t => {
@@ -40,7 +40,6 @@ test('#34 2D', t => {
 	const huge = 1e15;
 	const kf = new KalmanFilter({
 		observation: {
-			dimension: 2,
 			stateProjection: [[1], [1]],
 			covariance(o) {
 				const variances = o.observation.map(a => {
@@ -55,7 +54,7 @@ test('#34 2D', t => {
 		}
 	});
 
-	const res = kf.filterAll(dataset);
-	t.is(res.length, dataset.length);
+	const response = kf.filterAll(dataset);
+	t.is(response.length, dataset.length);
 });
 
