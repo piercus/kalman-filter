@@ -3,33 +3,30 @@ const {KalmanFilter} = require('../../index.js');
 const test = require('ava');
 
 test('#34 1-D', t => {
+	const dataset = [0, 0, 0, 0, 16.1, 0, 0, 30.9, 0, 0, 0, 0, 26.1, null, null].map(a => [a]);
+	const baseVariance = 1;
+	const huge = 1e30;
+	const kf = new KalmanFilter({
+		observation: {
+			dimension: 1,
+			covariance(o) {
+				if (o.observation[0][0] === null) {
+					return [[huge]];
+				}
 
-	let dataset = [0,0,0,0,16.1,0,0,30.9,0,0,0,0,26.1,null,null].map(a => [a]) 
-	let baseVariance = 1;
-	let huge = 1e30;
-	let kf = new KalmanFilter({
-	  observation : {
-	    dimension: 1, 
-	    covariance: function (o) {
-        if (o.observation[0][0] === null){
-          return [[huge]]
-        } else {
-          return [[baseVariance]]
-        }
-	    }
-	  }
-	})
+				return [[baseVariance]];
+			}
+		}
+	});
 
 	const res = kf.filterAll(dataset);
-	t.is(res.length, dataset.length)
-})
-
-
+	t.is(res.length, dataset.length);
+});
 
 test('#34 2D', t => {
 	const {diag} = require('../..').linalgebra;
 
-	let dataset = [
+	const dataset = [
 		[22, null],
 		[25, null],
 		[4, 4],
@@ -39,27 +36,26 @@ test('#34 2D', t => {
 		[34, 45]
 	];
 
-	let baseVariance = 1;
-	let huge = 1e15;
-	let kf = new KalmanFilter({
-		observation : {
-	    dimension: 2,
+	const baseVariance = 1;
+	const huge = 1e15;
+	const kf = new KalmanFilter({
+		observation: {
+			dimension: 2,
 			stateProjection: [[1], [1]],
-	    covariance: function (o) {
-				let variances = o.observation.map(a => {
-					if(a[0] === null){
-						return huge
-					} else {
-						return baseVariance
+			covariance(o) {
+				const variances = o.observation.map(a => {
+					if (a[0] === null) {
+						return huge;
 					}
-				})
-				return diag(variances)
-	    }
-	  }
+
+					return baseVariance;
+				});
+				return diag(variances);
+			}
+		}
 	});
 
 	const res = kf.filterAll(dataset);
-	t.is(res.length, dataset.length)
-})
-
+	t.is(res.length, dataset.length);
+});
 
