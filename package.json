@@ -102,7 +102,6 @@
       "unicorn/no-array-reduce": 0,
       "no-multi-assign": 0,
       "unicorn/no-reduce": 0,
-      "import/no-unresolved": 0,
       "ava/prefer-async-await": 0,
       "ava/no-skip-test": 1,
       "camelcase": [
