@@ -84,7 +84,7 @@
     "browserify": "^16.5.2",
     "cholesky": "^1.2.0",
     "hasard": "^1.6.1",
-    "semantic-release": "^17.1.1",
+    "semantic-release": "^19.0.3",
     "webpack": "^5.21.1",
     "webpack-cli": "^4.5.0",
     "xo": "^0.37.1"
