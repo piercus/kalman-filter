@@ -16,6 +16,8 @@ This library implements following features:
 
 * [Browser interactive constant acceleration on bikes](http://piercus.github.io/kalman-filter)
 * [Code pen GPS Data smoothing with constant speed](https://codepen.io/piercus/pen/wvoqPww)
+* [Partial Observation](https://github.com/piercus/kalman-filter/issues/34)
+* [Smooth 3x3 rotation matrix](https://github.com/piercus/kalman-filter/issues/37)
 
 [Open an issue](https://github.com/piercus/kalman-filter/issues/new) to add more examples in this section explaining how you use this library !
 
