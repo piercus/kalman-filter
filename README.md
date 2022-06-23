@@ -124,6 +124,21 @@ const res = kFilter.filterAll(observations)
 
 ## How to instantiate your kalman filter
 
+### Advanced usage
+
+This library gives you the ability to fully configure your kalman-filter.
+
+For advanced usage, here is the correspondance table with the matrix name of the [wikipedia article](https://en.wikipedia.org/wiki/Kalman_filter#Underlying_dynamical_system_model)
+
+| Wikipedia article | kalman-filter js lib |
+|--|--|
+| $F_k$, the state-transition model | `dynamic.transition` |
+| $H_k$, the observation model | `observation.stateProjection` |
+| $Q_k$, the covariance of the process noise | `dynamic.covariance` |
+| $R_k$, the covariance of the observation noise | `observation.covariance` |
+|$\mathbf{P}_{0\mid 0}$| `dynamic.init.covariance` |
+|$\mathbf{x}_{0\mid 0}$| `dynamic.init.mean` |
+
 ### Configure the dynamic with `dynamic.name`
 
 `dynamic.name` is a shortcut to configure commonly use models as :
