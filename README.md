@@ -141,12 +141,21 @@ For advanced usage, here is the correspondance table with the matrix name of the
 
 ### Configure the dynamic with `dynamic.name`
 
-`dynamic.name` is a shortcut to configure commonly use models as :
+
+`dynamic.name` is a shortcut to give you access to preconfigured dynamic models, you can also register your own shortcust see [Register models shortcuts](#register-models-shortcuts)
+
+Available default models as :
 * constant-position
 * constant-speed
 * constant-acceleration
 
-You can also register your own shortcust see [Register models shortcuts](#register-models-shortcuts)
+This will automatically configure the `dynamic.transition` matrix.
+
+| `dynamic.name` | State | Transition Equation | `dynamic.transition` |
+|--|--|--|--|
+| `constant-position` | $\begin{bmatrix} x_t \end{bmatrix}$ | $x_t \sim x_{t-1}$ | $\begin{bmatrix} 1 \end{bmatrix}$ |
+| `constant-speed` | $\begin{bmatrix} x_t \\\\ speed_t \end{bmatrix}$ | $\begin{split}x_t \sim x_{t-1} + speed_{t-1},\\\\ speed_t \sim speed_{t-1}\end{split}$| $\begin{bmatrix} 1 & 1 \\\\ 0 & 1 \end{bmatrix}$ |
+| `constant-acceleration` | $\begin{bmatrix} x \\\\ speed_t \\\\ acc_t \end{bmatrix}$ | $\begin{split}x_t \sim x_{t-1} + speed_{t-1} \\\\ speed_t \sim speed_{t-1} + acc_{t-1} \\\\ acc_t \sim acc_{t-1}\end{split}$ | $\begin{bmatrix} 1 & 1 & 0 \\\\ 0 & 1 & 1 \\\\ 0 & 0 & 1\end{bmatrix}$ |
 
 #### 'constant-position' on 2D data
 
