@@ -150,12 +150,45 @@ Available default models as :
 * constant-acceleration
 
 This will automatically configure the `dynamic.transition` matrix.
+##### constant-position
 
-| `dynamic.name` | State | Transition Equation | `dynamic.transition` |
-|--|--|--|--|
-| `constant-position` | $\begin{bmatrix} x_t \end{bmatrix}$ | $x_t \sim x_{t-1}$ | $\begin{bmatrix} 1 \end{bmatrix}$ |
-| `constant-speed` | $\begin{bmatrix} x_t \\\\ speed_t \end{bmatrix}$ | $\begin{split}x_t \sim x_{t-1} + speed_{t-1},\\\\ speed_t \sim speed_{t-1}\end{split}$| $\begin{bmatrix} 1 & 1 \\\\ 0 & 1 \end{bmatrix}$ |
-| `constant-acceleration` | $\begin{bmatrix} x \\\\ speed_t \\\\ acc_t \end{bmatrix}$ | $\begin{split}x_t \sim x_{t-1} + speed_{t-1} \\\\ speed_t \sim speed_{t-1} + acc_{t-1} \\\\ acc_t \sim acc_{t-1}\end{split}$ | $\begin{bmatrix} 1 & 1 & 0 \\\\ 0 & 1 & 1 \\\\ 0 & 0 & 1\end{bmatrix}$ |
+```math
+\begin{align}
+State :& \begin{bmatrix} x_t \end{bmatrix}\\ 
+Transition Equation :& x_t \sim x_{t-1} \\ 
+dynamic.transition :& \begin{bmatrix} 1 \end{bmatrix}
+\end{align}
+```
+
+##### constant-speed
+
+```math
+\begin{align}
+State :& \begin{bmatrix} x_t \\ speed_t \end{bmatrix} \\ 
+Transition Equation :& 
+\begin{split}
+x_t &\sim x_{t-1} + speed_{t-1},\\ 
+speed_t &\sim speed_{t-1}
+\end{split} \\ 
+dynamic.transition :& \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}
+\end{align}
+```
+
+##### constant-acceleration
+
+```math
+\begin{align}
+State :& \begin{bmatrix} x_t \\ speed_t \\ acc_t \end{bmatrix} \\ 
+
+Transition Equation :& 
+\begin{split}
+x_t &\sim x_{t-1} + speed_{t-1} \\ 
+speed_t &\sim speed_{t-1} + acc_{t-1} \\ 
+acc_t &\sim acc_{t-1}
+\end{split} \\ 
+dynamic.transition :& \begin{bmatrix} 1 & 1 & 0 \\ 0 & 1 & 1 \\ 0 & 0 & 1\end{bmatrix}
+\end{align}
+```
 
 #### 'constant-position' on 2D data
 
