@@ -480,7 +480,7 @@ If you want to use KalmanFilter in more advanced usage, you might want to dissoc
 let previousCorrected = null;
 const results = [];
 observations.forEach(observation => {
-	const predictedState = kFilter.predict({
+	const predicted = kFilter.predict({
 		previousCorrected
 	});
 
