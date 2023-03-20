@@ -613,7 +613,7 @@ let previousCorrected = null;
 const results = [];
 
 observations.forEach(observation => {
-	const predictedState = kFilter.predict({
+	const predicted = kFilter.predict({
 		previousCorrected
 	});
 
@@ -644,7 +644,7 @@ let previousCorrected = null;
 const results = [];
 
 observations.forEach(observation => {
-	const predictedState = kFilter.predict({
+	const predicted = kFilter.predict({
 		previousCorrected
 	});
 
