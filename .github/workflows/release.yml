@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - name: Override NODE options for the most recent version
+      - name: Override NODE options
         run: echo "NODE_OPTIONS=--openssl-legacy-provider" >> $GITHUB_ENV
       - run: npm ci
       - run: npm run build  
