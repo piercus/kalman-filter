@@ -330,7 +330,7 @@ const kFilter = new KalmanFilter({
 });
 ```
 
-### Extended Kalman Filter
+## Play with Kalman Filter
 
 In order to use the Kalman-Filter with a dynamic or observation model which is not strictly a [General linear model](https://en.wikipedia.org/wiki/General_linear_model), it is possible to use `function` in following parameters :
 * `observation.stateProjection`
@@ -341,7 +341,6 @@ In order to use the Kalman-Filter with a dynamic or observation model which is n
 In this situation this `function` will return the value of the matrix at each step of the kalman-filter.
 
 In this example, we create a constant-speed filter with non-uniform intervals;
-
 
 ```js
 const {KalmanFilter} = require('kalman-filter');
@@ -413,6 +412,16 @@ const kFilter = new KalmanFilter({
 	}
 });
 ```
+### Extended
+
+If you want to implement an [extended kalman filter](https://en.wikipedia.org/wiki/Extended_Kalman_filter)
+
+You will need to put your non-linear functions in the following parameters
+
+* `observation.fn`
+* `dynamic.fn`
+
+See an example in `test/issues/56.js`
 
 ## Use your kalman filter
 
@@ -424,7 +433,7 @@ const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 // batch kalman filter
 const results = kFilter.filterAll(observations);
 ```
-### Online usage (run it online, forward step only)
+### Online filter
 
 When using online usage (only the forward step), the output of the `filter` method is an instance of the ["State"](/lib/state.js) class.
 
