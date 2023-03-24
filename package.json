@@ -8,7 +8,7 @@
     "semantic-release": "semantic-release",
     "build-demo": "build && browserify -d -r ./demo/src/main.js:main > docs/demo.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
     "serve-demo": "http-server docs/",
-    "build": "webpack"
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack"
   },
   "repository": {
     "type": "git",
