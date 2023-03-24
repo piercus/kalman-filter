@@ -91,7 +91,7 @@
     "semantic-release": "^19.0.3",
     "webpack": "^5.21.1",
     "webpack-cli": "^4.5.0",
-    "xo": "^0.37.1"
+    "xo": "^0.53.1"
   },
   "dependencies": {
     "@rayyamhk/matrix": "^1.0.5",
