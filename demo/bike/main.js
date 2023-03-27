@@ -2,8 +2,8 @@ const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
 
 const noisyObservations = require('./observations.json').observations;
 const kfOptions = require('./kf-options.js');
-const createElement = require('./views/create-element');
-const createGroupBoxes = require('./views/create-group-boxes');
+const createElement = require('../shared/views/create-element');
+const createGroupBoxes = require('../shared/views/create-group-boxes');
 
 const kf = new KalmanFilter(kfOptions);
 let predicted = kf.predict();
