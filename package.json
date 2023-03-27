@@ -6,7 +6,7 @@
   "scripts": {
     "test": "xo && ava",
     "semantic-release": "semantic-release",
-    "build-demo": "build && browserify -d -r ./demo/src/main.js:main > docs/demo.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
+    "build-demo": "build && browserify -d -r ./demo/bike/main.js:main > docs/bike.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
     "serve-demo": "http-server docs/",
     "build": "NODE_OPTIONS=--openssl-legacy-provider webpack"
   },
