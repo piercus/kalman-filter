@@ -1,6 +1,6 @@
 {
   "name": "kalman-filter",
-  "version": "1.10.1",
+  "version": "1.12.0",
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,10 @@
     "type": "git",
     "url": "git+https://github.com/piercus/kalman-filter.git"
   },
+  "files": [
+    "index.js",
+    "lib"
+  ],
   "release": {
     "branches": [
       "master"
