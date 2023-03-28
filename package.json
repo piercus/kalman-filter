@@ -83,7 +83,6 @@
   },
   "homepage": "https://github.com/piercus/kalman-filter#readme",
   "devDependencies": {
-    "@semantic-release/git": "^9.0.0",
     "ava": "^3.8.2",
     "browserify": "^16.5.2",
     "cholesky": "^1.2.0",
