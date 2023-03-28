@@ -12,7 +12,7 @@ module.exports = {
 			[0, 1, 0, 0, 0]
 		],
 		// Covariance generated thanks to getCovariance
-		covariance: [posVar/5, posVar/5]
+		covariance: [posVar / 5, posVar / 5]
 		// Covariance: [posVar, posVar, posVar, posVar],
 
 	},
@@ -26,23 +26,24 @@ module.exports = {
 				[0, huge, 0, 0, 0],
 				[0, 0, huge, 0, 0],
 				[0, 0, 0, huge, 0],
-				[0, 0, 0, 0, huge],
+				[0, 0, 0, 0, huge]
 			]
 		},
 
 		constant({previousCorrected}) {
-			const normalY = previousCorrected.mean[1][0] + previousCorrected.mean[3][0] * timeStep;
+			const normalY = previousCorrected.mean[1][0] + (previousCorrected.mean[3][0] * timeStep);
 
 			let controlY = 0;
 
 			if (normalY > floor) {
 				controlY = 2 * (floor - normalY);
 			}
+
 			return [[0], [controlY], [0], [0], [0]];
 		},
 
 		transition({previousCorrected}) {
-			const normalY = previousCorrected.mean[1][0] + previousCorrected.mean[3][0] * timeStep;
+			const normalY = previousCorrected.mean[1][0] + (previousCorrected.mean[3][0] * timeStep);
 			let vY = 1;
 
 			if (normalY > floor) {

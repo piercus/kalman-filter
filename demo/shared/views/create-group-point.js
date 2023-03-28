@@ -1,7 +1,6 @@
 const createElement = require('./create-element');
 const createPoint = require('./create-point');
 const createArrow = require('./create-arrow');
-const createCustomDashedLine = require('./create-custom-dashed-line');
 
 module.exports = function ({mean, covariance, color, parent, className, tag = 'div'}) {
 	const container = document.createElement(tag); // eslint-disable-line no-undef

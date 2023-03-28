@@ -33,7 +33,7 @@ module.exports = {
 					return delayPromise(delay);
 				})
 				.then((b => {
-					console.log({b})
+					console.log({b});
 					const w = 10;
 					const h = 10;
 					createElement({
