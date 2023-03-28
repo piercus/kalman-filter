@@ -2,13 +2,13 @@ const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
 
 const noisyObservations = require('./observations.json').observations;
 const kfOptions = require('./kf-options.js');
-const createElement = require('./views/create-element');
-const createGroupBoxes = require('./views/create-group-boxes');
+const createElement = require('../shared/views/create-element');
+const createGroupPoint = require('../shared/views/create-group-point');
 
 const kf = new KalmanFilter(kfOptions);
 let predicted = kf.predict();
 
-const img = document.querySelector('#bikes');// eslint-disable-line no-undef
+const img = document.querySelector('#bouncing-ball');// eslint-disable-line no-undef
 
 // Create all the elements of the prediction or correction phase
 const delay = 200;
@@ -28,18 +28,21 @@ module.exports = {
 					predicted = kf.predict({previousCorrected});
 					const {mean, covariance} = predicted;
 
-					createGroupBoxes({mean, covariance, parent: img, className: 'predicted', color: 'blue'});
+					createGroupPoint({mean, covariance, parent: img, className: 'predicted', color: 'blue'});
 
 					return delayPromise(delay);
 				})
 				.then((b => {
+					console.log({b});
+					const w = 10;
+					const h = 10;
 					createElement({
 						className: 'observation',
 						bbox: [
-							b[0] + (b[2] / 2),
-							b[1] + (b[3] / 2),
-							b[2],
-							b[3]
+							b[0],
+							b[1],
+							w,
+							h
 						],
 						parent: img,
 						color: 'white',
@@ -52,7 +55,7 @@ module.exports = {
 					previousCorrected = kf.correct({predicted, observation: b});
 					const {mean, covariance} = previousCorrected;
 
-					createGroupBoxes({mean, covariance, parent: img, className: 'corrected', color: 'red'});
+					createGroupPoint({mean, covariance, parent: img, className: 'corrected', color: 'red'});
 
 					return delayPromise(delay);
 				}).bind(null, box, index));

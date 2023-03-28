@@ -14,8 +14,8 @@ This library implements following features:
 
 ## Demos/Examples
 
-* [Sinusoidale Extended Kalman-Filter](https://observablehq.com/d/a033acc0859cc0de)
 * [Browser interactive constant acceleration on bikes](http://piercus.github.io/kalman-filter)
+* [Sinusoidale Extended Kalman-Filter](https://observablehq.com/d/a033acc0859cc0de)
 * [Code pen GPS Data smoothing with constant speed](https://codepen.io/piercus/pen/wvoqPww)
 * [Partial Observation](https://github.com/piercus/kalman-filter/issues/34)
 * [Smooth 3x3 rotation matrix](https://github.com/piercus/kalman-filter/issues/37)
@@ -137,6 +137,7 @@ For advanced usage, here is the correspondance table with the matrix name of the
 | $H_k$, the observation model | `observation.stateProjection` |
 | $Q_k$, the covariance of the process noise | `dynamic.covariance` |
 | $R_k$, the covariance of the observation noise | `observation.covariance` |
+| $B_k u_k$, the control-input model multiplied by the control vector | `dynamic.constant` |
 |$\mathbf{P}_{0\mid 0}$| `dynamic.init.covariance` |
 |$\mathbf{x}_{0\mid 0}$| `dynamic.init.mean` |
 
@@ -151,6 +152,7 @@ Available default models as :
 * constant-acceleration
 
 This will automatically configure the `dynamic.transition` matrix.
+
 ##### constant-position
 
 ```math
@@ -371,6 +373,7 @@ In order to use the Kalman-Filter with a dynamic or observation model which is n
 * `observation.covariance`
 * `dynamic.transition`
 * `dynamic.covariance`
+* `dynamic.constant`
 
 In this situation this `function` will return the value of the matrix at each step of the kalman-filter.
 
@@ -455,7 +458,14 @@ You will need to put your non-linear functions in the following parameters
 * `observation.fn`
 * `dynamic.fn`
 
-See an example in `test/issues/56.js`
+See an example in [Sinusoidale Extended Kalman-Filter](https://observablehq.com/d/a033acc0859cc0de)
+
+### Using Control model
+
+If you want to add a constant parameter in the dynamic model (also called `control input`), you can use `dynamic.constant` function
+
+See an example code in `demo/bouncing-ball` or the result in [Bouncing Ball example](https://observablehq.com/d/a033acc0859cc0de)
+
 
 ## Use your kalman filter
 
