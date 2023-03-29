@@ -9,7 +9,7 @@ This library implements following features:
 * Forward Kalman Filter (Online)
 * Forward-Backward Smoothing Kalman Filter
 * Split Prediction/Correction steps
-* Extended Kalman Filter (when using functions for dynamics and observation matrixes)
+* Extended Kalman Filter
 * Correlation Matrix
 
 ## Demos/Examples
