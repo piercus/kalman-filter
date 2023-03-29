@@ -1,4 +1,4 @@
-![Kalman Filter Gif](./demo/demo.gif)
+![Kalman Filter Bike Gif](./demo/demo.gif)
 
 # kalman-filter
 
@@ -14,11 +14,14 @@ This library implements following features:
 
 ## Demos/Examples
 
-* [Browser interactive constant acceleration on bikes](http://piercus.github.io/kalman-filter)
-* [Sinusoidale Extended Kalman-Filter](https://observablehq.com/d/a033acc0859cc0de)
-* [Code pen GPS Data smoothing with constant speed](https://codepen.io/piercus/pen/wvoqPww)
-* [Partial Observation](https://github.com/piercus/kalman-filter/issues/34)
-* [Smooth 3x3 rotation matrix](https://github.com/piercus/kalman-filter/issues/37)
+|Link | Description | Image |
+|---|---|---|
+| [Bikes](http://piercus.github.io/kalman-filter) | 4D Constant Acceleration boxes | ![Kalman Filter Bike Gif](./demo/demo.gif) |
+| [Sinusoidale Extended Kalman-Filter](https://observablehq.com/d/a033acc0859cc0de) | 1D Extended KF Sinus | ![Kalman Filter Sin Extended](./demo/Sinus-EKF.png) |
+| [Code pen GPS Data smoothing with constant speed](https://codepen.io/piercus/pen/wvoqPww) | 2D constant speed | ![Kalman Filter GPS](./demo/gps.png) |
+| [Partial Observation](https://github.com/piercus/kalman-filter/issues/34) | 1D / 2 sensor with missing values | ![partial](./demo/partial.png) |
+| [Smooth 3x3 rotation matrix](https://github.com/piercus/kalman-filter/issues/37) | 4d smoothing | ![3x3 rotation matrix](./demo/quaternion.png) |
+| [Bouncing Ball](http://piercus.github.io/kalman-filter/bouncing.html) | 2D constant acceleration with bounces | ![3x3 rotation matrix](./demo/bouncing-ball.gif) |
 
 [Open an issue](https://github.com/piercus/kalman-filter/issues/new) to add more examples in this section explaining how you use this library !
 
