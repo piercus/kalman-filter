@@ -1,6 +1,5 @@
-const {KalmanFilter} = require('../../index.js');
-
 const test = require('ava');
+const {KalmanFilter} = require('../../index.js');
 
 test('Sinusoide Extended Kalman-Filter', t => {
 	const noiseLevel = 0.25;
@@ -20,21 +19,21 @@ test('Sinusoide Extended Kalman-Filter', t => {
 				const [a, , offset] = predicted.mean.map(a => a[0]);
 				return [[Math.sin(offset), 0, a * Math.cos(offset)]];
 			},
-			covariance: [[noiseLevel * noiseLevel]]
+			covariance: [[noiseLevel * noiseLevel]],
 		},
 		dynamic: {
 			init: {mean: [[startAmplitude], [startW], [0]], covariance: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]},
 			transition: [
 				[1, 0, 0],
 				[0, 1, 0],
-				[0, deltaTime, 1]
+				[0, deltaTime, 1],
 			],
 			covariance: [
 				[deltaTime * stdDevA * stdDevA, 0, 0],
 				[0, deltaTime * stdDevW * stdDevW, deltaTime * deltaTime * stdDevW * stdDevW / 2],
-				[0, deltaTime * deltaTime * stdDevW * stdDevW / 2, deltaTime * deltaTime * deltaTime * stdDevW * stdDevW / 3]
-			]
-		}
+				[0, deltaTime * deltaTime * stdDevW * stdDevW / 2, deltaTime * deltaTime * deltaTime * stdDevW * stdDevW / 3],
+			],
+		},
 	});
 
 	function boxMuller() {

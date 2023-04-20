@@ -1,10 +1,9 @@
 const test = require('ava');
-
-// Tests in 2D with constant speed model
-
+const {frobenius: distanceMat} = require('simple-linalg');
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
-const {frobenius: distanceMat} = require('simple-linalg');
+
+// Tests in 2D with constant speed model
 
 const huge = 1000;
 const defaultOptions = {
@@ -13,16 +12,16 @@ const defaultOptions = {
 		stateProjection() {
 			return [
 				[1, 0, 0, 0],
-				[0, 1, 0, 0]
+				[0, 1, 0, 0],
 			];
 		},
 
 		covariance() {
 			return [
 				[1, 0],
-				[0, 1]
+				[0, 1],
 			];
-		}
+		},
 	},
 
 	dynamic: {
@@ -33,8 +32,8 @@ const defaultOptions = {
 				[huge, 0, 0, 0],
 				[0, huge, 0, 0],
 				[0, 0, huge, 0],
-				[0, 0, 0, huge]
-			]
+				[0, 0, 0, huge],
+			],
 		},
 
 		dimension: 4,
@@ -43,7 +42,7 @@ const defaultOptions = {
 				[1, 0, timeStep, 0],
 				[0, 1, 0, timeStep],
 				[0, 0, 1, 0],
-				[0, 0, 0, 1]
+				[0, 0, 0, 1],
 			];
 		},
 
@@ -52,10 +51,10 @@ const defaultOptions = {
 				[1, 0, 0, 0],
 				[0, 1, 0, 0],
 				[0, 0, 0.01, 0],
-				[0, 0, 0, 0.01]
+				[0, 0, 0, 0.01],
 			];
-		}
-	}
+		},
+	},
 
 };
 
@@ -64,7 +63,7 @@ const timeStep = 0.1;
 const observations = [
 	[[1], [2]],
 	[[2.1], [3.9]],
-	[[3], [6]]
+	[[3], [6]],
 ];
 
 // Test 1: Verify that if observation fits the model, then the newCorrected.covariance
@@ -78,20 +77,20 @@ test('Fitted observation', t => {
 			[1, 0, 0, 0],
 			[0, 1, 0, 0],
 			[0, 0, 1, 0],
-			[0, 0, 0, 1]
-		]
+			[0, 0, 0, 1],
+		],
 	});
 	const badFittedObs = [[3.2], [2.9]];
 	const predicted1 = kf1.predict({
-		previousCorrected: firstState
+		previousCorrected: firstState,
 	});
 	const corrected1 = kf1.correct({
 		predicted: predicted1,
-		observation: observations[1]
+		observation: observations[1],
 	});
 	const corrected2 = kf1.correct({
 		predicted: predicted1,
-		observation: badFittedObs
+		observation: badFittedObs,
 	});
 	t.true(corrected1 instanceof State);
 	t.true(corrected2 instanceof State);
@@ -125,8 +124,8 @@ test('Balanced and unbalanced', t => {
 			[1, 0, 0, 0],
 			[0, 1, 0, 0],
 			[0, 0, 0.01, 0],
-			[0, 0, 0, 0.01]
-		]
+			[0, 0, 0, 0.01],
+		],
 	});
 	const previousCorrectedUnbalanced = new State({
 		mean: [[1], [2], [1.1], [1.9]],
@@ -134,14 +133,14 @@ test('Balanced and unbalanced', t => {
 			[10, 0, 0, 0],
 			[0, 1, 0, 0],
 			[0, 0, 0.1, 0],
-			[0, 0, 0, 0.01]
-		]
+			[0, 0, 0, 0.01],
+		],
 	});
 	const predictedBalanced = kf.predict({
-		previousCorrected: previousCorrectedBalanced
+		previousCorrected: previousCorrectedBalanced,
 	});
 	const predictedUnbalanced = kf.predict({
-		previousCorrected: previousCorrectedUnbalanced
+		previousCorrected: previousCorrectedUnbalanced,
 	});
 	t.true(predictedBalanced instanceof State);
 	t.true(predictedUnbalanced instanceof State);
@@ -160,10 +159,10 @@ test('Impact of timeStep', t => {
 					[1, 0, timeStep1, 0],
 					[0, 1, 0, timeStep1],
 					[0, 0, 1, 0],
-					[0, 0, 0, 1]
+					[0, 0, 0, 1],
 				];
-			}
-		})
+			},
+		}),
 	});
 	const bigTimeStepOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
@@ -172,10 +171,10 @@ test('Impact of timeStep', t => {
 					[1, 0, timeStep2, 0],
 					[0, 1, 0, timeStep2],
 					[0, 0, 1, 0],
-					[0, 0, 0, 1]
+					[0, 0, 0, 1],
 				];
-			}
-		})
+			},
+		}),
 	});
 	const kf1 = new CoreKalmanFilter(smallTimeStepOptions);
 	const kf2 = new CoreKalmanFilter(bigTimeStepOptions);

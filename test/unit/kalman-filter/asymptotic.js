@@ -1,8 +1,7 @@
 const test = require('ava');
-
-const KalmanFilter = require('../../../lib/kalman-filter.js');
 const {frobenius: distanceMat} = require('simple-linalg');
 const {sum} = require('simple-linalg');
+const KalmanFilter = require('../../../lib/kalman-filter.js');
 
 // Test 1 : Verify that a simple model converges quickly
 
@@ -11,13 +10,13 @@ test('Convergence', t => {
 		dynamic: {
 			name: 'constant-position',
 			dimension: 1,
-			covariance: [[1]]
+			covariance: [[1]],
 		},
 		observation: {
 			dimension: 1,
 			stateProjection: [[1]],
-			covariance: [[1]]
-		}
+			covariance: [[1]],
+		},
 	});
 	const asymptoticStateCovariance = kf.asymptoticStateCovariance();
 	const asymptoticObjective = [[0.618]];
@@ -33,14 +32,14 @@ test('Large covariances', t => {
 			dimension: 2,
 			covariance: [
 				[1e6, 1e3],
-				[1e3, 1e6]
-			]
+				[1e3, 1e6],
+			],
 		},
 		observation: {
 			dimension: 1,
 			stateProjection: [[1, 0]],
-			covariance: [[1e6]]
-		}
+			covariance: [[1e6]],
+		},
 	});
 	t.true(sum(kf.asymptoticStateCovariance()) > 1e6);
 });
@@ -52,7 +51,7 @@ test('Error when not converging', t => {
 		const changingParameter = previousCorrected.covariance[0][0] ** 2;
 		return [
 			[1, 0],
-			[0, changingParameter]
+			[0, changingParameter],
 		];
 	};
 
@@ -60,13 +59,13 @@ test('Error when not converging', t => {
 		dynamic: {
 			dimension: 2,
 			name: 'constant-speed',
-			covariance: multiParameterCovariance
+			covariance: multiParameterCovariance,
 		},
 		observation: {
 			dimension: 1,
 			stateProjection: [[1, 0]],
-			covariance: [[1e6]]
-		}
+			covariance: [[1e6]],
+		},
 	});
 	const error = t.throws(() => {
 		kf.asymptoticStateCovariance();

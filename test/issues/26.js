@@ -1,8 +1,8 @@
+const test = require('ava');
 const {KalmanFilter} = require('../../index.js');
+
 const START_TIME_DELTA_SECS = 1;
 const COVARIANCE_FILL = 1;
-
-const test = require('ava');
 
 test('#26', t => {
 	const flags = {};
@@ -20,7 +20,7 @@ test('#26', t => {
 				const t_delta = 1;
 				return [[COVARIANCE_FILL * t_delta, 0],
 					[0, COVARIANCE_FILL * t_delta]];
-			}
+			},
 		},
 		dynamic: {
 			dimension: 6,
@@ -33,7 +33,7 @@ test('#26', t => {
 					[0, 0, 0, 1 / COVARIANCE_FILL * START_TIME_DELTA_SECS, 0, 0],
 					[0, 0, 0, 0, 1 / COVARIANCE_FILL * START_TIME_DELTA_SECS * START_TIME_DELTA_SECS, 0],
 					[0, 0, 0, 0, 0, 1 / COVARIANCE_FILL * START_TIME_DELTA_SECS * START_TIME_DELTA_SECS]],
-				index: -1
+				index: -1,
 			},
 			transition() {
 				flags['dynamic.transition'] = true;
@@ -54,8 +54,8 @@ test('#26', t => {
 					[0, 0, 0, 1 / COVARIANCE_FILL * t_delta, 0, 0],
 					[0, 0, 0, 0, 1 / COVARIANCE_FILL * t_delta * t_delta, 0],
 					[0, 0, 0, 0, 0, 1 / COVARIANCE_FILL * t_delta * t_delta]];
-			}
-		}
+			},
+		},
 	});
 
 	const nextPredicted = kFilter.predict({previousCorrected: null});

@@ -6,7 +6,7 @@ module.exports = function () {
 	const timeStep = 0.1;
 	const transition = [
 		[1, timeStep],
-		[0, 1]
+		[0, 1],
 	];
 
 	const gtAlpha = function (iteration) {
@@ -21,7 +21,7 @@ module.exports = function () {
 
 	const predictions = [[[0], [0]]];
 
-	const l = 10000;
+	const l = 10_000;
 	for (let i = 1; i <= l; i++) {
 		gtList.push([[gtAlpha(i)], [gtValpha(i)]]);
 	}
@@ -35,12 +35,12 @@ module.exports = function () {
 		const deltaVx = gt[1][0] - predictions[index][1][0];
 		return [
 			[deltaX * deltaX, deltaX * deltaVx],
-			[deltaX * deltaVx, deltaVx * deltaVx]
+			[deltaX * deltaVx, deltaVx * deltaVx],
 		];
 	})
 		.reduce((a, b) => ([
 			[a[0][0] + b[0][0], a[0][1] + b[0][1]],
-			[a[1][0] + b[1][0], a[1][1] + b[1][1]]
+			[a[1][0] + b[1][0], a[1][1] + b[1][1]],
 		]))
 		.map(r => r.map(a => a / gtList.length));
 	return covariance;

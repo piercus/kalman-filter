@@ -1,7 +1,5 @@
 const test = require('ava');
-
 const equalState = require('../../../test/helpers/equal-state.js');
-
 const KalmanFilter = require('../../../lib/kalman-filter.js');
 const State = require('../../../lib/state.js');
 
@@ -14,16 +12,16 @@ const defaultOptions = {
 		stateProjection() {
 			return [
 				[1, 0, 0, 0],
-				[0, 1, 0, 0]
+				[0, 1, 0, 0],
 			];
 		},
 
 		covariance() {
 			return [
 				[1, 0],
-				[0, 1]
+				[0, 1],
 			];
-		}
+		},
 	},
 
 	dynamic: {
@@ -34,8 +32,8 @@ const defaultOptions = {
 				[huge, 0, 0, 0],
 				[0, huge, 0, 0],
 				[0, 0, huge, 0],
-				[0, 0, 0, huge]
-			]
+				[0, 0, 0, huge],
+			],
 		},
 
 		dimension: 4,
@@ -44,7 +42,7 @@ const defaultOptions = {
 				[1, 0, timeStep, 0],
 				[0, 1, 0, timeStep],
 				[0, 0, 1, 0],
-				[0, 0, 0, 1]
+				[0, 0, 0, 1],
 			];
 		},
 
@@ -53,17 +51,17 @@ const defaultOptions = {
 				[1, 0, 0, 0],
 				[0, 1, 0, 0],
 				[0, 0, 0.01, 0],
-				[0, 0, 0, 0.01]
+				[0, 0, 0, 0.01],
 			];
-		}
-	}
+		},
+	},
 
 };
 
 const observations = [
 	[[1], [2]],
 	[[2.1], [3.9]],
-	[[3], [6]]
+	[[3], [6]],
 ];
 
 // Test 1: Verify polymorphism in a dynamic parameter
@@ -77,14 +75,14 @@ test('Polymorphism', t => {
 				[1, 0, timeStep, 0],
 				[0, 1, 0, timeStep],
 				[0, 0, 1, 0],
-				[0, 0, 0, 1]
-			]
-		})
+				[0, 0, 0, 1],
+			],
+		}),
 	});
 	const simpleArrayOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			covariance: [1, 1, 0.01, 0.01]
-		})
+			covariance: [1, 1, 0.01, 0.01],
+		}),
 	});
 
 	const kf2 = new KalmanFilter(matrixOptions);
@@ -100,15 +98,15 @@ test('Polymorphism', t => {
 
 	const corrected1 = kf1.correct({
 		predicted: predicted1,
-		observation: observations[0]
+		observation: observations[0],
 	});
 	const corrected2 = kf2.correct({
 		predicted: predicted2,
-		observation: observations[0]
+		observation: observations[0],
 	});
 	const corrected3 = kf2.correct({
 		predicted: predicted3,
-		observation: observations[0]
+		observation: observations[0],
 	});
 
 	t.true(predicted1 instanceof State);
@@ -136,11 +134,11 @@ test('Polymorphism on observation', t => {
 	const predicted = kf.predict();
 	const corrected1 = kf.correct({
 		predicted,
-		observation: observations[0]
+		observation: observations[0],
 	});
 	const corrected2 = kf.correct({
 		predicted,
-		observation: arrayObservation
+		observation: arrayObservation,
 	});
 	t.true(corrected1 instanceof State);
 	t.true(corrected2 instanceof State);
@@ -152,8 +150,8 @@ test('Polymorphism on observation', t => {
 test('Dynamic init', t => {
 	const noInitOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			init: undefined
-		})
+			init: undefined,
+		}),
 	});
 	const kf = new KalmanFilter(noInitOptions);
 	const predicted = kf.predict();
@@ -172,8 +170,8 @@ test('Dynamic init', t => {
 			[huge, 0, 0, 0],
 			[0, huge, 0, 0],
 			[0, 0, huge, 0],
-			[0, 0, 0, huge]
-		]
+			[0, 0, 0, huge],
+		],
 	};
 	t.deepEqual(kf.dynamic.init, initObjective);
 
@@ -191,15 +189,15 @@ test('Dynamic init', t => {
 test('stateProjection dimensions', t => {
 	const noDimensionsOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			dimension: undefined
+			dimension: undefined,
 		}),
 		observation: Object.assign({}, defaultOptions.observation, {
 			dimension: undefined,
 			stateProjection: [
 				[1, 0, 0, 0],
-				[0, 1, 0, 0]
-			]
-		})
+				[0, 1, 0, 0],
+			],
+		}),
 	});
 	const kf = new KalmanFilter(noDimensionsOptions);
 	t.is(kf.dynamic.dimension, 4);
@@ -217,9 +215,9 @@ test('Transition dimension', t => {
 				[1, 0, timeStep, 0],
 				[0, 1, 0, timeStep],
 				[0, 0, 1, 0],
-				[0, 0, 0, 1]
-			]
-		})
+				[0, 0, 0, 1],
+			],
+		}),
 	});
 	const kf = new KalmanFilter(noDynamicDimensionOptions);
 	t.is(kf.dynamic.dimension, 4);
@@ -233,14 +231,14 @@ test('Building stateProjection', t => {
 			stateProjection: undefined,
 			observedProjection: [
 				[1, 0],
-				[0, 1]
-			]
-		})
+				[0, 1],
+			],
+		}),
 	});
 	const kf = new KalmanFilter(noStateProjectionOptions);
 	const stateProjectionObjective = [
 		[1, 0, 0, 0],
-		[0, 1, 0, 0]
+		[0, 1, 0, 0],
 	];
 	t.deepEqual(kf.observation.stateProjection, stateProjectionObjective);
 });
@@ -251,15 +249,15 @@ test('Building stateProjection', t => {
 test('Dimension Error with stateProjection', t => {
 	const badSetOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			dimension: 4
+			dimension: 4,
 		}),
 		observation: Object.assign({}, defaultOptions.observation, {
 			dimension: 2,
 			stateProjection: [
 				[1, 0],
-				[0, 1]
-			]
-		})
+				[0, 1],
+			],
+		}),
 	});
 	const error = t.throws(() => {
 		const kf = new KalmanFilter(badSetOptions);
@@ -279,9 +277,9 @@ test('Dimension Error with Transition', t => {
 				[1, 0, timeStep, 0],
 				[0, 1, 0, timeStep],
 				[0, 0, 1, 0],
-				[0, 0, 0, 1]
-			]
-		})
+				[0, 0, 0, 1],
+			],
+		}),
 	});
 	const error = t.throws(() => {
 		const kf = new KalmanFilter(badSetOptions);
@@ -297,13 +295,13 @@ test('Observed and State Projections', t => {
 		observation: Object.assign({}, defaultOptions.observation, {
 			observedProjection: [
 				[1, 0],
-				[0, 1]
+				[0, 1],
 			],
 			stateProjection: [
 				[1, 0, 0, 0],
-				[0, 1, 0, 0]
-			]
-		})
+				[0, 1, 0, 0],
+			],
+		}),
 	});
 	const error = t.throws(() => {
 		const kf = new KalmanFilter(badSetOptions);
@@ -322,8 +320,8 @@ test('Index initialization', t => {
 			[1, 0, 0, 0],
 			[0, 1, 0, 0],
 			[0, 0, 1, 0],
-			[0, 0, 0, 1]
-		]
+			[0, 0, 0, 1],
+		],
 	});
 	const predicted1 = kf.predict();
 	const predicted2 = kf.predict({previousCorrected: firstState});

@@ -5,13 +5,12 @@
 // We have used a specific script to build the default parameters [script](../../../script/covariance-pendulum.js)
 
 const test = require('ava');
-
-// Tests in 2D with constant speed model
-
+const {frobenius: distanceMat} = require('simple-linalg');
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
-const {frobenius: distanceMat} = require('simple-linalg');
 const getCorrelation = require('../../helpers/get-correlation.js');
+
+// Tests in 2D with constant speed model
 
 const huge = 1000;
 
@@ -20,15 +19,15 @@ const defaultOptions = {
 		dimension: 1,
 		stateProjection() {
 			return [
-				[1, 0]
+				[1, 0],
 			];
 		},
 
 		covariance() {
 			return [
-				[1]
+				[1],
 			];
-		}
+		},
 	},
 
 	dynamic: {
@@ -37,26 +36,26 @@ const defaultOptions = {
 
 			covariance: [
 				[huge, 0],
-				[0, huge]
+				[0, huge],
 
-			]
+			],
 		},
 
 		dimension: 2,
 		transition() {
 			return [
 				[1, timeStep],
-				[0, 1]
+				[0, 1],
 			];
 		},
 
 		covariance() {
 			return [
-				[0.5, 0.00025],
-				[0.00025, 0.05]
+				[0.5, 0.000_25],
+				[0.000_25, 0.05],
 			];
-		}
-	}
+		},
+	},
 
 };
 
@@ -66,7 +65,7 @@ const timeStep = 0.1;
 const observations = [
 	[[0]],
 	[[0.2]],
-	[[0.3]]
+	[[0.3]],
 ];
 
 // Test 1: Verify that if observation fits the model, then the newCorrected.covariance
@@ -78,20 +77,20 @@ test('Fitted observation', t => {
 		mean: [[0], [1]],
 		covariance: [
 			[1, 0],
-			[0, 1]
-		]
+			[0, 1],
+		],
 	});
 	const badFittedObs = [[0.5]];
 	const predicted1 = kf1.predict({
-		previousCorrected: firstState
+		previousCorrected: firstState,
 	});
 	const corrected1 = kf1.correct({
 		predicted: predicted1,
-		observation: observations[1]
+		observation: observations[1],
 	});
 	const corrected2 = kf1.correct({
 		predicted: predicted1,
-		observation: badFittedObs
+		observation: badFittedObs,
 	});
 	t.true(corrected1 instanceof State);
 	t.true(corrected2 instanceof State);
@@ -119,17 +118,17 @@ test('Predicted variance', t => {
 		mean: [[0.1], [0.5]],
 		covariance: [
 			[0.1, 0.0001],
-			[0.0001, 0.001]
-		]
+			[0.0001, 0.001],
+		],
 	});
 	const obsNoiseOptions = Object.assign({}, defaultOptions, {
 		observation: Object.assign({}, defaultOptions.observation, {
 			covariance() {
 				return [
-					[10]
+					[10],
 				];
-			}
-		})
+			},
+		}),
 	});
 	const kf = new CoreKalmanFilter(obsNoiseOptions);
 
@@ -137,21 +136,21 @@ test('Predicted variance', t => {
 	const badFitObs = [[0.17]];
 	const corrected1 = kf.correct({
 		predicted: predicted1,
-		observation: goodFitObs
+		observation: goodFitObs,
 	});
 	const corrected2 = kf.correct({
 		predicted: predicted1,
-		observation: badFitObs
+		observation: badFitObs,
 	});
 
 	// Verify that the corrected variance is not linked to the quality of the observation
 	const dist1 = [
 		Math.abs(corrected1.covariance[0][0] - predicted1.covariance[0][0]),
-		Math.abs(corrected1.covariance[1][1] - predicted1.covariance[1][1])
+		Math.abs(corrected1.covariance[1][1] - predicted1.covariance[1][1]),
 	];
 	const dist2 = [
 		Math.abs(corrected2.covariance[0][0] - predicted1.covariance[0][0]),
-		Math.abs(corrected2.covariance[1][1] - predicted1.covariance[1][1])
+		Math.abs(corrected2.covariance[1][1] - predicted1.covariance[1][1]),
 	];
 	t.is(dist1[0], dist2[0]);
 	t.is(dist1[1], dist2[1]);
@@ -168,27 +167,27 @@ test('Bad fit observation and correlation', t => {
 		mean: [[0.1], [0.5]],
 		covariance: [
 			[0.1, 0.0001],
-			[0.0001, 0.001]
-		]
+			[0.0001, 0.001],
+		],
 	});
 	const obsNoiseOptions = Object.assign({}, defaultOptions, {
 		observation: Object.assign({}, defaultOptions.observation, {
 			covariance() {
 				return [
-					[10]
+					[10],
 				];
-			}
-		})
+			},
+		}),
 	});
 	const kf = new CoreKalmanFilter(obsNoiseOptions);
 
 	const badFitObs = [[0.17]];
 	const corrected1 = kf.correct({
 		predicted: predicted1,
-		observation: badFitObs
+		observation: badFitObs,
 	});
 	const diff = Math.abs(
-		getCorrelation(predicted1.covariance, 0, 1) - getCorrelation(corrected1.covariance, 0, 1)
+		getCorrelation(predicted1.covariance, 0, 1) - getCorrelation(corrected1.covariance, 0, 1),
 	);
 	t.true(diff < 0.1);
 });
@@ -201,26 +200,26 @@ test('Non null covariance', t => {
 		mean: [[0.1], [0.5]],
 		covariance: [
 			[1, 0.005],
-			[0.005, 0.01]
-		]
+			[0.005, 0.01],
+		],
 	});
 	// PreviousCorrected with null covariance
 	const previousCorrected2 = new State({
 		mean: [[0.1], [0.5]],
 		covariance: [
 			[1, 0],
-			[0, 0.01]
-		]
+			[0, 0.01],
+		],
 	});
 	const nullCovTransitionOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			transition() {
 				return [
 					[0.5, 0],
-					[0, 0.005]
+					[0, 0.005],
 				];
-			}
-		})
+			},
+		}),
 	});
 
 	// Verify that the covariance between alpha and Valpha is greater
@@ -229,13 +228,13 @@ test('Non null covariance', t => {
 	const kf2 = new CoreKalmanFilter(nullCovTransitionOptions);
 
 	const predicted1 = kf1.predict({
-		previousCorrected: previousCorrected1
+		previousCorrected: previousCorrected1,
 	});
 	const predicted2 = kf1.predict({
-		previousCorrected: previousCorrected2
+		previousCorrected: previousCorrected2,
 	});
 	const predicted3 = kf2.predict({
-		previousCorrected: previousCorrected1
+		previousCorrected: previousCorrected1,
 	});
 
 	t.true(Math.abs(predicted1.covariance[0][1]) > Math.abs(predicted2.covariance[0][1]));
@@ -253,25 +252,25 @@ test('getValue function', t => {
 		mean: [[0.1], [0.5]],
 		covariance: [
 			[1, 0.005],
-			[0.005, 0.01]
+			[0.005, 0.01],
 		],
-		index: 1
+		index: 1,
 	});
 	const multiParameterTransition = function ({previousCorrected, index}) {
 		const timeStep = (index % 2) ? 1 : 0.5;
 		// We consider a resistance from the air, proportionnal to v*v
 		// NB: this model is not a good physical modeling
-		const speedSlowDownFactor = Math.min(previousCorrected.mean[1][0] ^ 2 * 0.01, 1);
+		const speedSlowDownFactor = Math.min(previousCorrected.mean[1][0] * previousCorrected.mean[1][0], 1);
 		return [
 			[1, timeStep],
-			[0, 1 - speedSlowDownFactor]
+			[0, 1 - speedSlowDownFactor],
 		];
 	};
 
 	const multiParameterTransitionOptions = Object.assign({}, defaultOptions, {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
-			transition: multiParameterTransition
-		})
+			transition: multiParameterTransition,
+		}),
 	});
 	const kf = new CoreKalmanFilter(multiParameterTransitionOptions);
 	const predicted = kf.predict({previousCorrected: previousCorrected1});
@@ -281,9 +280,9 @@ test('getValue function', t => {
 		mean: [[0.1], [3]],
 		covariance: [
 			[1, 0.005],
-			[0.005, 0.01]
+			[0.005, 0.01],
 		],
-		index: 1
+		index: 1,
 	});
 
 	// With a high speed, our predicted should be a constant-position

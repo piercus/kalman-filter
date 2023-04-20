@@ -83,7 +83,7 @@
   },
   "homepage": "https://github.com/piercus/kalman-filter#readme",
   "devDependencies": {
-    "ava": "^3.8.2",
+    "ava": "^5.2.0",
     "browserify": "^16.5.2",
     "cholesky": "^1.2.0",
     "hasard": "^1.6.1",
@@ -91,7 +91,7 @@
     "semantic-release": "^19.0.3",
     "webpack": "^5.21.1",
     "webpack-cli": "^4.5.0",
-    "xo": "^0.37.1"
+    "xo": "^0.54.1"
   },
   "dependencies": {
     "@rayyamhk/matrix": "^1.0.5",
@@ -106,6 +106,10 @@
     "rules": {
       "unicorn/no-array-reduce": 0,
       "no-multi-assign": 0,
+      "import/extensions": 0,
+      "unicorn/no-new-array": 0,
+      "unicorn/no-array-for-each": 0,
+      "unicorn/prefer-module": 0,
       "unicorn/no-reduce": 0,
       "ava/prefer-async-await": 0,
       "ava/no-skip-test": 1,

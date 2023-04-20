@@ -8,7 +8,7 @@ const calculateObservationCovariance = function ({groundTruths, rangeNoise = 10,
 	const averages = new Array(numberRun).fill(0).map(() => groundTruths).reduce((a, b) => a.concat(b));
 	const covariance = getCovariance({
 		measures,
-		averages
+		averages,
 	});
 	// Console.log(measures, averages, measures.length, averages.length,covariance);
 

@@ -1,26 +1,25 @@
 const test = require('ava');
-
-const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
-const State = require('../../../lib/state.js');
 const {trace} = require('simple-linalg');
-const equalState = require('../../../test/helpers/equal-state.js');
 const {frobenius: distanceMat} = require('simple-linalg');
 const {sum} = require('simple-linalg');
+const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
+const State = require('../../../lib/state.js');
+const equalState = require('../../../test/helpers/equal-state.js');
 
 const defaultOptions = {
 	observation: {
 		dimension: 1,
 		stateProjection() {
 			return [
-				[1]
+				[1],
 			];
 		},
 
 		covariance() {
 			return [
-				[1]
+				[1],
 			];
-		}
+		},
 	},
 
 	dynamic: {
@@ -29,21 +28,21 @@ const defaultOptions = {
 			mean: [[0]],
 
 			covariance: [
-				[1]
-			]
+				[1],
+			],
 		},
 		transition() { // Constant position model
 			return [
-				[1]
+				[1],
 			];
 		},
 
 		covariance() {
 			return [
-				[1]
+				[1],
 			];
-		}
-	}
+		},
+	},
 
 };
 
@@ -60,7 +59,7 @@ test('Init with zero mean', t => {
 	const {mean, covariance, index} = defaultOptions.dynamic.init;
 	const initState = new State({mean, covariance, index});
 	t.true(equalState(kf1.predict(), kf1.predict({
-		previousCorrected: initState
+		previousCorrected: initState,
 	})));
 	t.true(kf1.predict() instanceof State);
 });
@@ -73,15 +72,15 @@ test('Impact previousCorrected and dynamic covariance', t => {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			covariance() {
 				return [
-					[tiny]
+					[tiny],
 				];
-			}
-		})
+			},
+		}),
 	});
 	const kf = new CoreKalmanFilter(smallDynamicCovOptions);
 	const previousCorrected = new State({
 		mean: [[0]],
-		covariance: [[tiny]]
+		covariance: [[tiny]],
 	});
 	const predicted = kf.predict({previousCorrected});
 	t.true(predicted instanceof State);
@@ -96,12 +95,12 @@ test('Huge predicted covariance', t => {
 	const predicted = new State({
 		mean: [[1]],
 		covariance: [
-			[huge]
-		]
+			[huge],
+		],
 	});
 	const corrected = kf.correct({
 		predicted,
-		observation
+		observation,
 	});
 	const kalmanGain = kf.getGain({predicted, stateProjection: [[1]]});
 	t.true(corrected instanceof State);
@@ -113,7 +112,7 @@ test('Huge predicted covariance', t => {
 test('Dynamic covariance test', t => {
 	const normalPreviousCorrected = new State({
 		mean: [[0]],
-		covariance: [[1]]
+		covariance: [[1]],
 	});
 	// Const smallPreviousCorrected = new State({
 	// 	mean: [[0]],
@@ -121,7 +120,7 @@ test('Dynamic covariance test', t => {
 	// });
 	const hugePreviousCorrected = new State({
 		mean: [[0]],
-		covariance: [[huge]]
+		covariance: [[huge]],
 	});
 
 	const kfDefault = new CoreKalmanFilter(defaultOptions);
@@ -130,22 +129,22 @@ test('Dynamic covariance test', t => {
 		dynamic: Object.assign({}, defaultOptions.dynamic, {
 			covariance() {
 				return [
-					[huge]
+					[huge],
 				];
-			}
-		})
+			},
+		}),
 	});
 	const kfHuge = new CoreKalmanFilter(hugeDynOptions);
 
 	const predicted1 = kfDefault.predict({
-		previousCorrected: normalPreviousCorrected
+		previousCorrected: normalPreviousCorrected,
 	});
 	const predicted2 = kfHuge.predict({
-		previousCorrected: normalPreviousCorrected
+		previousCorrected: normalPreviousCorrected,
 	});
 
 	const predicted3 = kfDefault.predict({
-		previousCorrected: hugePreviousCorrected
+		previousCorrected: hugePreviousCorrected,
 	});
 	t.true(trace(predicted1.covariance) < trace(predicted2.covariance));
 
@@ -157,11 +156,11 @@ test('Dynamic covariance test', t => {
 test('Observation covariance test', t => {
 	const normalPredicted = new State({
 		mean: [[0]],
-		covariance: [[1]]
+		covariance: [[1]],
 	});
 	const smallPredicted = new State({
 		mean: [[0]],
-		covariance: [[tiny]]
+		covariance: [[tiny]],
 	});
 	// Const hugePredicted = new State({
 	// 	mean: [[0]],
@@ -174,26 +173,26 @@ test('Observation covariance test', t => {
 		observation: Object.assign({}, defaultOptions.observation, {
 			covariance() {
 				return [
-					[tiny]
+					[tiny],
 				];
-			}
-		})
+			},
+		}),
 	});
 	const kfSmall = new CoreKalmanFilter(smallObservationCovOptions);
 
 	const corrected1 = kfDefault.correct({
 		predicted: normalPredicted,
-		observation
+		observation,
 	});
 
 	const corrected2 = kfSmall.correct({
 		predicted: normalPredicted,
-		observation
+		observation,
 	});
 
 	const corrected3 = kfDefault.correct({
 		predicted: smallPredicted,
-		observation
+		observation,
 	});
 	t.true(trace(corrected1.covariance) > trace(corrected2.covariance));
 
@@ -212,12 +211,12 @@ test('Predicted covariance equals to zero', t => {
 	const predicted = new State({
 		mean: [[0]],
 		covariance: [
-			[0]
-		]
+			[0],
+		],
 	});
 	const corrected = kf.correct({
 		predicted,
-		observation
+		observation,
 	});
 	t.is(trace(corrected.covariance), 0);
 });
@@ -230,18 +229,18 @@ test('Fitted observation', t => {
 	const badFittedObs = [[1.2]];
 	const previousCorrected = new State({
 		mean: defaultOptions.dynamic.init.mean,
-		covariance: defaultOptions.dynamic.init.covariance
+		covariance: defaultOptions.dynamic.init.covariance,
 	});
 	const predicted1 = kf1.predict({
-		previousCorrected
+		previousCorrected,
 	});
 	const corrected1 = kf1.correct({
 		predicted: predicted1,
-		observation
+		observation,
 	});
 	const corrected2 = kf1.correct({
 		predicted: predicted1,
-		observation: badFittedObs
+		observation: badFittedObs,
 	});
 	t.true(corrected1 instanceof State);
 	t.true(corrected2 instanceof State);
@@ -284,7 +283,7 @@ test('Fitted observation', t => {
 test('NaN Error', t => {
 	const previousCorrected = new State({
 		mean: [[0]],
-		covariance: [[Number.NaN]]
+		covariance: [[Number.NaN]],
 	});
 	const kf = new CoreKalmanFilter(defaultOptions);
 
@@ -300,8 +299,8 @@ test('Non squared matrix', t => {
 		mean: [[0, 0]],
 		covariance: [
 			[1, 0, 0],
-			[0, 1, 0]
-		]
+			[0, 1, 0],
+		],
 	});
 	const kf = new CoreKalmanFilter(defaultOptions);
 	const error = t.throws(() => {

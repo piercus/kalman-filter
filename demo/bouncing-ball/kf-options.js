@@ -9,10 +9,10 @@ module.exports = {
 		dimension: 2,
 		stateProjection: [
 			[1, 0, 0, 0, 0],
-			[0, 1, 0, 0, 0]
+			[0, 1, 0, 0, 0],
 		],
 		// Covariance generated thanks to getCovariance
-		covariance: [posVar / 5, posVar / 5]
+		covariance: [posVar / 5, posVar / 5],
 		// Covariance: [posVar, posVar, posVar, posVar],
 
 	},
@@ -26,8 +26,8 @@ module.exports = {
 				[0, huge, 0, 0, 0],
 				[0, 0, huge, 0, 0],
 				[0, 0, 0, huge, 0],
-				[0, 0, 0, 0, huge]
-			]
+				[0, 0, 0, 0, huge],
+			],
 		},
 
 		constant({previousCorrected}) {
@@ -55,7 +55,7 @@ module.exports = {
 				[0, 1, 0, timeStep, 0],
 				[0, 0, 1, 0, 0],
 				[0, 0, 0, vY, timeStep],
-				[0, 0, 0, 0, 1]
+				[0, 0, 0, 0, 1],
 			];
 		},
 
@@ -66,7 +66,7 @@ module.exports = {
 			posVar,
 			posVar * timeStep * timeStep,
 			posVar * timeStep * timeStep,
-			posVar * (timeStep ** 4)
-		]
-	}
+			posVar * (timeStep ** 4),
+		],
+	},
 };

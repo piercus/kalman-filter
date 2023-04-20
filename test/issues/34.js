@@ -1,6 +1,5 @@
-const {KalmanFilter} = require('../../index.js');
-
 const test = require('ava');
+const {KalmanFilter} = require('../../index.js');
 
 test('#34 1-D', t => {
 	const dataset = [0, 0, 0, 0, 16.1, 0, 0, 30.9, 0, 0, 0, 0, 26.1, null, null].map(a => [a]);
@@ -15,8 +14,8 @@ test('#34 1-D', t => {
 				}
 
 				return [[baseVariance]];
-			}
-		}
+			},
+		},
 	});
 
 	const response = kf.filterAll(dataset);
@@ -33,7 +32,7 @@ test('#34 2D', t => {
 		[4, 4],
 		[22, 5],
 		[null, null],
-		[34, 45]
+		[34, 45],
 	];
 
 	const baseVariance = 1;
@@ -50,8 +49,8 @@ test('#34 2D', t => {
 					return baseVariance;
 				});
 				return diag(variances);
-			}
-		}
+			},
+		},
 	});
 
 	const response = kf.filterAll(dataset);

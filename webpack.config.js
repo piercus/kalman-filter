@@ -2,7 +2,7 @@ module.exports = [{
 	entry: './index.js',
 	mode: 'development',
 	optimization: {
-		minimize: false
+		minimize: false,
 	},
 	name: 'raw',
 	devtool: 'inline-source-map',
@@ -10,8 +10,8 @@ module.exports = [{
 	output: {
 		filename: 'kalman-filter.js',
 		library: 'kalmanFilter',
-		libraryTarget: 'var'
-	}
+		libraryTarget: 'var',
+	},
 }, {
 	entry: './index.js',
 	name: 'min',
@@ -19,6 +19,6 @@ module.exports = [{
 	output: {
 		filename: 'kalman-filter.min.js',
 		library: 'kalmanFilter',
-		libraryTarget: 'var'
-	}
+		libraryTarget: 'var',
+	},
 }];

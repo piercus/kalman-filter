@@ -5,20 +5,20 @@ test('Logger.debug', t => {
 	let hasDebug = false;
 	const kf = new KalmanFilter({
 		observation: {
-			name: 'sensor'
+			name: 'sensor',
 		},
 		dynamic: {
-			name: 'constant-speed'
+			name: 'constant-speed',
 		},
 		logger: {
 			info: (...args) => console.log(...args),
-			debug: (...args) => {
+			debug(...args) {
 				hasDebug = true;
 				console.log(...args);
 			},
 			warn: (...args) => console.log(...args),
-			error: (...args) => console.log(...args)
-		}
+			error: (...args) => console.log(...args),
+		},
 	});
 	kf.predict();
 	t.is(hasDebug, true);

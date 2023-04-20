@@ -11,10 +11,10 @@ module.exports = {
 			[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 			[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+			[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
 		],
 		// Covariance generated thanks to getCovariance
-		covariance: observationCovariance
+		covariance: observationCovariance,
 		// Covariance: [posVar, posVar, posVar, posVar],
 
 	},
@@ -55,7 +55,7 @@ module.exports = {
 			posVar * (timeStep ** 4),
 			posVar * (timeStep ** 4),
 			sizeVar * (timeStep ** 4),
-			sizeVar * (timeStep ** 4)
-		]
-	}
+			sizeVar * (timeStep ** 4),
+		],
+	},
 };

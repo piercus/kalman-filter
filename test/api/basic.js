@@ -1,7 +1,6 @@
 // ReadMe Tests
 
 const test = require('ava');
-
 const KalmanFilter = require('../../lib/kalman-filter.js');
 const State = require('../../lib/state.js');
 // Const getCovariance = require('../../lib/utils/get-covariance.js');
@@ -17,7 +16,7 @@ test('Default filter : Constant-position on 1D Data', t => {
 
 test('Simple constant-position 2d', t => {
 	const kf = new KalmanFilter({
-		observation: 2
+		observation: 2,
 	});
 	const observations = [[0.11, 0.1], [0.21, 0.19], [0.3, 0.3]];
 	const result = kf.filterAll(observations);
@@ -27,7 +26,7 @@ test('Simple constant-position 2d', t => {
 test('Simple constant-speed 2d', t => {
 	const kf = new KalmanFilter({
 		observation: 2,
-		dynamic: 'constant-speed'
+		dynamic: 'constant-speed',
 	});
 	const observations = [[0.11, 0.1], [0.21, 0.19], [0.3, 0.3]];
 	const result = kf.filterAll(observations);
@@ -38,19 +37,19 @@ test('Constant-position on 2D Data', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2,
-			name: 'sensor'
+			name: 'sensor',
 		},
 		dynamic: {
 			name: 'constant-position', // Observation.sensorDimension == dynamic.dimension
-			covariance: [3, 4]// Equivalent to diag([3, 4])
-		}
+			covariance: [3, 4], // Equivalent to diag([3, 4])
+		},
 	});
 	const previousCorrected = new State({
 		mean: [[100], [100]],
 		covariance: [
 			[1, 0],
-			[0, 1]
-		]
+			[0, 1],
+		],
 	});
 	const predicted = kFilter.predict({previousCorrected});
 	const corrected = kFilter.correct({predicted, observation: observations[0]});
@@ -68,20 +67,20 @@ test('Constant-speed on 3D Data', t => {
 			[0, 0, 1, 0, 0, 0],
 			[0, 0, 0, 0.01, 0, 0],
 			[0, 0, 0, 0, 0.01, 0],
-			[0, 0, 0, 0, 0, 0.01]
+			[0, 0, 0, 0, 0, 0.01],
 		],
-		index: 1
+		index: 1,
 	});
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 3,
-			name: 'sensor'
+			name: 'sensor',
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension * 2 == state.dimension
 			timeStep: 0.1,
-			covariance: [1, 1, 1, 0.1, 0.1, 0.1]// Equivalent to diag([3, 3, 3, 4, 4, 4])
-		}
+			covariance: [1, 1, 1, 0.1, 0.1, 0.1], // Equivalent to diag([3, 3, 3, 4, 4, 4])
+		},
 	});
 	const predicted = kFilter.predict({previousCorrected});
 	const corrected = kFilter.correct({predicted, observation: observations[0]});
@@ -95,7 +94,7 @@ test('Constant-speed on 3D Data', t => {
 	const kFilter2 = new KalmanFilter({
 		observation: {
 			dimension: 3,
-			name: 'sensor'
+			name: 'sensor',
 		},
 		dynamic: {
 			dimension: 6, // (x, y, z, vx, vy, vz)
@@ -105,10 +104,10 @@ test('Constant-speed on 3D Data', t => {
 				[0, 0, 1, 0, 0, timeStep],
 				[0, 0, 0, 1, 0, 0],
 				[0, 0, 0, 0, 1, 0],
-				[0, 0, 0, 0, 0, 1]
+				[0, 0, 0, 0, 0, 1],
 			],
-			covariance: [1, 1, 1, 0.1, 0.1, 0.1]// Equivalent to diag([1, 1, 1, 0.1, 0.1, 0.1])
-		}
+			covariance: [1, 1, 1, 0.1, 0.1, 0.1], // Equivalent to diag([1, 1, 1, 0.1, 0.1, 0.1])
+		},
 	});
 	t.deepEqual(kFilter2.predict({previousCorrected}), kFilter.predict({previousCorrected}));
 });
@@ -117,13 +116,13 @@ test('Constant acceleration on 2D Data', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2,
-			name: 'sensor'
+			name: 'sensor',
 		},
 		dynamic: {
 			name: 'constant-acceleration', // Observation.sensorDimension * 3 == state.dimension
 			timeStep: 0.1,
-			covariance: [3, 3, 4, 4, 5, 5]// Equivalent to diag([3, 3, 4, 4, 5, 5])
-		}
+			covariance: [3, 3, 4, 4, 5, 5], // Equivalent to diag([3, 3, 4, 4, 5, 5])
+		},
 	});
 	const previousCorrected = new State({
 		mean: [[100], [100], [10], [10], [0], [0]],
@@ -133,14 +132,14 @@ test('Constant acceleration on 2D Data', t => {
 			[0, 0, 0.01, 0, 0, 0],
 			[0, 0, 0, 0.01, 0, 0],
 			[0, 0, 0, 0, 0.0001, 0],
-			[0, 0, 0, 0, 0, 0.0001]
-		]
+			[0, 0, 0, 0, 0, 0.0001],
+		],
 	});
 	const obs = [[102], [101]];
 	const predicted = kFilter.predict({previousCorrected});
 	const corrected = kFilter.correct({
 		predicted,
-		observation: obs
+		observation: obs,
 	});
 	t.true(predicted instanceof State);
 	t.is(predicted.mean.length, 6);
@@ -154,12 +153,12 @@ test('Sensor observation', t => {
 			sensorDimension: 2, // Observation.dimension == observation.sensorDimension * observation.nSensors
 			nSensors: 2,
 			sensorCovariance: [3, 4],
-			name: 'sensor'
+			name: 'sensor',
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension * 2 == state.dimension
-			covariance: [3, 3, 4, 4]// Equivalent to diag([3, 3, 4, 4])
-		}
+			covariance: [3, 3, 4, 4], // Equivalent to diag([3, 3, 4, 4])
+		},
 	});
 	t.is(kFilter.observation.stateProjection.length,
 		kFilter.observation.sensorDimension * kFilter.observation.nSensors);
@@ -175,15 +174,15 @@ test('Sensor observation', t => {
 			[1, 0, 0, 0],
 			[0, 1, 0, 0],
 			[0, 0, 0.01, 0],
-			[0, 0, 0, 0.01]
-		]
+			[0, 0, 0, 0.01],
+		],
 	});
 	const predicted = kFilter.predict({
-		previousCorrected
+		previousCorrected,
 	});
 	const corrected = kFilter.correct({
 		predicted,
-		observation: observations[0]
+		observation: observations[0],
 	});
 	t.true(predicted instanceof State);
 	t.is(predicted.mean.length, 4);
@@ -195,12 +194,12 @@ test('Simple Batch Usage', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2,
-			name: 'sensor'
+			name: 'sensor',
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension == dynamic.dimension
-			covariance: [3, 3, 4, 4]// Equivalent to diag([3, 4])
-		}
+			covariance: [3, 3, 4, 4], // Equivalent to diag([3, 4])
+		},
 	});
 	const results = kFilter.filterAll(observations);
 	t.is(results.length, 4);
@@ -210,32 +209,32 @@ test('Model fits ', t => {
 	const kFilter = new KalmanFilter({
 		observation: {
 			sensorDimension: 2,
-			name: 'sensor'
+			name: 'sensor',
 		},
 		dynamic: {
 			name: 'constant-speed', // Observation.sensorDimension == dynamic.dimension
-			covariance: [3, 3, 4, 4]
-		}
+			covariance: [3, 3, 4, 4],
+		},
 	});
 	const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 	// Online kalman filter
 	let previousCorrected = null;
 	const distances = [];
-	observations.forEach(observation => {
+	for (const observation of observations) {
 		const predicted = kFilter.predict({
-			previousCorrected
+			previousCorrected,
 		});
 
 		const dist = predicted.mahalanobis({observation, kf: kFilter});
 
 		previousCorrected = kFilter.correct({
 			predicted,
-			observation
+			observation,
 		});
 
 		distances.push(dist);
-	});
+	}
 
 	const distance = distances.reduce((d1, d2) => d1 + d2, 0);
 

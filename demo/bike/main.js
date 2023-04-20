@@ -1,9 +1,8 @@
 const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
-
-const noisyObservations = require('./observations.json').observations;
-const kfOptions = require('./kf-options.js');
 const createElement = require('../shared/views/create-element');
 const createGroupBoxes = require('../shared/views/create-group-boxes');
+const kfOptions = require('./kf-options.js');
+const noisyObservations = require('./observations.json').observations;
 
 const kf = new KalmanFilter(kfOptions);
 let predicted = kf.predict();
@@ -22,7 +21,7 @@ const delayPromise = delay => new Promise(resolve => {
 
 module.exports = {
 	run() {
-		noisyObservations.forEach((box, index) => {
+		for (const [index, box] of noisyObservations.entries()) {
 			promise = promise
 				.then(() => {
 					predicted = kf.predict({previousCorrected});
@@ -39,11 +38,11 @@ module.exports = {
 							b[0] + (b[2] / 2),
 							b[1] + (b[3] / 2),
 							b[2],
-							b[3]
+							b[3],
 						],
 						parent: img,
 						color: 'white',
-						lineStyle: 'solid'
+						lineStyle: 'solid',
 					});
 
 					return delayPromise(delay);
@@ -56,6 +55,6 @@ module.exports = {
 
 					return delayPromise(delay);
 				}).bind(null, box, index));
-		});
-	}
+		}
+	},
 };

@@ -11,7 +11,7 @@ module.exports = function ({mean, covariance, color, parent, className, tag = 'd
 	createPoint({
 		bbox: [center[0], center[1], 2, 2],
 		parent: container,
-		color
+		color,
 	});
 
 	const correlationXY = covariance[0][1] / (Math.sqrt(covariance[0][0]) * Math.sqrt(covariance[1][1]));
@@ -21,11 +21,11 @@ module.exports = function ({mean, covariance, color, parent, className, tag = 'd
 			center[0],
 			center[1],
 			2 * 3 * Math.sqrt(covariance[0][0]),
-			2 * 3 * Math.sqrt(covariance[1][1])
+			2 * 3 * Math.sqrt(covariance[1][1]),
 		],
 		parent: container,
 		rotationCoefficient: correlationXY,
-		color
+		color,
 	});
 	const arrowRotation = (-1 * Math.atan(mean[2][0] / mean[3][0]) * 180 / Math.PI) - 45;
 	const arrowScale = Math.sqrt((mean[2][0] ** 2) + (mean[3][0] ** 2));
@@ -33,12 +33,12 @@ module.exports = function ({mean, covariance, color, parent, className, tag = 'd
 		className: 'arrow',
 		bbox: [
 			center[0] + 6,
-			center[1] - 9
+			center[1] - 9,
 		],
 		parent: container,
 		rotationCoefficient: arrowRotation,
 		scale: arrowScale,
-		color
+		color,
 	});
 	parent.append(container);
 };
