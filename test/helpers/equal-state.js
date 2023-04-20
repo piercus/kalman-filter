@@ -1,5 +1,5 @@
 const State = require('../../lib/state.js');
-const distanceMat = require('../../lib/linalgebra/distance-mat.js');
+const {frobenius: distanceMat} = require('simple-linalg');
 
 module.exports = function (state1, state2, tolerance = 1e-6) {
 	if ((!(state1 instanceof State)) || (!(state2 instanceof State))) {

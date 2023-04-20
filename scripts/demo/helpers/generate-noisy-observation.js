@@ -1,5 +1,5 @@
 const h = require('hasard');
-const elemWise = require('../../../lib/linalgebra/elem-wise.js');
+const {elemWise} = require('simple-linalg');
 
 const generateNoisyObservation = function ({groundTruths, rangeNoise = 10, numberRun = 1}) {
 	const hasardNoise = h.matrix({

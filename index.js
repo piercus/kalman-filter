@@ -10,6 +10,5 @@ module.exports = {
 	State: require('./lib/state'),
 	checkCovariance: require('./lib/utils/check-covariance'),
 	correlationToCovariance: require('./lib/utils/correlation-to-covariance'),
-	covarianceToCorrelation: require('./lib/utils/covariance-to-correlation'),
-	linalgebra: require('./lib/linalgebra')
+	covarianceToCorrelation: require('./lib/utils/covariance-to-correlation')
 };

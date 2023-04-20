@@ -1,6 +1,6 @@
 // Xt ~ N(dynamic.transition°Xt-1, dynamic.covariance)
 
-const matMul = require('../lib/linalgebra/mat-mul.js');
+const {matMul} = require('simple-linalg');
 
 module.exports = function () {
 	const timeStep = 0.1;

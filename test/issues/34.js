@@ -24,7 +24,7 @@ test('#34 1-D', t => {
 });
 
 test('#34 2D', t => {
-	const {diag} = require('../..').linalgebra;
+	const {diag} = require('simple-linalg');
 
 	const dataset = [
 		[22, null],

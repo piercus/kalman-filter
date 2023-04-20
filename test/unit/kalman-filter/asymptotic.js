@@ -1,8 +1,8 @@
 const test = require('ava');
 
 const KalmanFilter = require('../../../lib/kalman-filter.js');
-const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
-const sum = require('../../../lib/linalgebra/sum.js');
+const {frobenius: distanceMat} = require('simple-linalg');
+const {sum} = require('simple-linalg');
 
 // Test 1 : Verify that a simple model converges quickly
 

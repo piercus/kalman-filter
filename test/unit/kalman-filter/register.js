@@ -4,7 +4,7 @@ const KalmanFilter = require('../../../lib/kalman-filter.js');
 const State = require('../../../lib/state.js');
 const equalState = require('../../helpers/equal-state.js');
 const modelCollection = require('../../../lib/model-collection.js');
-const identity = require('../../../lib/linalgebra/identity.js');
+const {identity} = require('simple-linalg');
 
 // Verify that we can use a registered model, the observations are here in 1D
 

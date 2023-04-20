@@ -2,10 +2,10 @@ const test = require('ava');
 
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');
-const trace = require('../../../lib/linalgebra/trace.js');
+const {trace} = require('simple-linalg');
 const equalState = require('../../../test/helpers/equal-state.js');
-const distanceMat = require('../../../lib/linalgebra/distance-mat.js');
-const sum = require('../../../lib/linalgebra/sum.js');
+const {frobenius: distanceMat} = require('simple-linalg');
+const {sum} = require('simple-linalg');
 
 const defaultOptions = {
 	observation: {
