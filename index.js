@@ -17,4 +17,5 @@ module.exports = Object.assign({
 	checkCovariance: require('./lib/utils/check-covariance'),
 	correlationToCovariance: require('./lib/utils/correlation-to-covariance'),
 	covarianceToCorrelation: require('./lib/utils/covariance-to-correlation'),
+	projectObservation: require('./lib/utils/project-observation'),
 }, modelCollection);
