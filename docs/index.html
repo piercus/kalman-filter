@@ -22,57 +22,6 @@
     width: 100%;
     margin: auto;
   }
-  h1, p {
-    text-align: center;
-  }
-  img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-  }
-  .top-right {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin: 1rem;
-    z-index: 1;
-    font-size: 0.8rem;
-  }
-  .top-right h4 {
-    margin: 0;
-    font-weight: normal;
-  }
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    background-color: #f2f2f2;
-  }
-  .controls input[type="button"] {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    margin: 0.5rem;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-  }
-  .controls input[type="button"]:hover {
-    background-color: #3e8e41;
-  }
-  .controls label {
-    font-size: 0.8rem;
-    margin-left: 0.5rem;
-  }
-  #status {
-    text-align:center;
-    font-size: 0.8rem;
-    margin-top: 1rem;
-  }
 </style>
 
 </head>
@@ -80,9 +29,12 @@
     <div class="img" id='bikes'>
         <img src="./bike.gif">
 				<div class="top-right" id='legend'>
-					<h4 style="color: blue;">Prediction</h4>
-					<h4 style="color: white;">Observation</h4>
-					<h4 style="color: red;">Correction</h4>
+					<h4 style="color: blue;"> Prediction
+					</h4>
+					<h4 style="color: white;"> Observation
+					</h4>
+					<h4 style="color: red;"> Correction
+					</h4>
 				</div>
     </div>
     <div class="controls" id='controls'>
@@ -93,20 +45,22 @@
   		<input id="clickMe" type="button" value="Show/Hide Corrections" onclick="showHide('corrected');" />
 
   		<input type="checkbox"  id="speedVectors" onclick="showHide('speedVectors');">
-		  <label for="checkbox1">Speed Vectors</label>
+  	  <label for="checkbox1"> Speed Vectors </label>
   		<input type="checkbox"  id="Variances" onclick="showHide('variances');" checked="checked">
-  	  <label for="checkbox2">Variances</label>
-  		<input type="checkbox"  id="Covariances" onclick="showHide('covariances');">
-  	  <label for="checkbox3">Covariances</label>
+  	  <label for="checkbox1"> Variances </label>
+		<input type="checkbox"  id="Covariances" onclick="showHide('covariances');">
+  	  <label for="checkbox1"> Covariances </label>
     </div>
 
     <!-- Add a div to display status messages -->
-    <div id="status"></div>
+    <div id="status" style="text-align:center;"></div>
 </body>
 <script src="dist/kalman-filter.js"></script>
 <script src="dist/bike.js"></script>
 
 <script>
+//
+// const btn = document.querySelector('button');
 const status = {
   'predicted': false,
   'observation': true,
