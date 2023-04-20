@@ -1,5 +1,5 @@
 const test = require('ava');
-const KalmanFilter = require('../../../lib/kalman-filter');
+const {KalmanFilter} = require('../../..');
 
 test('Logger.debug', t => {
 	let hasDebug = false;
@@ -12,9 +12,9 @@ test('Logger.debug', t => {
 		},
 		logger: {
 			info: (...args) => console.log(...args),
-			debug(...args) {
+			debug() {
 				hasDebug = true;
-				console.log(...args);
+				// Console.log(...args);
 			},
 			warn: (...args) => console.log(...args),
 			error: (...args) => console.log(...args),

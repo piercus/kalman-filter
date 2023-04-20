@@ -1,7 +1,6 @@
 const test = require('ava');
 const equalState = require('../../../test/helpers/equal-state.js');
-const KalmanFilter = require('../../../lib/kalman-filter.js');
-const State = require('../../../lib/state.js');
+const {KalmanFilter, State} = require('../../..');
 
 test('Filter method', t => {
 	const observations = [[0.11], [0.21], [0.3]];

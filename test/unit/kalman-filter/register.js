@@ -1,10 +1,8 @@
 const test = require('ava');
 const {identity} = require('simple-linalg');
-const KalmanFilter = require('../../../lib/kalman-filter.js');
-const State = require('../../../lib/state.js');
+const {KalmanFilter, State} = require('../../..');
 const equalState = require('../../helpers/equal-state.js');
 const modelCollection = require('../../../lib/model-collection.js');
-
 // Verify that we can use a registered model, the observations are here in 1D
 
 test('Check constant position', t => {
@@ -242,7 +240,6 @@ test('Init and registered model', t => {
 			},
 		},
 	});
-	console.log(kf.dynamic.init.covariance);
 	t.deepEqual(
 		kf.dynamic.init.covariance,
 		[[1, 0],

@@ -1,8 +1,7 @@
 // ReadMe Tests
 
 const test = require('ava');
-const KalmanFilter = require('../../lib/kalman-filter.js');
-const State = require('../../lib/state.js');
+const {KalmanFilter, State} = require('../..');
 // Const getCovariance = require('../../lib/utils/get-covariance.js');
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
