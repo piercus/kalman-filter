@@ -88,7 +88,7 @@
     "cholesky": "^1.2.0",
     "hasard": "^1.6.1",
     "http-server": "^14.1.1",
-    "semantic-release": "^19.0.3",
+    "semantic-release": "^21.0.1",
     "webpack": "^5.21.1",
     "webpack-cli": "^4.5.0",
     "xo": "^0.54.1"
