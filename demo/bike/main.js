@@ -2,6 +2,7 @@ const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
 const createElement = require('../shared/views/create-element');
 const createGroupBoxes = require('../shared/views/create-group-boxes');
 const noisyObservations = require('./observations.json').observations;
+const kfOptions = require('./kf-options');
 
 const kf = new KalmanFilter(kfOptions);
 let predicted = kf.predict();
@@ -12,7 +13,7 @@ const img = document.querySelector('#bikes');// eslint-disable-line no-undef
 const delay = 200;
 
 let promise = Promise.resolve();
-
+let running = false;
 const delayPromise = delay => new Promise(resolve => {
 	setTimeout(resolve, delay);
 });
@@ -21,23 +22,27 @@ const els = [];
 
 module.exports = {
 	run() {
+		if (running) {
+			return;
+		}
+
+		running = true;
 		let previousCorrected = null;
 		let i = els.length;
-		while (i-- >= 0) {
-			const el = els[i];
-			el.remove();
+		while (--i >= 0) {
+			const element = els[i];
+			element.remove();
 			els.splice(i, 1);
 		}
 
 		for (const [index, box] of noisyObservations.entries()) {
 			promise = promise
 				.then(() => {
-					console.log(previousCorrected.mean);
 					predicted = kf.predict({previousCorrected});
 					const {mean, covariance} = predicted;
 
 					const element = createGroupBoxes({mean, covariance, parent: img, className: 'predicted', color: 'blue'});
-					els.append(element);
+					els.push(element);
 
 					return delayPromise(delay);
 				})
@@ -54,7 +59,7 @@ module.exports = {
 						color: 'white',
 						lineStyle: 'solid',
 					});
-					els.append(element);
+					els.push(element);
 
 					return delayPromise(delay);
 				}).bind(null, box, index))
@@ -63,10 +68,14 @@ module.exports = {
 					const {mean, covariance} = previousCorrected;
 
 					const element = createGroupBoxes({mean, covariance, parent: img, className: 'corrected', color: 'red'});
-					els.append(element);
+					els.push(element);
 
 					return delayPromise(delay);
 				}).bind(null, box, index));
 		}
+
+		promise.then(() => {
+			running = false;
+		});
 	},
 };

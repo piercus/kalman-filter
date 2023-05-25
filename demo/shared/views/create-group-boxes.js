@@ -7,7 +7,10 @@ module.exports = function ({mean, covariance, color, parent, className, tag = 'd
 	const container = document.createElement(tag); // eslint-disable-line no-undef
 
 	container.className = className;
-	const center = [mean[0][0] + (mean[2][0] / 2), mean[1][0] + (mean[3][0] / 2)];
+	const center = [
+		mean[0][0] + (mean[2][0] / 2),
+		mean[1][0] + (mean[3][0] / 2),
+	];
 	createElement({
 		className: 'box',
 		bbox: [center[0], center[1], mean[2][0], mean[3][0]],
@@ -83,4 +86,5 @@ module.exports = function ({mean, covariance, color, parent, className, tag = 'd
 		color,
 	});
 	parent.append(container);
+	return container;
 };

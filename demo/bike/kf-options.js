@@ -1,7 +1,7 @@
 const posVar = 100;
 const timeStep = 0.2;
 const sizeVar = 1;
-
+const huge = 1e4;
 module.exports = {
 	observation: {
 		dimension: 4,
@@ -17,6 +17,23 @@ module.exports = {
 	dynamic: {
 		name: 'constant-acceleration',
 		dimension: 12,
+		init: {
+			mean: [[900], [290], [100], [100], [-100], [0], [0], [0], [0], [0], [0], [0]],
+			covariance: [
+				huge,
+				huge,
+				huge,
+				huge,
+				huge,
+				huge,
+				huge,
+				huge,
+				huge,
+				huge,
+				huge,
+				huge,
+			],
+		},
 		covariance: [
 			posVar,
 			posVar,
