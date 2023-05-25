@@ -1,7 +1,6 @@
 const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
 const createElement = require('../shared/views/create-element');
 const createGroupBoxes = require('../shared/views/create-group-boxes');
-const kfOptions = require('./kf-options.js');
 const noisyObservations = require('./observations.json').observations;
 
 const kf = new KalmanFilter(kfOptions);
@@ -13,26 +12,37 @@ const img = document.querySelector('#bikes');// eslint-disable-line no-undef
 const delay = 200;
 
 let promise = Promise.resolve();
-let previousCorrected = null;
 
 const delayPromise = delay => new Promise(resolve => {
 	setTimeout(resolve, delay);
 });
 
+const els = [];
+
 module.exports = {
 	run() {
+		let previousCorrected = null;
+		let i = els.length;
+		while (i-- >= 0) {
+			const el = els[i];
+			el.remove();
+			els.splice(i, 1);
+		}
+
 		for (const [index, box] of noisyObservations.entries()) {
 			promise = promise
 				.then(() => {
+					console.log(previousCorrected.mean);
 					predicted = kf.predict({previousCorrected});
 					const {mean, covariance} = predicted;
 
-					createGroupBoxes({mean, covariance, parent: img, className: 'predicted', color: 'blue'});
+					const element = createGroupBoxes({mean, covariance, parent: img, className: 'predicted', color: 'blue'});
+					els.append(element);
 
 					return delayPromise(delay);
 				})
 				.then((b => {
-					createElement({
+					const element = createElement({
 						className: 'observation',
 						bbox: [
 							b[0] + (b[2] / 2),
@@ -44,6 +54,7 @@ module.exports = {
 						color: 'white',
 						lineStyle: 'solid',
 					});
+					els.append(element);
 
 					return delayPromise(delay);
 				}).bind(null, box, index))
@@ -51,7 +62,8 @@ module.exports = {
 					previousCorrected = kf.correct({predicted, observation: b});
 					const {mean, covariance} = previousCorrected;
 
-					createGroupBoxes({mean, covariance, parent: img, className: 'corrected', color: 'red'});
+					const element = createGroupBoxes({mean, covariance, parent: img, className: 'corrected', color: 'red'});
+					els.append(element);
 
 					return delayPromise(delay);
 				}).bind(null, box, index));
