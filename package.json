@@ -94,9 +94,9 @@
     "xo": "^0.54.1"
   },
   "dependencies": {
-    "@rayyamhk/matrix": "^1.0.5",
+    "@rayyamhk/matrix": "^1.0.8",
     "matrix-inverse": "^2.0.0",
-    "simple-linalg": "^1.2.0"
+    "simple-linalg": "^1.4.0"
   },
   "xo": {
     "ignores": [
