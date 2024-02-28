@@ -104,7 +104,7 @@ test('Huge predicted covariance', t => {
 	});
 	const kalmanGain = kf.getGain({predicted, stateProjection: [[1]]});
 	t.true(corrected instanceof State);
-	t.true(kalmanGain > 0.99);
+	t.true(kalmanGain[0][0] > 0.99);
 });
 
 // Test 4a: Play with dynamic and previousCorrected covariances
