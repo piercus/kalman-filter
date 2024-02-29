@@ -1,7 +1,7 @@
 import { identity } from 'simple-linalg';
 
-import polymorphMatrix from '../utils/polymorph-matrix.js';
-import checkMatrix from '../utils/check-matrix.js';
+import polymorphMatrix from '../utils/polymorph-matrix';
+import checkMatrix from '../utils/check-matrix';
 
 /**
 * @param {Number} sensorDimension

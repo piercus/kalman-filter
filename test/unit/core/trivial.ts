@@ -5,7 +5,7 @@ import {sum} from 'simple-linalg';
 import CoreKalmanFilter from '../../../lib/core-kalman-filter';
 import State from '../../../lib/state';
 import equalState from '../../helpers/equal-state';
-import { CoreConfig } from '../../../lib/types/ObservationConfig';
+import type { CoreConfig } from '../../../lib/types/ObservationConfig';
 
 const defaultOptions: CoreConfig = {
 	observation: {

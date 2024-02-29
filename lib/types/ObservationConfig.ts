@@ -1,6 +1,5 @@
 import State from "../state";
 
-
 interface Observation {
     name: string;
 }
@@ -16,7 +15,6 @@ export interface WinstonLogger {
     warn: (...args: any[]) => void;
     error: (...args: any[]) => void;
 }
-
 
 export interface ObservationConfig {
     dimension: number;  // Observation.dimension == observation.sensorDimension * observation.nSensors

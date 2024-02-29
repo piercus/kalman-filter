@@ -20,7 +20,6 @@ Object.keys(defaultObservationModels).forEach(k => {
 // 	projectObservation: require('./lib/utils/project-observation'),
 // }, modelCollection);
 
-
 export * from './lib/model-collection';
 export * from './lib/dynamic';
 export * from './lib/observation';

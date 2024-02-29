@@ -1,5 +1,5 @@
 import test from 'ava';
-import {KalmanFilter} from '../../index.js';
+import {KalmanFilter} from '../../index';
 
 test('Sinusoide Extended Kalman-Filter', t => {
 	const noiseLevel = 0.25;
@@ -53,7 +53,7 @@ test('Sinusoide Extended Kalman-Filter', t => {
 
 	let time = 1;
 	const maxTime = 100;
-	const values = [];
+	const values: any[] = [];
 	let a = startAmplitude;
 	let w = startW;
 	const offset = 0;

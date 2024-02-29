@@ -125,7 +125,7 @@ export default class State {
 
 		const valueMatrix = matMul(
 			matMul(diffTransposed, covarianceInvert),
-			diff
+			diff,
 		);
 		// Calculate the Mahalanobis distance value
 		const value = Math.sqrt(valueMatrix[0][0]);
@@ -222,7 +222,7 @@ export default class State {
 			covarInverted = invert(average);
 		} catch (error) {
 			console.log('Cannot invert', average);
-			throw (error);
+			throw (error as Error);
 		}
 
 		const diff = sub(mean, otherState.mean);

@@ -1,4 +1,4 @@
-import { elemWise, diag } from'simple-linalg';
+import { elemWise, diag } from 'simple-linalg';
 import constantSpeedDynamic from './constant-speed-dynamic';
 import State from '../state';
 
@@ -77,7 +77,7 @@ export default function shorttermConstantSpeed(options: any, observation) {
 			const dT = getTime(index) - getTime(previousCorrected.index);
 			// State is (x, y, vx, vy)
 			const ratios = typicalTimes.map(t => Math.exp(-1 * dT / t));
-			const aMat = constantSpeed.covariance(options, observation);
+			const aMat = constantSpeed.covariance(options/*, observation*/ );
 			return mixMatrix({ratios, aMat, bMat: init.covariance});
 		},
 	};

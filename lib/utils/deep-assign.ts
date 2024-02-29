@@ -8,7 +8,7 @@ const limit = 100;
 * @param {Number} step
 * @returns {Object}
 */
-const deepAssign = function (args, step) {
+function deepAssignInternal(args, step: number) {
 	if (step > limit) {
 		throw (new Error(`In deepAssign, number of recursive call (${step}) reached limit (${limit}), deepAssign is not working on  self-referencing objects`));
 	}
@@ -37,10 +37,10 @@ const deepAssign = function (args, step) {
 	const result = {};
 	for (const key of uniqKeys) {
 		const values = objectsArguments.map(arg => arg[key]);
-		result[key] = deepAssign(values, step + 1);
+		result[key] = deepAssignInternal(values, step + 1);
 	}
 
 	return result;
 };
 
-export default ((...args) => deepAssign(args, 0));
+export default function deepAssign(...args: any[]) { return deepAssignInternal(args, 0);}

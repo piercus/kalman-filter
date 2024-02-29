@@ -237,12 +237,12 @@ test('Mixed fitted observation', t => {
 	// Verify that the mean is broader to the prediction for y and h when UnFitted
 
 	const dist1 = [
-		Math.abs(corrected1.mean[1] - predicted.mean[1]),
-		Math.abs(corrected1.mean[3] - predicted.mean[3]),
+		Math.abs(corrected1.mean[1][0] - predicted.mean[1][0]),
+		Math.abs(corrected1.mean[3][0] - predicted.mean[3][0]),
 	];
 	const dist2 = [
-		Math.abs(corrected3.mean[1] - predicted.mean[1]),
-		Math.abs(corrected3.mean[3] - predicted.mean[3]),
+		Math.abs(corrected3.mean[1][0] - predicted.mean[1][0]),
+		Math.abs(corrected3.mean[3][0] - predicted.mean[3][0]),
 	];
 
 	t.true(dist1[0] < dist2[0]);

@@ -1,6 +1,7 @@
-const tolerance = 0.1;
 import Matrix from '@rayyamhk/matrix';
 import checkMatrix from './check-matrix';
+
+const tolerance = 0.1;
 
 const checkDefinitePositive = function (covariance: number[][], tolerance = 1e-10) {
 	const covarianceMatrix = new Matrix(covariance);

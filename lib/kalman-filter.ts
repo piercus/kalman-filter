@@ -40,7 +40,6 @@ interface ObservationObjectConfig {
 	name: 'sensor' | string,
 }
 
-
 /**
  * @typedef {String | Number} ObservationNonObjectConfig
  */

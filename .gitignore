@@ -104,3 +104,6 @@ typings/
 
 # dist is generated in the deployment process from src
 dist/
+index.d.ts
+lib/*.d.ts
+lib/*/*.d.ts
