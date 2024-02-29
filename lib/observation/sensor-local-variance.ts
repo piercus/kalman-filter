@@ -1,6 +1,7 @@
-import { identity } from 'simple-linalg';
+import {identity} from 'simple-linalg';
 
-import { buildObservation } from '../model-collection';
+import {buildObservation} from '../model-collection';
+import {ObservationConfig} from '../types/ObservationConfig';
 /**
 * @param {Object} options
 * @param {Number} options.sensorDimension
@@ -9,13 +10,13 @@ import { buildObservation } from '../model-collection';
 * @returns {ObservationConfig}
 */
 
-export default function nullableSensor(options) {
-	const {dimension, observedProjection, covariance: baseCovariance} = buildObservation(Object.assign({}, options, {name: 'sensor'}));
+export default function nullableSensor(options): ObservationConfig {
+	const {dimension, observedProjection, covariance: baseCovariance} = buildObservation({...options, name: 'sensor'});
 
 	return {
 		dimension,
 		observedProjection,
-		covariance(o) {
+		covariance(o): number[][] {
 			const covariance = identity(dimension);
 			const {variance} = o;
 
@@ -26,4 +27,4 @@ export default function nullableSensor(options) {
 			return covariance;
 		},
 	};
-};
+}

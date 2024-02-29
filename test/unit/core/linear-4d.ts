@@ -1,8 +1,8 @@
-const test = require('ava');
-const {frobenius: distanceMat} = require('simple-linalg');
-const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
-const State = require('../../../lib/state.js');
-const getCorrelation = require('../../helpers/get-correlation.js');
+import test from 'ava';
+import {frobenius as distanceMat} from 'simple-linalg';
+import CoreKalmanFilter from '../../../lib/core-kalman-filter';
+import State from '../../../lib/state';
+import getCorrelation from '../../helpers/get-correlation';
 
 // Tests in 4D with constant speed model
 
@@ -132,8 +132,10 @@ test('Fitted observation', t => {
 // Test 2: Impact of stateProjection on the model
 
 test('stateProjection', t => {
-	const otherStateProjectionOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const otherStateProjectionOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			stateProjection() {
 				return [
 					// State is centerX, centerY, width, height
@@ -144,8 +146,8 @@ test('stateProjection', t => {
 					[0, 0, 0, 1, 0, 0, 0, 0],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const firstState = new State({
 		mean: [[1], [2], [0.1], [0.1], [11], [19], [1], [1]],
 
@@ -237,12 +239,12 @@ test('Mixed fitted observation', t => {
 	// Verify that the mean is broader to the prediction for y and h when UnFitted
 
 	const dist1 = [
-		Math.abs(corrected1.mean[1] - predicted.mean[1]),
-		Math.abs(corrected1.mean[3] - predicted.mean[3]),
+		Math.abs(corrected1.mean[1][0] - predicted.mean[1][0]),
+		Math.abs(corrected1.mean[3][0] - predicted.mean[3][0]),
 	];
 	const dist2 = [
-		Math.abs(corrected3.mean[1] - predicted.mean[1]),
-		Math.abs(corrected3.mean[3] - predicted.mean[3]),
+		Math.abs(corrected3.mean[1][0] - predicted.mean[1][0]),
+		Math.abs(corrected3.mean[3][0] - predicted.mean[3][0]),
 	];
 
 	t.true(dist1[0] < dist2[0]);

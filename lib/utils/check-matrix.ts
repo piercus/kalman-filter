@@ -1,6 +1,6 @@
 import checkShape from './check-shape';
 
-export default function checkMatrix(matrix, shape?: number[], title = 'checkMatrix') {
+export default function checkMatrix(matrix: number[][], shape?: number[], title = 'checkMatrix') {
 	if (!Array.isArray(matrix)) {
 		throw (new TypeError(`[${title}] should be a 2-level array matrix and is ${matrix}`));
 	}
@@ -21,4 +21,4 @@ export default function checkMatrix(matrix, shape?: number[], title = 'checkMatr
 	if (shape) {
 		checkShape(matrix, shape, title);
 	}
-};
+}

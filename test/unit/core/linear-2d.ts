@@ -1,7 +1,7 @@
-const test = require('ava');
-const {frobenius: distanceMat} = require('simple-linalg');
-const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
-const State = require('../../../lib/state.js');
+import test from 'ava';
+import {frobenius as distanceMat} from 'simple-linalg';
+import CoreKalmanFilter from '../../../lib/core-kalman-filter';
+import State from '../../../lib/state';
 
 // Tests in 2D with constant speed model
 
@@ -152,8 +152,10 @@ test('Balanced and unbalanced', t => {
 test('Impact of timeStep', t => {
 	const timeStep1 = 1;
 	const timeStep2 = 2;
-	const smallTimeStepOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const smallTimeStepOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition() {
 				return [
 					[1, 0, timeStep1, 0],
@@ -162,10 +164,12 @@ test('Impact of timeStep', t => {
 					[0, 0, 0, 1],
 				];
 			},
-		}),
-	});
-	const bigTimeStepOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		},
+	};
+	const bigTimeStepOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition() {
 				return [
 					[1, 0, timeStep2, 0],
@@ -174,8 +178,8 @@ test('Impact of timeStep', t => {
 					[0, 0, 0, 1],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kf1 = new CoreKalmanFilter(smallTimeStepOptions);
 	const kf2 = new CoreKalmanFilter(bigTimeStepOptions);
 	const predicted1 = kf1.predict();

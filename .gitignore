@@ -104,3 +104,4 @@ typings/
 
 # dist is generated in the deployment process from src
 dist/
+cjs/

@@ -60,4 +60,4 @@ export default function sensorProjected({selectedCovariance, totalDimension, obs
 			return result;
 		},
 	};
-};
+}

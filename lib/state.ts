@@ -1,7 +1,12 @@
-import { subtract as sub, transpose, matMul, invert, elemWise, subSquareMatrix} from 'simple-linalg';
+import {
+	subtract, transpose, matMul, invert, elemWise, subSquareMatrix,
+} from 'simple-linalg';
 import arrayToMatrix from './utils/array-to-matrix';
 import checkMatrix from './utils/check-matrix';
 import checkCovariance from './utils/check-covariance';
+import type {StateLT} from './types/StateLT';
+import type KalmanFilter from './kalman-filter';
+import TypeAssert from './types/TypeAssert';
 
 /**
  * Class representing a multi dimensionnal gaussian, with his mean and his covariance
@@ -9,24 +14,23 @@ import checkCovariance from './utils/check-covariance';
  * @property {Array.<Array.<Number>>} covariance square matrix of size dimension
  * @property {Array.<Array<Number>>} mean column matrix of size dimension x 1
  */
-export default class State {
+export default class State implements StateLT {
 	mean: number[][];
 	covariance: number[][];
-	index: number;
+	index: number | undefined;
 
-	constructor(args: {mean: number[][], covariance: number[][], index: number}) {
+	constructor(args: {mean: number[][], covariance: number[][], index?: number}) {
 		this.mean = args.mean;
 		this.covariance = args.covariance;
-		this.index = args.index;
+		this.index = args.index || undefined;
 	}
 
 	/**
 	* Check the consistency of the State
 	* @param {Object} options
-	* @returns {Null}
 	* @see check
 	*/
-	check(options?: {dimension?: number[] | null, title?: string, eigen?: boolean}) {
+	check(options?: {dimension?: number | null, title?: string, eigen?: boolean}): void {
 		State.check(this, options);
 	}
 
@@ -39,8 +43,7 @@ export default class State {
 	* @param {Boolean} options.eigen
 	* @returns {Null}
 	*/
-
-	static check(state: State, args: {dimension?: number[] | null, title?: string, eigen?: boolean} = {}) {
+	static check(state: State, args: {dimension?: number | null, title?: string, eigen?: boolean} = {}): void {
 		const {dimension, title, eigen} = args;
 		if (!(state instanceof State)) {
 			throw (new TypeError(
@@ -69,7 +72,8 @@ export default class State {
 	* @param {Array.<Array.<Number>>} matrix
 	* @returns {State}
 	*/
-	static matMul({state, matrix}) {
+	static matMul(args: {state: State, matrix: number[][]}): State {
+		const {state, matrix} = args;
 		const covariance = matMul(
 			matMul(matrix, state.covariance),
 			transpose(matrix),
@@ -90,7 +94,7 @@ export default class State {
 	* @param {Array.<Number>} obsIndexes list of dimension to extract,  (M < N <=> obsIndexes.length < this.mean.length)
 	* @returns {State} subState in subspace, with subState.mean.length === obsIndexes.length
 	*/
-	subState(obsIndexes) {
+	subState(obsIndexes: number[]): State {
 		const state = new State({
 			mean: obsIndexes.map(i => this.mean[i]),
 			covariance: subSquareMatrix(this.covariance, obsIndexes),
@@ -110,8 +114,8 @@ export default class State {
 	* @param {Array.<[Number]>} point a Nx1 matrix representing a point
 	* @returns {DetailedMahalanobis}
 	*/
-	rawDetailedMahalanobis(point) {
-		const diff = sub(this.mean, point);
+	rawDetailedMahalanobis(point: number[][]): {diff: number[][], covarianceInvert: number[][], value: number} {
+		const diff = subtract(this.mean, point);
 		this.check();
 		const covarianceInvert = invert(this.covariance);
 		if (covarianceInvert === null) {
@@ -123,23 +127,23 @@ export default class State {
 
 		// Console.log('covariance in obs space', covarianceInObservationSpace);
 
-		const value = Math.sqrt(
-			matMul(
-				matMul(
-					diffTransposed,
-					covarianceInvert,
-				),
-				diff,
-			),
+		const valueMatrix = matMul(
+			matMul(diffTransposed, covarianceInvert),
+			diff,
 		);
+		// Calculate the Mahalanobis distance value
+		const value = Math.sqrt(valueMatrix[0][0]);
 		if (Number.isNaN(value)) {
-			console.log({diff, covarianceInvert, this: this, point}, matMul(
+			const debugValue = matMul(
 				matMul(
 					diffTransposed,
 					covarianceInvert,
 				),
 				diff,
-			));
+			);
+			console.log({
+				diff, covarianceInvert, this: this, point,
+			}, debugValue);
 			throw (new Error('mahalanobis is NaN'));
 		}
 
@@ -158,13 +162,14 @@ export default class State {
 	* @param {Array.<Number>} obsIndexes list of indexes of observation state to use for the mahalanobis distance
 	* @returns {DetailedMahalanobis}
 	*/
-	detailedMahalanobis({kf, observation, obsIndexes}) {
+	detailedMahalanobis(args: {kf: KalmanFilter, observation: number[][] | number[], obsIndexes?: number[]}): {diff: number[][], covarianceInvert: number[][], value: number} {
+		const {kf, observation, obsIndexes} = args;
 		if (observation.length !== kf.observation.dimension) {
 			throw (new Error(`Mahalanobis observation ${observation} (dimension: ${observation.length}) does not match with kf observation dimension (${kf.observation.dimension})`));
 		}
 
 		let correctlySizedObservation = arrayToMatrix({observation, dimension: observation.length});
-
+		TypeAssert.assertIsArray2D(kf.observation.stateProjection, 'State.detailedMahalanobis');
 		const stateProjection = kf.getValue(kf.observation.stateProjection, {});
 
 		let projectedState = State.matMul({state: this, matrix: stateProjection});
@@ -181,12 +186,11 @@ export default class State {
 	* @param {Object} options @see detailedMahalanobis
 	* @returns {Number}
 	*/
-	mahalanobis(options) {
+	mahalanobis(options: {kf: KalmanFilter, observation: number[][] | number[], obsIndexes?: number[]}): number {
 		const result = this.detailedMahalanobis(options).value;
 		if (Number.isNaN(result)) {
 			throw (new TypeError('mahalanobis is NaN'));
 		}
-
 		return result;
 	}
 
@@ -198,7 +202,9 @@ export default class State {
 	* @param {Array.<Number>} obsIndexes list of indexes of observation state to use for the bhattacharyya distance
 	* @returns {Number}
 	*/
-	obsBhattacharyya({kf, state, obsIndexes}) {
+	obsBhattacharyya(options: {kf: KalmanFilter, state: State, obsIndexes: number[]}): number {
+		const {kf, state, obsIndexes} = options;
+		TypeAssert.assertIsArray2D(kf.observation.stateProjection, 'State.obsBhattacharyya');
 		const stateProjection = kf.getValue(kf.observation.stateProjection, {});
 
 		let projectedSelfState = State.matMul({state: this, matrix: stateProjection});
@@ -216,21 +222,19 @@ export default class State {
 	* @param {State} otherState other state to compare with
 	* @returns {Number}
 	*/
-	bhattacharyya(otherState: State) {
+	bhattacharyya(otherState: State): number {
 		const {covariance, mean} = this;
-		// TODO remove this typing once it will be corrected in simple-linalg
-		const myElemWise = elemWise as unknown as ((matrices: number[][][], callback: (list: number[], rowId: number, colId: number) => number) => number[][]);
-		const average = myElemWise([covariance, otherState.covariance], ([a, b]) => (a + b) / 2);
+		const average = elemWise([covariance, otherState.covariance], ([a, b]) => (a + b) / 2);
 
-		let covarInverted;
+		let covarInverted: number[][];
 		try {
 			covarInverted = invert(average);
 		} catch (error) {
 			console.log('Cannot invert', average);
-			throw (error);
+			throw (error as Error);
 		}
 
-		const diff = sub(mean, otherState.mean);
+		const diff = subtract(mean, otherState.mean);
 
 		return matMul(transpose(diff), matMul(covarInverted, diff))[0][0];
 	}

@@ -1,4 +1,4 @@
-import { identity, diag } from 'simple-linalg';
+import {identity, diag} from 'simple-linalg';
 
 const huge = 1e6;
 
@@ -10,13 +10,11 @@ const huge = 1e6;
 */
 export default function constantPositionWithNull({staticCovariance, obsDynaIndexes, init}) {
 	const dimension = obsDynaIndexes.length;
-	if (!init) {
-		init = {
-			mean: new Array(obsDynaIndexes.length).fill(0).map(() => [0]),
-			covariance: diag(new Array(obsDynaIndexes.length).fill(huge)),
-			index: -1,
-		};
-	}
+	init ||= {
+		mean: new Array(obsDynaIndexes.length).fill(0).map(() => [0]),
+		covariance: diag(new Array(obsDynaIndexes.length).fill(huge)),
+		index: -1,
+	};
 
 	if (staticCovariance && staticCovariance.length !== dimension) {
 		throw (new Error('staticCovariance has wrong size'));
@@ -37,4 +35,4 @@ export default function constantPositionWithNull({staticCovariance, obsDynaIndex
 		},
 		init,
 	};
-};
+}

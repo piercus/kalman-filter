@@ -1,14 +1,13 @@
-import { diag } from 'simple-linalg';
+import {diag} from 'simple-linalg';
 import State from '../state';
 
 /**
 * Creates a dynamic model, considering the null in order to make the predictions
-* @param {Array.<Number>} staticCovariance
 * @param {ObservationConfig} observation
 * @returns {DynamicConfig}
 */
 export default function constantSpeedDynamic(args: {staticCovariance: number[], avSpeed: number[], center: number[]}, observation) {
-	const { staticCovariance, avSpeed, center } = args;
+	const {staticCovariance, avSpeed, center} = args;
 	const observationDimension = observation.observedProjection[0].length;
 
 	const dimension = 2 * observationDimension;
@@ -87,6 +86,6 @@ export default function constantSpeedDynamic(args: {staticCovariance: number[], 
 		transition,
 		covariance,
 	};
-};
+}
 
 // module.exports = constantSpeedDynamic;

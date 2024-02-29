@@ -14,4 +14,4 @@ export function buildObserverProjection({inDimension, outDimension, inIndexes, s
 
 		return 0;
 	}));
-};
+}

@@ -2,11 +2,14 @@
   "name": "kalman-filter",
   "version": "2.3.0",
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
-  "main": "index.js",
+  "main": "cjs/index.js",
+  "types": "cjs/index.d.ts",
   "scripts": {
-    "test": "xo && ava",
+    "test": "tsc && xo && ava",
+    "xo": "xo",
+    "fmt": "xo --fix",
     "semantic-release": "semantic-release",
-    "build-demo": "npm run build && browserify -d -r ./demo/bike/main.js:bike > docs/dist/bike.js && browserify -d -r ./demo/bouncing-ball/main.js:bouncing-ball > docs/dist/bouncing-ball.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
+    "build-demo": "tsc && npm run build && browserify -d -r ./demo/bike/main.js:bike > docs/dist/bike.js && browserify -d -r ./demo/bouncing-ball/main.js:bouncing-ball > docs/dist/bouncing-ball.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
     "serve-demo": "http-server docs/",
     "build": "NODE_OPTIONS=--openssl-legacy-provider webpack"
   },
@@ -15,8 +18,9 @@
     "url": "git+https://github.com/piercus/kalman-filter.git"
   },
   "files": [
-    "index.js",
-    "lib"
+    "cjs/index.js",
+    "cjs/index.d.ts",
+    "cjs/lib"
   ],
   "release": {
     "branches": [
@@ -83,25 +87,43 @@
   },
   "homepage": "https://github.com/piercus/kalman-filter#readme",
   "devDependencies": {
-    "ava": "^5.2.0",
-    "browserify": "^16.5.2",
+    "@semantic-release/git": "^10.0.1",
+    "@types/node": "^20.11.24",
+    "ava": "^6.1.2",
+    "browserify": "^17.0.0",
     "cholesky": "^1.2.0",
+    "eslint-config-xo-typescript": "^3.0.0",
     "hasard": "^1.6.1",
     "http-server": "^14.1.1",
-    "semantic-release": "^21.0.1",
+    "semantic-release": "^23.0.2",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
     "webpack": "^5.21.1",
     "webpack-cli": "^4.5.0",
-    "xo": "^0.54.1"
+    "xo": "^0.57.0"
   },
   "dependencies": {
     "@rayyamhk/matrix": "^1.0.8",
     "matrix-inverse": "^2.0.0",
-    "simple-linalg": "^1.4.0"
+    "simple-linalg": "^1.5.0"
+  },
+  "ava": {
+    "require": [
+      "ts-node/register"
+    ],
+    "extensions": [
+      "ts"
+    ],
+    "files": ["!**/*.d.ts"]
   },
   "xo": {
     "ignores": [
       "./docs/**",
-      "./dist/**"
+      "./dist/**",
+      "./test/**",
+      "./cjs/**",
+      "./node_modules/**"
     ],
     "rules": {
       "unicorn/no-array-reduce": 0,
@@ -112,6 +134,49 @@
       "unicorn/prefer-module": 0,
       "unicorn/no-reduce": 0,
       "ava/prefer-async-await": 0,
+      "@typescript-eslint/no-unsafe-assignment": 0,
+      "@typescript-eslint/prefer-nullish-coalescing": 0,
+      "@typescript-eslint/no-unsafe-call": 0,
+      "@typescript-eslint/restrict-template-expressions": 0,
+      "@typescript-eslint/padding-line-between-statements": 0,
+      "@typescript-eslint/no-unsafe-return": 0,
+      "@typescript-eslint/restrict-plus-operands": 0,
+      "@typescript-eslint/no-unsafe-argument": 0,
+      "@typescript-eslint/no-unnecessary-type-assertion": 0,
+      "@typescript-eslint/member-delimiter-style": 0,
+      "@typescript-eslint/naming-convention": 0,
+      "@typescript-eslint/no-var-requires": 0,
+      "@typescript-eslint/ban-ts-comment": 0,
+      "@typescript-eslint/prefer-ts-expect-error": 0,
+      "@typescript-eslint/lines-between-class-members": 0,
+      "@typescript-eslint/no-empty-function": 0,
+      "@typescript-eslint/ban-types": 0,
+      "n/file-extension-in-import": 0,
+      "import/no-useless-path-segments": 0,
+      "typescript-eslint/consistent-type-definitions": 0,
+      "padded-blocks": 0,
+      "@typescript-eslint/consistent-type-definitions": 0,
+      "@typescript-eslint/brace-style": 0,
+      "@typescript-eslint/member-ordering": 0,
+      "max-statements-per-line": 0,
+      "unicorn/prevent-abbreviations": 0,
+      "eslint-comments/no-unused-disable": 0,
+      "object-shorthand": 0,
+      "unicorn/filename-case": 0,
+      "@typescript-eslint/no-redundant-type-constituents": 0,
+      "eol-last": 0,
+      "no-undef-init": 0,
+      "spaced-comment": 0,
+      "@typescript-eslint/consistent-type-imports": 0,
+      "@typescript-eslint/no-require-imports": 0,
+      "@typescript-eslint/no-confusing-void-expression": 0,
+      "capitalized-comments": 0,
+      "indent": 0,
+      "space-in-parens": 0,
+      "import/no-duplicates": 0,
+      "import/order": 0,
+      "no-multi-spaces": 0,
+      "ava/no-ignored-test-files": 0,
       "ava/no-skip-test": 1,
       "camelcase": [
         0,
@@ -120,7 +185,7 @@
         }
       ],
       "valid-jsdoc": [
-        1,
+        0,
         {
           "requireParamDescription": false,
           "requireReturnDescription": false

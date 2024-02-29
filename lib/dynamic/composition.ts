@@ -104,7 +104,10 @@ export default function composition({perName}, observation) {
 					transition,
 				} = confs[k];
 
-				const options2 = Object.assign({}, options, {previousCorrected: previousCorrected.subState(dynamicIndexes)});
+				const options2 = {
+					...options,
+					previousCorrected: previousCorrected.subState(dynamicIndexes),
+				};
 				const trans = transition(options2);
 				dynamicIndexes.forEach((c1, i1) => dynamicIndexes.forEach((c2, i2) => {
 					resultTransition[c1][c2] = trans[i1][i2];
@@ -122,7 +125,10 @@ export default function composition({perName}, observation) {
 					covariance,
 				} = confs[k];
 
-				const options2 = Object.assign({}, options, {previousCorrected: previousCorrected.subState(dynamicIndexes)});
+				const options2 = {
+					...options,
+					previousCorrected: previousCorrected.subState(dynamicIndexes),
+				};
 
 				const cov = covariance(options2);
 				// Console.log('dynamic.composition',k, cov, dynamicIndexes)
@@ -133,4 +139,4 @@ export default function composition({perName}, observation) {
 			return resultCovariance;
 		},
 	};
-};
+}

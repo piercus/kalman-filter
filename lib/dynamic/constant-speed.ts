@@ -1,4 +1,4 @@
-import { identity } from 'simple-linalg';
+import {identity} from 'simple-linalg';
 
 /**
 *Creates a dynamic model, following constant position model with respect with the dimensions provided in the observation parameters
@@ -33,5 +33,7 @@ export default function constantSpeed(dynamic, observation) {
 
 	const arrayCovariance = new Array(baseDimension).fill(1).concat(new Array(baseDimension).fill(timeStep * timeStep));
 	const covariance = dynamic.covariance || arrayCovariance;
-	return Object.assign({}, dynamic, {dimension, transition, covariance});
-};
+	return {
+		...dynamic, dimension, transition, covariance,
+	};
+}

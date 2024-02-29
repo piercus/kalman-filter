@@ -1,5 +1,5 @@
-const test = require('ava');
-const {KalmanFilter} = require('../../index.js');
+import test from 'ava';
+import KalmanFilter from '../../lib/kalman-filter';
 
 test('Sinusoide Extended Kalman-Filter', t => {
 	const noiseLevel = 0.25;
@@ -53,7 +53,7 @@ test('Sinusoide Extended Kalman-Filter', t => {
 
 	let time = 1;
 	const maxTime = 100;
-	const values = [];
+	const values: any[] = [];
 	let a = startAmplitude;
 	let w = startW;
 	const offset = 0;
@@ -65,7 +65,9 @@ test('Sinusoide Extended Kalman-Filter', t => {
 		const phi = (time * w) + offset;
 		const gt = Math.sin(phi) * a;
 		const sensor = gt + (boxMuller() * noiseLevel);
-		values.push({gt, sensor, a, w, phi});
+		values.push({
+			gt, sensor, a, w, phi,
+		});
 		time++;
 	}
 

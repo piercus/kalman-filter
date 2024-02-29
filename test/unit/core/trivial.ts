@@ -1,12 +1,13 @@
-const test = require('ava');
-const {trace} = require('simple-linalg');
-const {frobenius: distanceMat} = require('simple-linalg');
-const {sum} = require('simple-linalg');
-const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
-const State = require('../../../lib/state.js');
-const equalState = require('../../../test/helpers/equal-state.js');
+import test from 'ava';
+import {trace} from 'simple-linalg';
+import {frobenius as distanceMat} from 'simple-linalg';
+import {sum} from 'simple-linalg';
+import CoreKalmanFilter from '../../../lib/core-kalman-filter';
+import State from '../../../lib/state';
+import equalState from '../../helpers/equal-state';
+import type {CoreConfig} from '../../../lib/types/ObservationConfig';
 
-const defaultOptions = {
+const defaultOptions: CoreConfig = {
 	observation: {
 		dimension: 1,
 		stateProjection() {
@@ -68,15 +69,17 @@ test('Init with zero mean', t => {
 // return a small predicted.covariance
 
 test('Impact previousCorrected and dynamic covariance', t => {
-	const smallDynamicCovOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const smallDynamicCovOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			covariance() {
 				return [
 					[tiny],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kf = new CoreKalmanFilter(smallDynamicCovOptions);
 	const previousCorrected = new State({
 		mean: [[0]],
@@ -104,7 +107,7 @@ test('Huge predicted covariance', t => {
 	});
 	const kalmanGain = kf.getGain({predicted, stateProjection: [[1]]});
 	t.true(corrected instanceof State);
-	t.true(kalmanGain > 0.99);
+	t.true(kalmanGain[0][0] > 0.99);
 });
 
 // Test 4a: Play with dynamic and previousCorrected covariances
@@ -125,15 +128,17 @@ test('Dynamic covariance test', t => {
 
 	const kfDefault = new CoreKalmanFilter(defaultOptions);
 
-	const hugeDynOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const hugeDynOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			covariance() {
 				return [
 					[huge],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kfHuge = new CoreKalmanFilter(hugeDynOptions);
 
 	const predicted1 = kfDefault.predict({
@@ -169,15 +174,17 @@ test('Observation covariance test', t => {
 
 	const kfDefault = new CoreKalmanFilter(defaultOptions);
 
-	const smallObservationCovOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const smallObservationCovOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			covariance() {
 				return [
 					[tiny],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kfSmall = new CoreKalmanFilter(smallObservationCovOptions);
 
 	const corrected1 = kfDefault.correct({
@@ -256,23 +263,26 @@ test('Fitted observation', t => {
 // I think this test will be done during implementation of normal Kalman Filter
 
 // test('Wrongly sized', t => {
-// 	const WrongOptions = Object.assign({}, defaultOptions, {
-// 		dynamic: Object.assign({}, defaultOptions.dynamic, {
+// 	const WrongOptions = {
+//	...defaultOptions,
+// 		dynamic: {
+//	...defaultOptions.dynamic,
 // 			covariance() {
 // 				return [
 // 					[tiny, 0],
 // 					[0, tiny]
 // 				];
 // 			}
-// 		}),
-// 		observation: Object.assign({}, defaultOptions.observation, {
+// 		},
+// 		observation: {
+//       	...defaultOptions.observation,
 // 			covariance() {
 // 				return [
 // 					[tiny]
 // 				];
 // 			}
-// 		})
-// 	});
+// 		}
+// 	};
 // 	const kf = new CoreKalmanFilter(WrongOptions);
 // 	const error = t.throws(() => kf.predict());
 // 	t.is(error.message, 'An array of the model is wrongly sized');
@@ -290,7 +300,7 @@ test('NaN Error', t => {
 	const error = t.throws(() => {
 		kf.predict({previousCorrected});
 	});
-	t.is(error.message, '[covariance] Matrix should not have a NaN\nIn : \nNaN');
+	t.is(error!.message, '[covariance] Matrix should not have a NaN\nIn : \nNaN');
 });
 // Error Test: non-squared matrix
 
@@ -306,5 +316,5 @@ test('Non squared matrix', t => {
 	const error = t.throws(() => {
 		kf.predict({previousCorrected: nonSquaredState});
 	});
-	t.is(error.message, '[mean] expected size (1) and length (2) does not match');
+	t.is(error!.message, '[mean] expected size (1) and length (2) does not match');
 });

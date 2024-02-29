@@ -1,9 +1,6 @@
-import { elemWise, diag } from'simple-linalg';
+import {elemWise, diag} from 'simple-linalg';
 import constantSpeedDynamic from './constant-speed-dynamic';
 import State from '../state';
-
-// TODO remove this typing once it will be corrected in simple-linalg
-const myElemWise = elemWise as unknown as ((matrices: number[][][], callback: (list: number[], rowId: number, colId: number) => number) => number[][]);
 
 const safeDiv = function (a: number, b: number): number {
 	if (a === 0) {
@@ -47,7 +44,7 @@ export default function shorttermConstantSpeed(options: any, observation) {
 		aMat,
 		bMat,
 	}) {
-		return myElemWise([aMat, bMat], ([m, d], rowIndex, colIndex) => {
+		return elemWise([aMat, bMat], ([m, d], rowIndex, colIndex) => {
 			const ratio = rowIndex === colIndex ? ratios[rowIndex] : (ratios[rowIndex] + ratios[colIndex]) / 2;
 
 			return (ratio * m) + ((1 - ratio) * d);
@@ -67,7 +64,7 @@ export default function shorttermConstantSpeed(options: any, observation) {
 
 			// 'back to init' matrix
 			const bMat = diag(
-				myElemWise([init.mean, previousCorrected.mean], ([m, d]) => safeDiv(m, d))
+				elemWise([init.mean, previousCorrected.mean], ([m, d]) => safeDiv(m, d))
 				// Flatten cause this is a Nx1 matrix -> N array
 					.reduce((a, b) => a.concat(b)),
 			);
@@ -80,8 +77,8 @@ export default function shorttermConstantSpeed(options: any, observation) {
 			const dT = getTime(index) - getTime(previousCorrected.index);
 			// State is (x, y, vx, vy)
 			const ratios = typicalTimes.map(t => Math.exp(-1 * dT / t));
-			const aMat = constantSpeed.covariance(options, observation);
+			const aMat = constantSpeed.covariance(options/*, observation*/ );
 			return mixMatrix({ratios, aMat, bMat: init.covariance});
 		},
 	};
-};
+}

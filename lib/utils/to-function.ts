@@ -13,7 +13,7 @@
 *@returns {MatrixCallback}
 */
 
-export default function toFunction(array, {label = ""} = {}) {
+export default function toFunction(array, {label = ''} = {}) {
 	if (typeof (array) === 'function') {
 		return array;
 	}
@@ -23,4 +23,4 @@ export default function toFunction(array, {label = ""} = {}) {
 	}
 
 	throw (new Error(`${label === null ? '' : label + ' : '}Only arrays and functions are authorized (got: "${array}")`));
-};
+}

@@ -1,8 +1,8 @@
 // Xt ~ N(dynamic.transition°Xt-1, dynamic.covariance)
 
-const {matMul} = require('simple-linalg');
+import {matMul} from 'simple-linalg';
 
-module.exports = function () {
+export default function covariancePendulum() {
 	const timeStep = 0.1;
 	const transition = [
 		[1, timeStep],

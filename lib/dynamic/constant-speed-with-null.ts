@@ -1,4 +1,4 @@
-import { identity, diag } from 'simple-linalg';
+import {identity, diag} from 'simple-linalg';
 
 const nullModels = {
 	linear(a: number): number {
@@ -30,17 +30,13 @@ export default function constantSpeedWithNull(args: {staticCovariance?: number[]
 	}
 
 	const dimension = 2 * obsDynaIndexes.length;
-	if (!init) {
-		init = {
-			mean: new Array(obsDynaIndexes.length * 2).fill(0).map(() => [0]),
-			covariance: diag(new Array(obsDynaIndexes.length * 2).fill(huge)),
-			index: -1,
-		};
-	}
+	init ||= {
+		mean: new Array(obsDynaIndexes.length * 2).fill(0).map(() => [0]),
+		covariance: diag(new Array(obsDynaIndexes.length * 2).fill(huge)),
+		index: -1,
+	};
 
-	if (!nullGapModel) {
-		nullGapModel = new Array(dimension).fill(0).map(() => 'linear');
-	}
+	nullGapModel ||= new Array(dimension).fill(0).map(() => 'linear');
 
 	return {
 		dimension,
@@ -86,4 +82,4 @@ export default function constantSpeedWithNull(args: {staticCovariance?: number[]
 			return identity(dimension);
 		},
 	};
-};
+}

@@ -8,4 +8,4 @@ export default function covarianceToCorrelation(covariance) {
 		variance,
 		correlation: covariance.map((c, rowIndex) => c.map((a, colIndex) => a / Math.sqrt(variance[colIndex] * variance[rowIndex]))),
 	};
-};
+}

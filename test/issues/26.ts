@@ -1,5 +1,5 @@
-const test = require('ava');
-const {KalmanFilter} = require('../../index.js');
+import test from 'ava';
+import KalmanFilter from '../../lib/kalman-filter';
 
 const START_TIME_DELTA_SECS = 1;
 const COVARIANCE_FILL = 1;
@@ -58,9 +58,8 @@ test('#26', t => {
 		},
 	});
 
-	const nextPredicted = kFilter.predict({previousCorrected: null});
+	const nextPredicted = kFilter.predict({previousCorrected: undefined});
 	kFilter.correct({predicted: nextPredicted, observation: [[0], [0]]});
 
 	t.is(Object.keys(flags).length, 4);
 });
-

@@ -1,7 +1,12 @@
-import {matMul, transpose, add, invert, subtract as sub, identity as getIdentity} from 'simple-linalg';
+import {
+	matMul, transpose, add, invert, subtract as sub, identity as getIdentity,
+} from 'simple-linalg';
 import State from './state';
 import checkMatrix from './utils/check-matrix';
-import type { CoreConfig, DynamicConfig, ObservationConfig, PreviousCorrectedCallback, WinstonLogger } from './types/ObservationConfig';
+import type {
+	CoreConfig, DynamicConfig, ObservationConfig, PredictedCallback, PreviousCorrectedCallback, WinstonLogger,
+} from './types/ObservationConfig';
+import TypeAssert from './types/TypeAssert';
 
 const defaultLogger: WinstonLogger = {
 	info: (...args) => console.log(...args),
@@ -22,11 +27,11 @@ export default class CoreKalmanFilter {
 		this.logger = logger;
 	}
 
-	getValue(fn: number[][] | PreviousCorrectedCallback, options: any) {
+	getValue(fn: number[][] | PreviousCorrectedCallback | PredictedCallback, options: any): number[][] {
 		return (typeof (fn) === 'function' ? fn(options) : fn);
 	}
 
-	getInitState() {
+	getInitState(): State {
 		const {mean: meanInit, covariance: covarianceInit, index: indexInit} = this.dynamic.init;
 
 		const initState = new State({
@@ -44,11 +49,11 @@ export default class CoreKalmanFilter {
 	* @returns{Array.<Array.<Number>>}
 	*/
 
-	getPredictedCovariance(options: {previousCorrected?: any, index?: number} = {}) {
+	getPredictedCovariance(options: {previousCorrected?: State, index?: number} = {}) {
 		let {previousCorrected, index} = options;
-		previousCorrected = previousCorrected || this.getInitState();
+		previousCorrected ||= this.getInitState();
 
-		const getValueOptions = Object.assign({}, {previousCorrected, index}, options);
+		const getValueOptions = {previousCorrected, index, ...options};
 		const transition = this.getValue(this.dynamic.transition, getValueOptions);
 
 		checkMatrix(transition, [this.dynamic.dimension, this.dynamic.dimension], 'dynamic.transition');
@@ -67,7 +72,7 @@ export default class CoreKalmanFilter {
 		return covariance;
 	}
 
-	predictMean(o) {
+	predictMean(o: {opts, transition: number[][]}) {
 		const mean = this.predictMeanWithoutControl(o);
 		if (!this.dynamic.constant) {
 			return mean;
@@ -79,7 +84,8 @@ export default class CoreKalmanFilter {
 		return add(mean, control);
 	}
 
-	predictMeanWithoutControl({opts, transition}) {
+	predictMeanWithoutControl(args: {opts, transition: number[][]}): number[][] {
+		const {opts, transition} = args;
 		if (this.dynamic.fn) {
 			return this.dynamic.fn(opts);
 		}
@@ -93,19 +99,20 @@ export default class CoreKalmanFilter {
 	* @returns{State} predicted State
 	*/
 
-	predict(options: {previousCorrected?: any, index?: number} = {}) {
+	predict(options: {previousCorrected?: State, index?: number, observation?: number[] | number[][]} = {}): State {
 		let {previousCorrected, index} = options;
-		previousCorrected = previousCorrected || this.getInitState();
+		previousCorrected ||= this.getInitState();
 
 		if (typeof (index) !== 'number' && typeof (previousCorrected.index) === 'number') {
 			index = previousCorrected.index + 1;
 		}
 
 		State.check(previousCorrected, {dimension: this.dynamic.dimension});
-		const getValueOptions = Object.assign({}, options, {
+		const getValueOptions = {
+			...options,
 			previousCorrected,
 			index,
-		});
+		};
 
 		const transition = this.getValue(this.dynamic.transition, getValueOptions);
 
@@ -122,16 +129,20 @@ export default class CoreKalmanFilter {
 		return predicted;
 	}
 	/**
-	This will return the new correction, taking into account the prediction made
-	and the observation of the sensor
-	* @param {State} predicted the previous State
-	* @returns{Array<Array>} kalmanGain
-	*/
-
-	getGain(options: {predicted: any, stateProjection: any}) {
+	 * This will return the new correction, taking into account the prediction made
+	 * and the observation of the sensor
+	 * param {State} predicted the previous State
+	 * @param options
+	 * @returns kalmanGain
+	 */
+	getGain(options: {predicted: State, stateProjection?: number[][]}): number[][] {
 		let {predicted, stateProjection} = options;
-		const getValueOptions = Object.assign({}, {index: predicted.index}, options);
-		stateProjection = stateProjection || this.getValue(this.observation.stateProjection, getValueOptions);
+		const getValueOptions = {
+			index: predicted.index,
+			...options,
+		};
+		TypeAssert.assertIsArray2DOrFnc(this.observation.stateProjection, 'CoreKalmanFilter.getGain');
+		stateProjection ||= this.getValue(this.observation.stateProjection, getValueOptions);
 		const obsCovariance = this.getValue(this.observation.covariance, getValueOptions);
 		checkMatrix(obsCovariance, [this.observation.dimension, this.observation.dimension], 'observation.covariance');
 		const stateProjTransposed = transpose(stateProjection);
@@ -154,22 +165,23 @@ export default class CoreKalmanFilter {
 	}
 
 	/**
-	This will return the corrected covariance of a given predicted State, this will help us to build the asymptoticState.
-	* @param {State} predicted the previous State
-	* @returns{Array.<Array.<Number>>}
-	*/
-
-	getCorrectedCovariance(options: {predicted: any, optimalKalmanGain: any, stateProjection: any}) {
+	 * This will return the corrected covariance of a given predicted State, this will help us to build the asymptoticState.
+	 * @param {State} predicted the previous State
+	 * @returns{Array.<Array.<Number>>}
+	 */
+	getCorrectedCovariance(options: {predicted: State, optimalKalmanGain?: any, stateProjection?: any}): number[][] {
 		let {predicted, optimalKalmanGain, stateProjection} = options;
 		const identity = getIdentity(predicted.covariance.length);
 		if (!stateProjection) {
-			const getValueOptions = Object.assign({}, {index: predicted.index}, options);
+			TypeAssert.assertIsArray2D(this.observation.stateProjection, 'CoreKalmanFilter.getCorrectedCovariance');
+			const getValueOptions = {
+				index: predicted.index,
+				...options,
+			};
 			stateProjection = this.getValue(this.observation.stateProjection, getValueOptions);
 		}
 
-		if (!optimalKalmanGain) {
-			optimalKalmanGain = this.getGain(Object.assign({stateProjection}, options));
-		}
+		optimalKalmanGain ||= this.getGain({stateProjection, ...options});
 
 		return matMul(
 			sub(identity, matMul(optimalKalmanGain, stateProjection)),
@@ -177,7 +189,7 @@ export default class CoreKalmanFilter {
 		);
 	}
 
-	getPredictedObservation(args: {opts: any, stateProjection: any}) {
+	getPredictedObservation(args: {opts: any, stateProjection: number[][]}): number[][] {
 		const {opts, stateProjection} = args;
 		if (this.observation.fn) {
 			return this.observation.fn(opts);
@@ -195,17 +207,27 @@ export default class CoreKalmanFilter {
 	* @returns{State} corrected State of the Kalman Filter
 	*/
 
-	correct(options: {predicted: any, observation: any}) {
+	correct(options: {predicted: any, observation: any}): State {
 		const {predicted, observation} = options;
 		State.check(predicted, {dimension: this.dynamic.dimension});
 		if (!observation) {
 			throw (new Error('no measure available'));
 		}
 
-		const getValueOptions = Object.assign({}, {observation, predicted, index: predicted.index}, options);
+		const getValueOptions = {
+			observation,
+			predicted,
+			index: predicted.index,
+			...options,
+		};
+		TypeAssert.assertIsArray2DOrFnc(this.observation.stateProjection, 'CoreKalmanFilter.correct');
 		const stateProjection = this.getValue(this.observation.stateProjection, getValueOptions);
 
-		const optimalKalmanGain = this.getGain(Object.assign({predicted, stateProjection}, options));
+		const optimalKalmanGain = this.getGain({
+			predicted,
+			stateProjection,
+			...options,
+		});
 
 		const innovation = sub(
 			observation,
@@ -221,7 +243,13 @@ export default class CoreKalmanFilter {
 			throw (new TypeError('Mean is NaN after correction'));
 		}
 
-		const covariance = this.getCorrectedCovariance(Object.assign({predicted, optimalKalmanGain, stateProjection}, options));
+		const covariance = this.getCorrectedCovariance({
+			predicted,
+			optimalKalmanGain,
+			stateProjection,
+			...options,
+		},
+		);
 		const corrected = new State({mean, covariance, index: predicted.index});
 		this.logger.debug('Correction done', corrected);
 		return corrected;
