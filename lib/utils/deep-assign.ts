@@ -14,7 +14,7 @@ function deepAssignInternal(args, step: number) {
 	}
 
 	const filterArguments = args.filter(arg => (arg) !== undefined && arg !== null);
-	const lastArgument = filterArguments[filterArguments.length - 1];
+	const lastArgument = filterArguments.at(-1);
 	if (filterArguments.length === 1) {
 		return filterArguments[0];
 	}

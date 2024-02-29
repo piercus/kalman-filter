@@ -1,7 +1,11 @@
-import {matMul, transpose, add, invert, subtract as sub, identity as getIdentity} from 'simple-linalg';
+import {
+matMul, transpose, add, invert, subtract as sub, identity as getIdentity,
+} from 'simple-linalg';
 import State from './state';
 import checkMatrix from './utils/check-matrix';
-import type { CoreConfig, DynamicConfig, ObservationConfig, PredictedCallback, PreviousCorrectedCallback, WinstonLogger } from './types/ObservationConfig';
+import type {
+ CoreConfig, DynamicConfig, ObservationConfig, PredictedCallback, PreviousCorrectedCallback, WinstonLogger, 
+} from './types/ObservationConfig';
 
 const defaultLogger: WinstonLogger = {
 	info: (...args) => console.log(...args),
@@ -46,7 +50,7 @@ export default class CoreKalmanFilter {
 
 	getPredictedCovariance(options: {previousCorrected?: any, index?: number} = {}) {
 		let {previousCorrected, index} = options;
-		previousCorrected = previousCorrected || this.getInitState();
+		previousCorrected ||= this.getInitState();
 
 		const getValueOptions = Object.assign({}, {previousCorrected, index}, options);
 		const transition = this.getValue(this.dynamic.transition, getValueOptions);
@@ -95,7 +99,7 @@ export default class CoreKalmanFilter {
 
 	predict(options: {previousCorrected?: State, index?: number, observation?: number[][]} = {}) {
 		let {previousCorrected, index} = options;
-		previousCorrected = previousCorrected || this.getInitState();
+		previousCorrected ||= this.getInitState();
 
 		if (typeof (index) !== 'number' && typeof (previousCorrected.index) === 'number') {
 			index = previousCorrected.index + 1;
@@ -130,7 +134,7 @@ export default class CoreKalmanFilter {
 	getGain(options: {predicted: State, stateProjection?: number[][]}) {
 		let {predicted, stateProjection} = options;
 		const getValueOptions = Object.assign({}, {index: predicted.index}, options);
-		stateProjection = stateProjection || this.getValue(this.observation.stateProjection, getValueOptions);
+		stateProjection ||= this.getValue(this.observation.stateProjection, getValueOptions);
 		const obsCovariance = this.getValue(this.observation.covariance, getValueOptions);
 		checkMatrix(obsCovariance, [this.observation.dimension, this.observation.dimension], 'observation.covariance');
 		const stateProjTransposed = transpose(stateProjection);
@@ -166,9 +170,7 @@ export default class CoreKalmanFilter {
 			stateProjection = this.getValue(this.observation.stateProjection, getValueOptions);
 		}
 
-		if (!optimalKalmanGain) {
-			optimalKalmanGain = this.getGain(Object.assign({stateProjection}, options));
-		}
+		optimalKalmanGain ||= this.getGain(Object.assign({stateProjection}, options));
 
 		return matMul(
 			sub(identity, matMul(optimalKalmanGain, stateProjection)),

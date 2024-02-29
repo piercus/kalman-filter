@@ -1,4 +1,6 @@
-import { subtract as sub, transpose, matMul, invert, elemWise, subSquareMatrix} from 'simple-linalg';
+import {
+ subtract as sub, transpose, matMul, invert, elemWise, subSquareMatrix, 
+} from 'simple-linalg';
 import arrayToMatrix from './utils/array-to-matrix';
 import checkMatrix from './utils/check-matrix';
 import checkCovariance from './utils/check-covariance';
@@ -130,7 +132,9 @@ export default class State {
 		// Calculate the Mahalanobis distance value
 		const value = Math.sqrt(valueMatrix[0][0]);
 		if (Number.isNaN(value)) {
-			console.log({diff, covarianceInvert, this: this, point}, matMul(
+			console.log({
+diff, covarianceInvert, this: this, point,
+}, matMul(
 				matMul(
 					diffTransposed,
 					covarianceInvert,

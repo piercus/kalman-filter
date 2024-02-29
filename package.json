@@ -6,6 +6,7 @@
   "types": "index.d.ts",
   "scripts": {
     "test": "tsc && xo && ava",
+    "prettier": "xo --fix",
     "semantic-release": "semantic-release",
     "build-demo": "tsc && npm run build && browserify -d -r ./demo/bike/main.js:bike > docs/dist/bike.js && browserify -d -r ./demo/bouncing-ball/main.js:bouncing-ball > docs/dist/bouncing-ball.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
     "serve-demo": "http-server docs/",
@@ -87,19 +88,19 @@
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
     "@types/node": "^20.11.24",
-    "ava": "^5.3.1",
-    "browserify": "^16.5.2",
+    "ava": "^6.1.2",
+    "browserify": "^17.0.0",
     "cholesky": "^1.2.0",
     "eslint-config-xo-typescript": "^3.0.0",
     "hasard": "^1.6.1",
     "http-server": "^14.1.1",
-    "semantic-release": "^21.0.1",
+    "semantic-release": "^23.0.2",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "webpack": "^5.21.1",
     "webpack-cli": "^4.5.0",
-    "xo": "^0.54.1"
+    "xo": "^0.57.0"
   },
   "dependencies": {
     "@rayyamhk/matrix": "^1.0.8",

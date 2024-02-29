@@ -24,6 +24,6 @@ export default function constantPosition(dynamic, observation) {
 	}
 
 	const transition = identity(dimension);
-	covariance = covariance || identity(dimension);
+	covariance ||= identity(dimension);
 	return Object.assign({}, dynamic, {dimension, transition, covariance});
 };

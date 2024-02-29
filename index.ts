@@ -6,7 +6,7 @@ function camelToDash(str: string) {
 	if (str === str.toLowerCase()) {
 		return str;
 	}
-    return str.replace(/[A-Z]/g, m => "-" + m.toLowerCase());
+    return str.replaceAll(/[A-Z]/g, m => "-" + m.toLowerCase());
 }
 
 Object.keys(defaultDynamicModels).forEach((k: string) => {
