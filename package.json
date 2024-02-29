@@ -3,7 +3,7 @@
   "version": "2.3.0",
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
   "main": "index.js",
-  "type": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "tsc && xo && ava",
     "semantic-release": "semantic-release",
@@ -85,6 +85,7 @@
   },
   "homepage": "https://github.com/piercus/kalman-filter#readme",
   "devDependencies": {
+    "@semantic-release/git": "^10.0.1",
     "@types/node": "^20.11.24",
     "ava": "^5.3.1",
     "browserify": "^16.5.2",
