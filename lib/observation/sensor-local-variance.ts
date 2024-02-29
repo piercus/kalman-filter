@@ -1,6 +1,6 @@
-import { identity } from 'simple-linalg';
+import {identity} from 'simple-linalg';
 
-import { buildObservation } from '../model-collection';
+import {buildObservation} from '../model-collection';
 /**
 * @param {Object} options
 * @param {Number} options.sensorDimension

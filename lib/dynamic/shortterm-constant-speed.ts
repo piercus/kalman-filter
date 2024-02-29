@@ -1,4 +1,4 @@
-import { elemWise, diag } from 'simple-linalg';
+import {elemWise, diag} from 'simple-linalg';
 import constantSpeedDynamic from './constant-speed-dynamic';
 import State from '../state';
 

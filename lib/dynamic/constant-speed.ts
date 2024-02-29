@@ -1,4 +1,4 @@
-import { identity } from 'simple-linalg';
+import {identity} from 'simple-linalg';
 
 /**
 *Creates a dynamic model, following constant position model with respect with the dimensions provided in the observation parameters

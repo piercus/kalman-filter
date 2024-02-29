@@ -1,4 +1,4 @@
-import { identity } from 'simple-linalg';
+import {identity} from 'simple-linalg';
 
 import polymorphMatrix from '../utils/polymorph-matrix';
 import checkMatrix from '../utils/check-matrix';

@@ -1,5 +1,5 @@
 import test  from 'ava';
-import { KalmanFilter} from '../../..';
+import {KalmanFilter} from '../../..';
 
 test('Logger.debug', t => {
 	let hasDebug = false;

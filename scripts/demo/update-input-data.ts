@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs';
+import {writeFileSync} from 'node:fs';
 import generateNoisyObservation from './helpers/generate-noisy-observation';
 import calculateObservationCovariance from './helpers/calculate-observation-covariance';
 

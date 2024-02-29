@@ -11,7 +11,7 @@ import polymorphMatrix from'../lib/utils/polymorph-matrix';
 import State from'./state';
 import * as modelCollection from './model-collection';
 import CoreKalmanFilter from './core-kalman-filter';
-import { WinstonLogger } from './types/ObservationConfig';
+import {WinstonLogger} from './types/ObservationConfig';
 
 /**
  * @typedef {String} DynamicNonObjectConfig

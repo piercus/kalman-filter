@@ -1,7 +1,7 @@
 /**
 * @typedef {Number | Array.<Number> | Array.<Array.<Number>>} CovarianceParam
 */
-import { diag } from 'simple-linalg';
+import {diag} from 'simple-linalg';
 import checkMatrix from './check-matrix';
 /**
 * If cov is a number, result will be Identity*cov

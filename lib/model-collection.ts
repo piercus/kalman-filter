@@ -17,7 +17,7 @@ export function registerObservation(name: string, fn) {
  * @param {String} name
  * @callback fn the function corresponding to the desired model
  */
-export function registerDynamic(name: string, fn) {
+export function registerDynamic(name: string, fn): void {
   registeredDynamicModels[name] = fn;
 }
 
@@ -48,6 +48,5 @@ export function buildDynamic(dynamic, observation) {
       `The provided dynamic model (${dynamic.name}) name is not registered`,
     ));
   }
-
   return registeredDynamicModels[dynamic.name](dynamic, observation);
 }

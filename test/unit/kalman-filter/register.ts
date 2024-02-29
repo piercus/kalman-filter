@@ -1,5 +1,5 @@
 import test from 'ava';
-import { identity } from 'simple-linalg';
+import {identity} from 'simple-linalg';
 
 import {KalmanFilter, State} from '../../..';
 import equalState from '../../helpers/equal-state';

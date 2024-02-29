@@ -1,4 +1,4 @@
-import { diag } from 'simple-linalg';
+import {diag} from 'simple-linalg';
 import State from '../state';
 
 /**
@@ -8,7 +8,7 @@ import State from '../state';
 * @returns {DynamicConfig}
 */
 export default function constantSpeedDynamic(args: {staticCovariance: number[], avSpeed: number[], center: number[]}, observation) {
-	const { staticCovariance, avSpeed, center } = args;
+	const {staticCovariance, avSpeed, center} = args;
 	const observationDimension = observation.observedProjection[0].length;
 
 	const dimension = 2 * observationDimension;

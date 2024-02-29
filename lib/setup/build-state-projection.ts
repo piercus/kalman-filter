@@ -1,5 +1,5 @@
-import { padWithZeroCols as padWithZeros} from 'simple-linalg';
-import { identity } from 'simple-linalg';
+import {padWithZeroCols as padWithZeros} from 'simple-linalg';
+import {identity} from 'simple-linalg';
 
 /**
 *Builds the stateProjection given an observedProjection

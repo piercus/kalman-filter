@@ -1,4 +1,4 @@
-import { diag } from 'simple-linalg';
+import {diag} from 'simple-linalg';
 import polymorphMatrix from '../utils/polymorph-matrix';
 
 /**

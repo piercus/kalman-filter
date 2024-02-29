@@ -1,6 +1,6 @@
 // From observationTracks to movingAverageGroundTruthsStates with speed
 
-import { matMul, invert } from 'simple-linalg';
+import {matMul, invert} from 'simple-linalg';
 
 export default function projectObservation({observation, obsIndexes, selectedStateProjection, invertSelectedStateProjection}) {
 	if (!observation) {

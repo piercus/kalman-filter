@@ -1,6 +1,6 @@
 // Xt ~ N(dynamic.transition°Xt-1, dynamic.covariance)
 
-import { matMul } from 'simple-linalg';
+import {matMul} from 'simple-linalg';
 
 module.exports = function () {
 	const timeStep = 0.1;

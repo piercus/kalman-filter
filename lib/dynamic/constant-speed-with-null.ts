@@ -1,4 +1,4 @@
-import { identity, diag } from 'simple-linalg';
+import {identity, diag} from 'simple-linalg';
 
 const nullModels = {
 	linear(a: number): number {

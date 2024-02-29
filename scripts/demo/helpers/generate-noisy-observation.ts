@@ -1,5 +1,5 @@
 import h from 'hasard';
-import { elemWise } from 'simple-linalg';
+import {elemWise} from 'simple-linalg';
 
 export default function generateNoisyObservation({groundTruths, rangeNoise = 10, numberRun = 1}) {
 	const hasardNoise = h.matrix({

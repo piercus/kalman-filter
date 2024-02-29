@@ -133,7 +133,6 @@
       "ava/prefer-async-await": 0,
       "@typescript-eslint/no-unsafe-assignment": 0,
       "@typescript-eslint/prefer-nullish-coalescing": 0,
-      "@typescript-eslint/object-curly-spacing": 0,
       "@typescript-eslint/no-unsafe-call": 0,
       "@typescript-eslint/restrict-template-expressions": 0,
       "@typescript-eslint/padding-line-between-statements": 0,
