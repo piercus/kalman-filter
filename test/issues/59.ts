@@ -66,8 +66,8 @@ test('Sinusoide Extended Kalman-Filter', t => {
 		const gt = Math.sin(phi) * a;
 		const sensor = gt + (boxMuller() * noiseLevel);
 		values.push({
-gt, sensor, a, w, phi,
-});
+			gt, sensor, a, w, phi,
+		});
 		time++;
 	}
 

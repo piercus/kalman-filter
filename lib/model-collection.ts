@@ -9,7 +9,7 @@ const registeredDynamicModels: Record<string, any> = {};
  */
 
 export function registerObservation(name: string, fn) {
-  registeredObservationModels[name] = fn;
+	registeredObservationModels[name] = fn;
 }
 
 /**
@@ -18,7 +18,7 @@ export function registerObservation(name: string, fn) {
  * @callback fn the function corresponding to the desired model
  */
 export function registerDynamic(name: string, fn): void {
-  registeredDynamicModels[name] = fn;
+	registeredDynamicModels[name] = fn;
 }
 
 /**
@@ -27,13 +27,13 @@ export function registerDynamic(name: string, fn): void {
  * @returns {ObservationConfig} the configuration with respect to the model
  */
 export function buildObservation(observation) {
-  if (typeof (registeredObservationModels[observation.name]) !== "function") {
-    throw (new TypeError(
-      `The provided observation model name (${observation.name}) is not registered`,
-    ));
-  }
+	if (typeof (registeredObservationModels[observation.name]) !== 'function') {
+		throw (new TypeError(
+			`The provided observation model name (${observation.name}) is not registered`,
+		));
+	}
 
-  return registeredObservationModels[observation.name](observation);
+	return registeredObservationModels[observation.name](observation);
 }
 
 /**
@@ -43,10 +43,10 @@ export function buildObservation(observation) {
  * @returns {DynamicConfig} the dynamic configuration with respect to the model
  */
 export function buildDynamic(dynamic, observation) {
-  if (typeof (registeredDynamicModels[dynamic.name]) !== "function") {
-    throw (new TypeError(
-      `The provided dynamic model (${dynamic.name}) name is not registered`,
-    ));
-  }
-  return registeredDynamicModels[dynamic.name](dynamic, observation);
+	if (typeof (registeredDynamicModels[dynamic.name]) !== 'function') {
+		throw (new TypeError(
+			`The provided dynamic model (${dynamic.name}) name is not registered`,
+		));
+	}
+	return registeredDynamicModels[dynamic.name](dynamic, observation);
 }

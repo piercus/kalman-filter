@@ -16,4 +16,4 @@ export {default as shorttermConstantSpeed} from './shortterm-constant-speed';
 // 	'constant-speed-dynamic': require('./constant-speed-dynamic.js'),
 // 	'shortterm-constant-speed': require('./shortterm-constant-speed.js'),
 // };
-// 
+//

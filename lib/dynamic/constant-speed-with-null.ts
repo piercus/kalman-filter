@@ -31,10 +31,10 @@ export default function constantSpeedWithNull(args: {staticCovariance?: number[]
 
 	const dimension = 2 * obsDynaIndexes.length;
 	init ||= {
-			mean: new Array(obsDynaIndexes.length * 2).fill(0).map(() => [0]),
-			covariance: diag(new Array(obsDynaIndexes.length * 2).fill(huge)),
-			index: -1,
-		};
+		mean: new Array(obsDynaIndexes.length * 2).fill(0).map(() => [0]),
+		covariance: diag(new Array(obsDynaIndexes.length * 2).fill(huge)),
+		index: -1,
+	};
 
 	nullGapModel ||= new Array(dimension).fill(0).map(() => 'linear');
 

@@ -13,7 +13,7 @@
 *@returns {MatrixCallback}
 */
 
-export default function toFunction(array, {label = ""} = {}) {
+export default function toFunction(array, {label = ''} = {}) {
 	if (typeof (array) === 'function') {
 		return array;
 	}

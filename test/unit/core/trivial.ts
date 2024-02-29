@@ -70,9 +70,9 @@ test('Init with zero mean', t => {
 
 test('Impact previousCorrected and dynamic covariance', t => {
 	const smallDynamicCovOptions = {
-		...defaultOptions, 
+		...defaultOptions,
 		dynamic: {
-...defaultOptions.dynamic, 
+			...defaultOptions.dynamic,
 			covariance() {
 				return [
 					[tiny],

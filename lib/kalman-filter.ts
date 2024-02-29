@@ -1,14 +1,14 @@
 
 import {frobenius as distanceMat} from 'simple-linalg';
-import arrayToMatrix from'../lib/utils/array-to-matrix';
-import setDimensions from'../lib/setup/set-dimensions';
-import checkDimensions from'../lib/setup/check-dimensions';
-import buildStateProjection from'../lib/setup/build-state-projection';
-import extendDynamicInit from'../lib/setup/extend-dynamic-init';
-import toFunction from'../lib/utils/to-function';
-import deepAssign from'../lib/utils/deep-assign';
-import polymorphMatrix from'../lib/utils/polymorph-matrix';
-import State from'./state';
+import arrayToMatrix from '../lib/utils/array-to-matrix';
+import setDimensions from '../lib/setup/set-dimensions';
+import checkDimensions from '../lib/setup/check-dimensions';
+import buildStateProjection from '../lib/setup/build-state-projection';
+import extendDynamicInit from '../lib/setup/extend-dynamic-init';
+import toFunction from '../lib/utils/to-function';
+import deepAssign from '../lib/utils/deep-assign';
+import polymorphMatrix from '../lib/utils/polymorph-matrix';
+import State from './state';
 import * as modelCollection from './model-collection';
 import CoreKalmanFilter from './core-kalman-filter';
 import {WinstonLogger} from './types/ObservationConfig';

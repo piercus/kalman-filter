@@ -1,10 +1,10 @@
 import {
-matMul, transpose, add, invert, subtract as sub, identity as getIdentity,
+	matMul, transpose, add, invert, subtract as sub, identity as getIdentity,
 } from 'simple-linalg';
 import State from './state';
 import checkMatrix from './utils/check-matrix';
 import type {
- CoreConfig, DynamicConfig, ObservationConfig, PredictedCallback, PreviousCorrectedCallback, WinstonLogger, 
+	CoreConfig, DynamicConfig, ObservationConfig, PredictedCallback, PreviousCorrectedCallback, WinstonLogger,
 } from './types/ObservationConfig';
 
 const defaultLogger: WinstonLogger = {
