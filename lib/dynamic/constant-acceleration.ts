@@ -38,6 +38,6 @@ export default function constantAcceleration(dynamic, observation) {
 		.concat(new Array(baseDimension).fill(timeStep ** 4));
 	const covariance = dynamic.covariance || arrayCovariance;
 	return Object.assign({}, dynamic, {dimension, transition, covariance});
-};
+}
 
 // export default constantAcceleration;

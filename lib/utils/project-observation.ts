@@ -34,4 +34,4 @@ export default function projectObservation({observation, obsIndexes, selectedSta
 
 			return v;
 		});
-};
+}

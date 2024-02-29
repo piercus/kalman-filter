@@ -26,4 +26,4 @@ export default function nullableSensor(options) {
 			return covariance;
 		},
 	};
-};
+}

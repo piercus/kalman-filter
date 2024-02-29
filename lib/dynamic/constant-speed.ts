@@ -34,4 +34,4 @@ export default function constantSpeed(dynamic, observation) {
 	const arrayCovariance = new Array(baseDimension).fill(1).concat(new Array(baseDimension).fill(timeStep * timeStep));
 	const covariance = dynamic.covariance || arrayCovariance;
 	return Object.assign({}, dynamic, {dimension, transition, covariance});
-};
+}

@@ -8,7 +8,7 @@ export default function generateNoisyObservation({groundTruths, rangeNoise = 10,
 	});
 	const combinedMatrix = h.fn((noise, gT) => elemWise([noise, gT], ([n, gTCell]) => n + gTCell))(hasardNoise, groundTruths);
 	return combinedMatrix.run(numberRun);
-};
+}
 
 // module.exports = generateNoisyObservation;
 // Console.log('Noisy observation', generateNoiseMatrix({groundTruths: demoGroundTruths}))

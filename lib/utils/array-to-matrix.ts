@@ -24,4 +24,4 @@ export default function arrayToMatrix({observation, dimension}) {
 	}
 
 	return observation;
-};
+}

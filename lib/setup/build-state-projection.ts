@@ -37,4 +37,4 @@ export default function buildStateProjection({observation, dynamic}) {
 	}
 
 	return {observation, dynamic};
-};
+}

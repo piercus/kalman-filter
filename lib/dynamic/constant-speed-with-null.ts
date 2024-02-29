@@ -82,4 +82,4 @@ export default function constantSpeedWithNull(args: {staticCovariance?: number[]
 			return identity(dimension);
 		},
 	};
-};
+}

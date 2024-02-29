@@ -34,4 +34,4 @@ export default function polymorphMatrix(cov, opts: {dimension?: any, title?: str
 	}
 
 	return cov;
-};
+}

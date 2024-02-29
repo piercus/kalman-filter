@@ -21,4 +21,4 @@ export default function checkMatrix(matrix, shape?: number[], title = 'checkMatr
 	if (shape) {
 		checkShape(matrix, shape, title);
 	}
-};
+}

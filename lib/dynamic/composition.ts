@@ -133,4 +133,4 @@ export default function composition({perName}, observation) {
 			return resultCovariance;
 		},
 	};
-};
+}

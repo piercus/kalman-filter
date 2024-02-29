@@ -36,4 +36,4 @@ export default function extendDynamicInit({observation, dynamic}) {
 	});
 
 	return {observation, dynamic};
-};
+}

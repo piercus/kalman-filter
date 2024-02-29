@@ -87,6 +87,6 @@ export default function constantSpeedDynamic(args: {staticCovariance: number[], 
 		transition,
 		covariance,
 	};
-};
+}
 
 // module.exports = constantSpeedDynamic;

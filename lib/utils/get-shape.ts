@@ -3,4 +3,4 @@ export default function getShape(matrix: unknown): number[] {
 		return [];
 	}
 	return [matrix.length].concat(getShape(matrix[0]));
-};
+}

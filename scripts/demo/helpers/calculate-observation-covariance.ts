@@ -13,5 +13,5 @@ export default function calculateObservationCovariance({groundTruths, rangeNoise
 	// Console.log(measures, averages, measures.length, averages.length,covariance);
 
 	return covariance;
-};
+}
 

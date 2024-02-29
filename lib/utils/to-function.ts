@@ -23,4 +23,4 @@ export default function toFunction(array, {label = ""} = {}) {
 	}
 
 	throw (new Error(`${label === null ? '' : label + ' : '}Only arrays and functions are authorized (got: "${array}")`));
-};
+}

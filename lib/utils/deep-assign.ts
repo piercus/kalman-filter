@@ -41,6 +41,6 @@ function deepAssignInternal(args, step: number) {
 	}
 
 	return result;
-};
+}
 
 export default function deepAssign(...args: any[]) { return deepAssignInternal(args, 0);}

@@ -41,4 +41,4 @@ export default function setDimensions({observation, dynamic}) {
 	}
 
 	return {observation, dynamic};
-};
+}

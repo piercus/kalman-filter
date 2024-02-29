@@ -43,4 +43,4 @@ export default function checkCovariance(args: {covariance: number[][], eigen?: b
 	if (eigen) {
 		checkDefinitePositive(covariance);
 	}
-};
+}

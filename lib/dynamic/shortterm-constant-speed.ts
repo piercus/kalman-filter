@@ -81,4 +81,4 @@ export default function shorttermConstantSpeed(options: any, observation) {
 			return mixMatrix({ratios, aMat, bMat: init.covariance});
 		},
 	};
-};
+}

@@ -22,4 +22,4 @@ export default function getCovariance({measures, averages}) {
 
 		return result;
 	}));
-};
+}

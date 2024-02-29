@@ -35,4 +35,4 @@ export default function sensor(options) {
 		observedProjection: concatenatedObservedProjection,
 		covariance: concatenatedCovariance,
 	});
-};
+}

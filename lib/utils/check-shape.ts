@@ -6,4 +6,4 @@ export default function checkShape(matrix: any[], shape: number[], title = 'chec
 	if (shape.length > 1) {
 		return matrix.forEach(m => checkShape(m, shape.slice(1), title));
 	}
-};
+}

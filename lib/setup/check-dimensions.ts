@@ -12,4 +12,4 @@ export default function checkDimensions({observation, dynamic}) {
 	}
 
 	return {observation, dynamic};
-};
+}

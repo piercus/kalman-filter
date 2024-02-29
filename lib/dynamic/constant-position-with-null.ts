@@ -35,4 +35,4 @@ export default function constantPositionWithNull({staticCovariance, obsDynaIndex
 		},
 		init,
 	};
-};
+}

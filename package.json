@@ -6,6 +6,7 @@
   "types": "index.d.ts",
   "scripts": {
     "test": "tsc && xo && ava",
+    "xo": "xo",
     "prettier": "xo --fix",
     "semantic-release": "semantic-release",
     "build-demo": "tsc && npm run build && browserify -d -r ./demo/bike/main.js:bike > docs/dist/bike.js && browserify -d -r ./demo/bouncing-ball/main.js:bouncing-ball > docs/dist/bouncing-ball.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
@@ -135,7 +136,6 @@
       "@typescript-eslint/object-curly-spacing": 0,
       "@typescript-eslint/no-unsafe-call": 0,
       "@typescript-eslint/restrict-template-expressions": 0,
-      "@typescript-eslint/no-extra-semi": 0,
       "@typescript-eslint/padding-line-between-statements": 0,
       "@typescript-eslint/no-unsafe-return": 0,
       "@typescript-eslint/restrict-plus-operands": 0,
@@ -159,7 +159,6 @@
       "@typescript-eslint/consistent-type-definitions": 0,
       "@typescript-eslint/brace-style": 0,
       "@typescript-eslint/member-ordering": 0,
-      "@typescript-eslint/semi": 0,
       "max-statements-per-line": 0,
       "unicorn/prevent-abbreviations": 0,
       "eslint-comments/no-unused-disable": 0,

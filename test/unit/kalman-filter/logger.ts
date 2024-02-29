@@ -11,13 +11,13 @@ test('Logger.debug', t => {
 			name: 'constant-speed',
 		},
 		logger: {
-			info: (...args) => {console.log(...args)},
+			info: (...args) => {console.log(...args);},
 			debug() {
 				hasDebug = true;
 				// Console.log(...args);
 			},
-			warn: (...args) => {console.log(...args)},
-			error: (...args) => {console.log(...args)},
+			warn: (...args) => {console.log(...args);},
+			error: (...args) => {console.log(...args);},
 		},
 	});
 	kf.predict();
