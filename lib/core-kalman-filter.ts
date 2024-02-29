@@ -1,7 +1,7 @@
 import {matMul, transpose, add, invert, subtract as sub, identity as getIdentity} from 'simple-linalg';
 import State from './state';
 import checkMatrix from './utils/check-matrix';
-import type { CoreConfig, DynamicConfig, ObservationConfig, PreviousCorrectedCallback, WinstonLogger } from './types/ObservationConfig';
+import type { CoreConfig, DynamicConfig, ObservationConfig, PredictedCallback, PreviousCorrectedCallback, WinstonLogger } from './types/ObservationConfig';
 
 const defaultLogger: WinstonLogger = {
 	info: (...args) => console.log(...args),
@@ -22,11 +22,11 @@ export default class CoreKalmanFilter {
 		this.logger = logger;
 	}
 
-	getValue(fn: number[][] | PreviousCorrectedCallback, options: any) {
+	getValue(fn: number[][] | PreviousCorrectedCallback | PredictedCallback, options: any) {
 		return (typeof (fn) === 'function' ? fn(options) : fn);
 	}
 
-	getInitState() {
+	getInitState(): State {
 		const {mean: meanInit, covariance: covarianceInit, index: indexInit} = this.dynamic.init;
 
 		const initState = new State({
@@ -93,7 +93,7 @@ export default class CoreKalmanFilter {
 	* @returns{State} predicted State
 	*/
 
-	predict(options: {previousCorrected?: any, index?: number} = {}) {
+	predict(options: {previousCorrected?: State, index?: number, observation?: number[][]} = {}) {
 		let {previousCorrected, index} = options;
 		previousCorrected = previousCorrected || this.getInitState();
 
@@ -122,13 +122,12 @@ export default class CoreKalmanFilter {
 		return predicted;
 	}
 	/**
-	This will return the new correction, taking into account the prediction made
-	and the observation of the sensor
+	* This will return the new correction, taking into account the prediction made
+	* and the observation of the sensor
 	* @param {State} predicted the previous State
 	* @returns{Array<Array>} kalmanGain
 	*/
-
-	getGain(options: {predicted: any, stateProjection: any}) {
+	getGain(options: {predicted: State, stateProjection?: number[][]}) {
 		let {predicted, stateProjection} = options;
 		const getValueOptions = Object.assign({}, {index: predicted.index}, options);
 		stateProjection = stateProjection || this.getValue(this.observation.stateProjection, getValueOptions);
@@ -159,7 +158,7 @@ export default class CoreKalmanFilter {
 	* @returns{Array.<Array.<Number>>}
 	*/
 
-	getCorrectedCovariance(options: {predicted: any, optimalKalmanGain: any, stateProjection: any}) {
+	getCorrectedCovariance(options: {predicted: State, optimalKalmanGain?: any, stateProjection?: any}) {
 		let {predicted, optimalKalmanGain, stateProjection} = options;
 		const identity = getIdentity(predicted.covariance.length);
 		if (!stateProjection) {

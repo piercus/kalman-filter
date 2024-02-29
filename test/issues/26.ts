@@ -1,4 +1,4 @@
-const test = require('ava');
+import test from 'ava';
 const {KalmanFilter} = require('../../index.js');
 
 const START_TIME_DELTA_SECS = 1;

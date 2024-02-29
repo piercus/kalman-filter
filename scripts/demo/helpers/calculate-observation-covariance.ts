@@ -1,7 +1,7 @@
-const getCovariance = require('../../../lib/utils/get-covariance.js');
-const generateNoisyObservation = require('./generate-noisy-observation.js');
+import getCovariance from '../../../lib/utils/get-covariance.js';
+import generateNoisyObservation from './generate-noisy-observation.js';
 
-const calculateObservationCovariance = function ({groundTruths, rangeNoise = 10, numberRun = 1}) {
+export default function calculateObservationCovariance({groundTruths, rangeNoise = 10, numberRun = 1}) {
 	const noisyMatrixes = generateNoisyObservation({groundTruths, rangeNoise, numberRun});
 	const measures = noisyMatrixes.reduce((a, b) => a.concat(b));
 
@@ -15,4 +15,3 @@ const calculateObservationCovariance = function ({groundTruths, rangeNoise = 10,
 	return covariance;
 };
 
-module.exports = calculateObservationCovariance;

@@ -14,10 +14,10 @@ export default class State {
 	covariance: number[][];
 	index: number;
 
-	constructor(args: {mean: number[][], covariance: number[][], index: number}) {
+	constructor(args: {mean: number[][], covariance: number[][], index?: number}) {
 		this.mean = args.mean;
 		this.covariance = args.covariance;
-		this.index = args.index;
+		this.index = args.index || 0;
 	}
 
 	/**
@@ -26,7 +26,7 @@ export default class State {
 	* @returns {Null}
 	* @see check
 	*/
-	check(options?: {dimension?: number[] | null, title?: string, eigen?: boolean}) {
+	check(options?: {dimension?: number | null, title?: string, eigen?: boolean}) {
 		State.check(this, options);
 	}
 
@@ -40,7 +40,7 @@ export default class State {
 	* @returns {Null}
 	*/
 
-	static check(state: State, args: {dimension?: number[] | null, title?: string, eigen?: boolean} = {}) {
+	static check(state: State, args: {dimension?: number | null, title?: string, eigen?: boolean} = {}) {
 		const {dimension, title, eigen} = args;
 		if (!(state instanceof State)) {
 			throw (new TypeError(
@@ -123,15 +123,12 @@ export default class State {
 
 		// Console.log('covariance in obs space', covarianceInObservationSpace);
 
-		const value = Math.sqrt(
-			matMul(
-				matMul(
-					diffTransposed,
-					covarianceInvert,
-				),
-				diff,
-			),
+		const valueMatrix = matMul(
+			matMul(diffTransposed, covarianceInvert),
+			diff
 		);
+		// Calculate the Mahalanobis distance value
+		const value = Math.sqrt(valueMatrix[0][0]);
 		if (Number.isNaN(value)) {
 			console.log({diff, covarianceInvert, this: this, point}, matMul(
 				matMul(
@@ -181,7 +178,7 @@ export default class State {
 	* @param {Object} options @see detailedMahalanobis
 	* @returns {Number}
 	*/
-	mahalanobis(options) {
+	mahalanobis(options): number {
 		const result = this.detailedMahalanobis(options).value;
 		if (Number.isNaN(result)) {
 			throw (new TypeError('mahalanobis is NaN'));
@@ -218,9 +215,7 @@ export default class State {
 	*/
 	bhattacharyya(otherState: State) {
 		const {covariance, mean} = this;
-		// TODO remove this typing once it will be corrected in simple-linalg
-		const myElemWise = elemWise as unknown as ((matrices: number[][][], callback: (list: number[], rowId: number, colId: number) => number) => number[][]);
-		const average = myElemWise([covariance, otherState.covariance], ([a, b]) => (a + b) / 2);
+		const average = elemWise([covariance, otherState.covariance], ([a, b]) => (a + b) / 2);
 
 		let covarInverted;
 		try {

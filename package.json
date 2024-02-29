@@ -83,12 +83,14 @@
   },
   "homepage": "https://github.com/piercus/kalman-filter#readme",
   "devDependencies": {
+    "@types/node": "^20.11.24",
     "ava": "^5.2.0",
     "browserify": "^16.5.2",
     "cholesky": "^1.2.0",
     "hasard": "^1.6.1",
     "http-server": "^14.1.1",
     "semantic-release": "^21.0.1",
+    "typescript": "^5.3.3",
     "webpack": "^5.21.1",
     "webpack-cli": "^4.5.0",
     "xo": "^0.54.1"
@@ -96,7 +98,7 @@
   "dependencies": {
     "@rayyamhk/matrix": "^1.0.8",
     "matrix-inverse": "^2.0.0",
-    "simple-linalg": "^1.4.0"
+    "simple-linalg": "^1.5.0"
   },
   "xo": {
     "ignores": [

@@ -1,6 +1,6 @@
-const test = require('ava');
-const equalState = require('../../../test/helpers/equal-state.js');
-const {KalmanFilter, State} = require('../../..');
+import test from 'ava';
+import equalState from '../../../test/helpers/equal-state.js';
+import {KalmanFilter, State} from '../../..';
 
 test('Filter method', t => {
 	const observations = [[0.11], [0.21], [0.3]];

@@ -11,6 +11,7 @@ import polymorphMatrix from'../lib/utils/polymorph-matrix';
 import State from'./state';
 import * as modelCollection from './model-collection';
 import CoreKalmanFilter from './core-kalman-filter';
+import { WinstonLogger } from './types/ObservationConfig';
 
 /**
  * @typedef {String} DynamicNonObjectConfig
@@ -32,6 +33,14 @@ const buildDefaultDynamic = function (dynamic): {name: string} {
 	return {name: 'constant-position'};
 };
 
+interface ObservationObjectConfig {
+	sensorDimension?: number, // Observation.dimension == observation.sensorDimension * observation.nSensors
+	nSensors?: number,
+	sensorCovariance?: number[],
+	name: 'sensor' | string,
+}
+
+
 /**
  * @typedef {String | Number} ObservationNonObjectConfig
  */
@@ -43,7 +52,7 @@ const buildDefaultDynamic = function (dynamic): {name: string} {
  * @param {ObservationNonObjectConfig} observation
  * @returns {ObservationObjectConfig}
  */
-const buildDefaultObservation = function (observation) {
+const buildDefaultObservation = function (observation): ObservationObjectConfig {
 	if (typeof (observation) === 'number') {
 		return {name: 'sensor', sensorDimension: observation};
 	}
@@ -63,14 +72,14 @@ const buildDefaultObservation = function (observation) {
 * @returns {CoreConfig}
 */
 
-const setupModelsParameters = function (args: {observation?: any, dynamic?: any}) {
+const setupModelsParameters = function (args: {observation?: ObservationObjectConfig, dynamic?: any}) {
 	let {observation, dynamic} = args;
 	if (typeof (observation) !== 'object' || observation === null) {
 		observation = buildDefaultObservation(observation);
 	}
 
 	if (typeof (dynamic) !== 'object' || dynamic === null) {
-		dynamic = buildDefaultDynamic(dynamic, observation);
+		dynamic = buildDefaultDynamic(dynamic/*, observation*/);
 	}
 
 	if (typeof (observation.name) === 'string') {
@@ -121,7 +130,7 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	/**
 	* @param {Config} options
 	*/
-	constructor(options = {}) {
+	constructor(options: {observation?: any, dynamic?: any, logger?: WinstonLogger} = {}) {
 		const modelsParameters = setupModelsParameters(options);
 		const coreOptions = modelsParametersToCoreOptions(modelsParameters);
 
@@ -174,16 +183,15 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	*/
 	asymptoticStateCovariance({limitIterations = 1e2, tolerance = 1e-6} = {}) {
 		let previousCorrected = super.getInitState();
-		let predicted;
-		const results = [];
+		const results:  number[][][] = [];
 		for (let i = 0; i < limitIterations; i++) {
 			// We create a fake mean that will not be used in order to keep coherence
-			predicted = new State({
-				mean: null,
+			const predicted = new State({
+				mean: [],
 				covariance: super.getPredictedCovariance({previousCorrected}),
 			});
 			previousCorrected = new State({
-				mean: null,
+				mean: [],
 				covariance: super.getCorrectedCovariance({predicted}),
 			});
 			results.push(previousCorrected.covariance);

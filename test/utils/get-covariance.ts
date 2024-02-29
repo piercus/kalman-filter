@@ -1,8 +1,8 @@
-const test = require('ava');
-const h = require('hasard');
-const cholesky = require('cholesky');
-const {matMul, add} = require('simple-linalg');
-const getCovariance = require('../../lib/utils/get-covariance');
+import test  from 'ava';
+import h  from 'hasard';
+import cholesky  from 'cholesky';
+import {matMul, add}  from 'simple-linalg';
+import getCovariance  from '../../lib/utils/get-covariance';
 
 const buildDataFromCovariance = function (covariance) {
 	const dimension = covariance.length;

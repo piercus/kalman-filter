@@ -1,7 +1,7 @@
-const test = require('ava');
-const equalState = require('../../../test/helpers/equal-state.js');
-const KalmanFilter = require('../../../lib/kalman-filter.js');
-const State = require('../../../lib/state.js');
+import test from 'ava';
+import equalState from '../../../test/helpers/equal-state.js';
+import KalmanFilter from '../../../lib/kalman-filter.js';
+import State from '../../../lib/state.js';
 
 const huge = 1e6;
 const timeStep = 0.1;
@@ -263,7 +263,7 @@ test('Dimension Error with stateProjection', t => {
 		const kf = new KalmanFilter(badSetOptions);
 		kf.predict();
 	});
-	t.is(error.message, 'stateProjection dimensions not matching with observation and dynamic dimensions');
+	t.is(error!.message, 'stateProjection dimensions not matching with observation and dynamic dimensions');
 });
 
 // Test Error 2: Verify that an error if thrown when there is a difference between
@@ -285,7 +285,7 @@ test('Dimension Error with Transition', t => {
 		const kf = new KalmanFilter(badSetOptions);
 		kf.predict();
 	});
-	t.is(error.message, 'transition dimension not matching with dynamic dimension');
+	t.is(error!.message, 'transition dimension not matching with dynamic dimension');
 });
 
 // Test Error 3: Throw an error if both observedProjection and stateProjection are defined
@@ -307,7 +307,7 @@ test('Observed and State Projections', t => {
 		const kf = new KalmanFilter(badSetOptions);
 		kf.predict();
 	});
-	t.is(error.message, 'You cannot use both observedProjection and stateProjection');
+	t.is(error!.message, 'You cannot use both observedProjection and stateProjection');
 });
 
 // Test index is not NaN if undefined
@@ -327,6 +327,8 @@ test('Index initialization', t => {
 	const predicted2 = kf.predict({previousCorrected: firstState});
 	t.false(Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted2.index));
+	// @ts-ignore
 	t.is(predicted1.index, undefined);
+	// @ts-ignore
 	t.is(predicted2.index, undefined);
 });

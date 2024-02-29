@@ -1,7 +1,7 @@
-const test = require('ava');
-const {frobenius: distanceMat} = require('simple-linalg');
-const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
-const State = require('../../../lib/state.js');
+import test from 'ava';
+import {frobenius as distanceMat} from 'simple-linalg';
+import CoreKalmanFilter from '../../../lib/core-kalman-filter';
+import State from '../../../lib/state';
 
 // Tests in 2D with constant speed model
 

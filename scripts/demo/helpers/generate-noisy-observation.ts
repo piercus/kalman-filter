@@ -1,7 +1,7 @@
-const h = require('hasard');
-const {elemWise} = require('simple-linalg');
+import h from 'hasard';
+import { elemWise } from 'simple-linalg';
 
-const generateNoisyObservation = function ({groundTruths, rangeNoise = 10, numberRun = 1}) {
+export default function generateNoisyObservation({groundTruths, rangeNoise = 10, numberRun = 1}) {
 	const hasardNoise = h.matrix({
 		shape: [groundTruths.length, groundTruths[0].length],
 		value: h.integer(-rangeNoise, rangeNoise),
@@ -10,5 +10,5 @@ const generateNoisyObservation = function ({groundTruths, rangeNoise = 10, numbe
 	return combinedMatrix.run(numberRun);
 };
 
-module.exports = generateNoisyObservation;
+// module.exports = generateNoisyObservation;
 // Console.log('Noisy observation', generateNoiseMatrix({groundTruths: demoGroundTruths}))

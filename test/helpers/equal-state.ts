@@ -1,7 +1,7 @@
-const {frobenius: distanceMat} = require('simple-linalg');
-const State = require('../../lib/state.js');
+import {frobenius as distanceMat} from 'simple-linalg';
+import State from '../../lib/state';
 
-module.exports = function (state1, state2, tolerance = 1e-6) {
+export default function equalState(state1, state2, tolerance = 1e-6) {
 	if ((!(state1 instanceof State)) || (!(state2 instanceof State))) {
 		throw (new TypeError('One of the args is not a State'));
 	}

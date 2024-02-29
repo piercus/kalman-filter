@@ -1,12 +1,13 @@
-const test = require('ava');
-const {trace} = require('simple-linalg');
-const {frobenius: distanceMat} = require('simple-linalg');
-const {sum} = require('simple-linalg');
-const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
-const State = require('../../../lib/state.js');
-const equalState = require('../../../test/helpers/equal-state.js');
+import test from 'ava';
+import {trace} from 'simple-linalg';
+import {frobenius as distanceMat}  from 'simple-linalg';
+import {sum} from 'simple-linalg';
+import CoreKalmanFilter from '../../../lib/core-kalman-filter';
+import State from '../../../lib/state';
+import equalState from '../../helpers/equal-state';
+import { CoreConfig } from '../../../lib/types/ObservationConfig';
 
-const defaultOptions = {
+const defaultOptions: CoreConfig = {
 	observation: {
 		dimension: 1,
 		stateProjection() {
@@ -84,6 +85,7 @@ test('Impact previousCorrected and dynamic covariance', t => {
 	});
 	const predicted = kf.predict({previousCorrected});
 	t.true(predicted instanceof State);
+	//@ts-ignore
 	t.is(predicted.index, undefined);
 	t.true(2 / trace(predicted.covariance) > huge / 2); // Verifying that the sum of the variance is tiny
 });
@@ -104,7 +106,7 @@ test('Huge predicted covariance', t => {
 	});
 	const kalmanGain = kf.getGain({predicted, stateProjection: [[1]]});
 	t.true(corrected instanceof State);
-	t.true(kalmanGain > 0.99);
+	t.true(kalmanGain[0][0] > 0.99);
 });
 
 // Test 4a: Play with dynamic and previousCorrected covariances
@@ -290,7 +292,7 @@ test('NaN Error', t => {
 	const error = t.throws(() => {
 		kf.predict({previousCorrected});
 	});
-	t.is(error.message, '[covariance] Matrix should not have a NaN\nIn : \nNaN');
+	t.is(error!.message, '[covariance] Matrix should not have a NaN\nIn : \nNaN');
 });
 // Error Test: non-squared matrix
 
@@ -306,5 +308,5 @@ test('Non squared matrix', t => {
 	const error = t.throws(() => {
 		kf.predict({previousCorrected: nonSquaredState});
 	});
-	t.is(error.message, '[mean] expected size (1) and length (2) does not match');
+	t.is(error!.message, '[mean] expected size (1) and length (2) does not match');
 });

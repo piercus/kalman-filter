@@ -1,5 +1,5 @@
-const test = require('ava');
-const {KalmanFilter} = require('../../index.js');
+import test from 'ava';
+import {KalmanFilter} from '../../index.js';
 
 test('#34 1-D', t => {
 	const dataset = [0, 0, 0, 0, 16.1, 0, 0, 30.9, 0, 0, 0, 0, 26.1, null, null].map(a => [a]);

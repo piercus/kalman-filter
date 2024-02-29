@@ -4,7 +4,7 @@
 
 // We have used a specific script to build the default parameters [script](../../../script/covariance-pendulum.js)
 
-const test = require('ava');
+import test from 'ava';
 const {frobenius: distanceMat} = require('simple-linalg');
 const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
 const State = require('../../../lib/state.js');

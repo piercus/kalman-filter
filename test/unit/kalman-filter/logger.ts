@@ -1,5 +1,5 @@
-const test = require('ava');
-const {KalmanFilter} = require('../../..');
+import test  from 'ava';
+import { KalmanFilter} from '../../..';
 
 test('Logger.debug', t => {
 	let hasDebug = false;

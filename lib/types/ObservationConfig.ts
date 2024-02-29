@@ -19,7 +19,9 @@ export interface WinstonLogger {
 
 
 export interface ObservationConfig {
-    dimension: number;
+    dimension: number;  // Observation.dimension == observation.sensorDimension * observation.nSensors
+    sensorDimension?: number;
+    nSensors?: number,
     fn?: PredictedCallback;
     /**
      * stateProjection the matrix to transform state to observation (for EKF, the jacobian of the fn)
@@ -55,7 +57,7 @@ export interface DynamicConfig {
     init: {
         mean: number[][];
         covariance: number[][];
-        index: number;
+        index?: number;
     };
 }
 

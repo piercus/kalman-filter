@@ -160,7 +160,7 @@ test('Sensor observation', t => {
 		},
 	});
 	t.is(kFilter.observation.stateProjection.length,
-		kFilter.observation.sensorDimension * kFilter.observation.nSensors);
+		kFilter.observation.sensorDimension! * kFilter.observation.nSensors!);
 
 	t.is(kFilter.observation.stateProjection[0].length, 4);
 
@@ -218,8 +218,8 @@ test('Model fits ', t => {
 	const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 	// Online kalman filter
-	let previousCorrected = null;
-	const distances = [];
+	let previousCorrected: State | undefined = undefined;
+	const distances: number[] = [];
 	for (const observation of observations) {
 		const predicted = kFilter.predict({
 			previousCorrected,

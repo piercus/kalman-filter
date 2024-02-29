@@ -1,5 +1,5 @@
-const test = require('ava');
-const {KalmanFilter} = require('../../index.js');
+import test from 'ava';
+import {KalmanFilter} from '../../index.js';
 
 test('Sinusoide Extended Kalman-Filter', t => {
 	const noiseLevel = 0.25;
