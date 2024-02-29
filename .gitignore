@@ -107,3 +107,8 @@ dist/
 index.d.ts
 lib/*.d.ts
 lib/*/*.d.ts
+index.js
+lib/*.js
+lib/*/*.js
+docs/dist/bouncing-ball.js
+docs/dist/kalman-filter.js

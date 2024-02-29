@@ -1,5 +1,5 @@
 import test from 'ava';
-import equalState from '../../../test/helpers/equal-state.js';
+import equalState from '../../../test/helpers/equal-state';
 import {KalmanFilter, State} from '../../..';
 
 test('Filter method', t => {

@@ -2,12 +2,20 @@ import * as modelCollection from './lib/model-collection';
 import * as defaultDynamicModels from './lib/dynamic';
 import * as defaultObservationModels from './lib/observation';
 
-Object.keys(defaultDynamicModels).forEach(k => {
-	modelCollection.registerDynamic(k, defaultDynamicModels[k]);
+function camelToDash(str: string) {
+	if (str === str.toLowerCase()) {
+		return str;
+	}
+    return str.replace(/[A-Z]/g, m => "-" + m.toLowerCase());
+}
+
+Object.keys(defaultDynamicModels).forEach((k: string) => {
+
+	modelCollection.registerDynamic(camelToDash(k), defaultDynamicModels[k]);
 });
 
-Object.keys(defaultObservationModels).forEach(k => {
-	modelCollection.registerObservation(k, defaultObservationModels[k]);
+Object.keys(defaultObservationModels).forEach((k: string) => {
+	modelCollection.registerObservation(camelToDash(k), defaultObservationModels[k]);
 });
 
 // module.exports = Object.assign({

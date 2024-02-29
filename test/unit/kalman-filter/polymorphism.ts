@@ -1,7 +1,7 @@
 import test from 'ava';
-import equalState from '../../../test/helpers/equal-state.js';
-import KalmanFilter from '../../../lib/kalman-filter.js';
-import State from '../../../lib/state.js';
+import equalState from '../../../test/helpers/equal-state';
+import KalmanFilter from '../../../lib/kalman-filter';
+import State from '../../../lib/state';
 
 const huge = 1e6;
 const timeStep = 0.1;

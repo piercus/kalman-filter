@@ -69,15 +69,16 @@ test('Init with zero mean', t => {
 // return a small predicted.covariance
 
 test('Impact previousCorrected and dynamic covariance', t => {
-	const smallDynamicCovOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const smallDynamicCovOptions = {
+		...defaultOptions, 
+		dynamic: {...defaultOptions.dynamic, 
 			covariance() {
 				return [
 					[tiny],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kf = new CoreKalmanFilter(smallDynamicCovOptions);
 	const previousCorrected = new State({
 		mean: [[0]],
@@ -85,7 +86,6 @@ test('Impact previousCorrected and dynamic covariance', t => {
 	});
 	const predicted = kf.predict({previousCorrected});
 	t.true(predicted instanceof State);
-	//@ts-ignore
 	t.is(predicted.index, undefined);
 	t.true(2 / trace(predicted.covariance) > huge / 2); // Verifying that the sum of the variance is tiny
 });

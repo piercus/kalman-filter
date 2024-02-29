@@ -12,12 +12,12 @@ import checkCovariance from './utils/check-covariance';
 export default class State {
 	mean: number[][];
 	covariance: number[][];
-	index: number;
+	index: number | undefined;
 
 	constructor(args: {mean: number[][], covariance: number[][], index?: number}) {
 		this.mean = args.mean;
 		this.covariance = args.covariance;
-		this.index = args.index || 0;
+		this.index = args.index || undefined;
 	}
 
 	/**

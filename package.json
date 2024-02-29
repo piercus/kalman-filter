@@ -3,10 +3,11 @@
   "version": "2.3.0",
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
   "main": "index.js",
+  "type": "index.js",
   "scripts": {
-    "test": "xo && ava",
+    "test": "tsc && xo && ava",
     "semantic-release": "semantic-release",
-    "build-demo": "npm run build && browserify -d -r ./demo/bike/main.js:bike > docs/dist/bike.js && browserify -d -r ./demo/bouncing-ball/main.js:bouncing-ball > docs/dist/bouncing-ball.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
+    "build-demo": "tsc && npm run build && browserify -d -r ./demo/bike/main.js:bike > docs/dist/bike.js && browserify -d -r ./demo/bouncing-ball/main.js:bouncing-ball > docs/dist/bouncing-ball.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
     "serve-demo": "http-server docs/",
     "build": "NODE_OPTIONS=--openssl-legacy-provider webpack"
   },
@@ -16,6 +17,7 @@
   },
   "files": [
     "index.js",
+    "index.d.ts",
     "lib"
   ],
   "release": {
@@ -148,6 +150,7 @@
       "@typescript-eslint/lines-between-class-members": 0,
       "@typescript-eslint/no-empty-function": 0,
       "@typescript-eslint/ban-types": 0,
+      "n/file-extension-in-import": 0,
       "import/no-useless-path-segments": 0,
       "typescript-eslint/consistent-type-definitions": 0,
       "padded-blocks": 0,
