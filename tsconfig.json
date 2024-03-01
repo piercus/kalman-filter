@@ -107,7 +107,11 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "index.ts"
+    "index.ts",
+    "test/utils/get-covariance.ts",
+    "test/unit/core/constant-speed-pendulum.ts",
   ],
-  "exclude": ["dist"]
+  "exclude": [
+    "dist"
+  ]
 }

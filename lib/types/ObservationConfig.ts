@@ -1,11 +1,12 @@
-import State from '../state';
+// import State from '../state';
+import {StateLT} from './StateLT';
 
 interface Observation {
 	name: string;
 }
 
 export type PreviousCorrectedCallback = (opts: {index: number, previousCorrected: StateLT, variance?: number[]}) => number[][];
-export type PredictedCallback         = (opts: {index: number, previousCorrected: StateLT, predicted: State, observation: Observation}) => number[][];
+export type PredictedCallback         = (opts: {index: number, previousCorrected: StateLT, predicted: StateLT, observation: Observation}) => number[][];
 
 // export type PredictedCallback = (opts: {index: number, previousCorrected: number}) => number[][];
 
@@ -14,12 +15,6 @@ export interface WinstonLogger {
 	debug: (...args: any[]) => void;
 	warn: (...args: any[]) => void;
 	error: (...args: any[]) => void;
-}
-
-export interface StateLT {
-	mean: number[][];
-	covariance: number[][];
-	index?: number;
 }
 
 export interface DynamicConfig {
