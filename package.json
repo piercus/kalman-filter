@@ -7,7 +7,7 @@
   "scripts": {
     "test": "tsc && xo && ava",
     "xo": "xo",
-    "prettier": "xo --fix",
+    "fmt": "xo --fix",
     "semantic-release": "semantic-release",
     "build-demo": "tsc && npm run build && browserify -d -r ./demo/bike/main.js:bike > docs/dist/bike.js && browserify -d -r ./demo/bouncing-ball/main.js:bouncing-ball > docs/dist/bouncing-ball.js && cp dist/kalman-filter.js docs/dist/kalman-filter.js",
     "serve-demo": "http-server docs/",
@@ -182,7 +182,7 @@
         }
       ],
       "valid-jsdoc": [
-        1,
+        0,
         {
           "requireParamDescription": false,
           "requireReturnDescription": false
