@@ -8,7 +8,7 @@ const limit = 100;
 * @param {Number} step
 * @returns {Object}
 */
-function deepAssignInternal(args, step: number) {
+function deepAssignInternal(args: any[], step: number): Record<string, any> {
 	if (step > limit) {
 		throw (new Error(`In deepAssign, number of recursive call (${step}) reached limit (${limit}), deepAssign is not working on  self-referencing objects`));
 	}
@@ -34,7 +34,7 @@ function deepAssignInternal(args, step: number) {
 	}
 
 	const uniqKeys = uniq(keys);
-	const result = {};
+	const result: Record<string, any> = {};
 	for (const key of uniqKeys) {
 		const values = objectsArguments.map(arg => arg[key]);
 		result[key] = deepAssignInternal(values, step + 1);
@@ -43,4 +43,4 @@ function deepAssignInternal(args, step: number) {
 	return result;
 }
 
-export default function deepAssign(...args: any[]) { return deepAssignInternal(args, 0);}
+export default function deepAssign(...args: any[]): any { return deepAssignInternal(args, 0);}
