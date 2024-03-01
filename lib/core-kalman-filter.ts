@@ -26,7 +26,7 @@ export default class CoreKalmanFilter {
 		this.logger = logger;
 	}
 
-	getValue(fn: number[][] | PreviousCorrectedCallback | PredictedCallback, options: any) {
+	getValue(fn: number[][] | PreviousCorrectedCallback | PredictedCallback, options: any): number[][] {
 		return (typeof (fn) === 'function' ? fn(options) : fn);
 	}
 
@@ -48,7 +48,7 @@ export default class CoreKalmanFilter {
 	* @returns{Array.<Array.<Number>>}
 	*/
 
-	getPredictedCovariance(options: {previousCorrected?: any, index?: number} = {}) {
+	getPredictedCovariance(options: {previousCorrected?: State, index?: number} = {}) {
 		let {previousCorrected, index} = options;
 		previousCorrected ||= this.getInitState();
 
@@ -71,7 +71,7 @@ export default class CoreKalmanFilter {
 		return covariance;
 	}
 
-	predictMean(o) {
+	predictMean(o: {opts, transition: number[][]}) {
 		const mean = this.predictMeanWithoutControl(o);
 		if (!this.dynamic.constant) {
 			return mean;
