@@ -146,8 +146,7 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	* @param {<Array.<Number>>} observation
 	* @returns {Array.<Number>} the mean of the corrections
 	*/
-
-	filter(options) {
+	filter(options): State {
 		const predicted = super.predict(options);
 		return this.correct({
 			...options,
@@ -216,6 +215,7 @@ export default class KalmanFilter extends CoreKalmanFilter {
 			mean: Array.from({length: covariance.length}).fill(0).map(() => [0]),
 			covariance,
 		});
+
 		return super.getGain({predicted: asymptoticState});
 	}
 }
