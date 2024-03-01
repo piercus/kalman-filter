@@ -9,6 +9,7 @@ import {frobenius as distanceMat} from 'simple-linalg';
 import CoreKalmanFilter from '../../../lib/core-kalman-filter';
 import State from '../../../lib/state';
 import getCorrelation from '../../helpers/get-correlation';
+import {CoreConfig, PredictedCallback} from '../../../lib/types/ObservationConfig';
 
 // Tests in 2D with constant speed model
 
@@ -262,7 +263,7 @@ test('getValue function', t => {
 		],
 		index: 1,
 	});
-	const multiParameterTransition = function ({previousCorrected, index}) {
+	const multiParameterTransition: PredictedCallback = function ({previousCorrected, index}) {
 		const timeStep = (index % 2) ? 1 : 0.5;
 		// We consider a resistance from the air, proportionnal to v*v
 		// NB: this model is not a good physical modeling
@@ -273,12 +274,13 @@ test('getValue function', t => {
 		];
 	};
 
-	const multiParameterTransitionOptions = Object.assign({}, defaultOptions, {
+	const multiParameterTransitionOptions: CoreConfig = {
+		...defaultOptions,
 		dynamic: {
 			...defaultOptions.dynamic,
 			transition: multiParameterTransition,
 		},
-	});
+	};
 	const kf = new CoreKalmanFilter(multiParameterTransitionOptions);
 	const predicted = kf.predict({previousCorrected: previousCorrected1});
 	t.true(predicted instanceof State);

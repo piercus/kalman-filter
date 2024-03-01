@@ -114,12 +114,14 @@
     ],
     "extensions": [
       "ts"
-    ]
+    ],
+    "files": ["!**/*.d.ts"]
   },
   "xo": {
     "ignores": [
       "./docs/**",
       "./dist/**",
+      "./test/**",
       "./node_modules/**"
     ],
     "rules": {

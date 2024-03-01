@@ -128,15 +128,17 @@ test('Dynamic covariance test', t => {
 
 	const kfDefault = new CoreKalmanFilter(defaultOptions);
 
-	const hugeDynOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const hugeDynOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			covariance() {
 				return [
 					[huge],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kfHuge = new CoreKalmanFilter(hugeDynOptions);
 
 	const predicted1 = kfDefault.predict({
@@ -172,15 +174,17 @@ test('Observation covariance test', t => {
 
 	const kfDefault = new CoreKalmanFilter(defaultOptions);
 
-	const smallObservationCovOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const smallObservationCovOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			covariance() {
 				return [
 					[tiny],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kfSmall = new CoreKalmanFilter(smallObservationCovOptions);
 
 	const corrected1 = kfDefault.correct({
@@ -259,23 +263,26 @@ test('Fitted observation', t => {
 // I think this test will be done during implementation of normal Kalman Filter
 
 // test('Wrongly sized', t => {
-// 	const WrongOptions = Object.assign({}, defaultOptions, {
-// 		dynamic: Object.assign({}, defaultOptions.dynamic, {
+// 	const WrongOptions = {
+//	...defaultOptions,
+// 		dynamic: {
+//	...defaultOptions.dynamic,
 // 			covariance() {
 // 				return [
 // 					[tiny, 0],
 // 					[0, tiny]
 // 				];
 // 			}
-// 		}),
-// 		observation: Object.assign({}, defaultOptions.observation, {
+// 		},
+// 		observation: {
+//       	...defaultOptions.observation,
 // 			covariance() {
 // 				return [
 // 					[tiny]
 // 				];
 // 			}
-// 		})
-// 	});
+// 		}
+// 	};
 // 	const kf = new CoreKalmanFilter(WrongOptions);
 // 	const error = t.throws(() => kf.predict());
 // 	t.is(error.message, 'An array of the model is wrongly sized');

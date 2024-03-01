@@ -132,8 +132,10 @@ test('Fitted observation', t => {
 // Test 2: Impact of stateProjection on the model
 
 test('stateProjection', t => {
-	const otherStateProjectionOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const otherStateProjectionOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			stateProjection() {
 				return [
 					// State is centerX, centerY, width, height
@@ -144,8 +146,8 @@ test('stateProjection', t => {
 					[0, 0, 0, 1, 0, 0, 0, 0],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const firstState = new State({
 		mean: [[1], [2], [0.1], [0.1], [11], [19], [1], [1]],
 

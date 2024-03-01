@@ -4,8 +4,8 @@ interface Observation {
 	name: string;
 }
 
-export type PreviousCorrectedCallback = (opts: {index: number, previousCorrected: number, variance?: number[]}) => number[][];
-export type PredictedCallback         = (opts: {index: number, predicted: State, observation: Observation}) => number[][];
+export type PreviousCorrectedCallback = (opts: {index: number, previousCorrected: StateLT, variance?: number[]}) => number[][];
+export type PredictedCallback         = (opts: {index: number, previousCorrected: StateLT, predicted: State, observation: Observation}) => number[][];
 
 // export type PredictedCallback = (opts: {index: number, previousCorrected: number}) => number[][];
 
@@ -14,6 +14,12 @@ export interface WinstonLogger {
 	debug: (...args: any[]) => void;
 	warn: (...args: any[]) => void;
 	error: (...args: any[]) => void;
+}
+
+export interface StateLT {
+	mean: number[][];
+	covariance: number[][];
+	index?: number;
 }
 
 export interface DynamicConfig {
@@ -41,11 +47,7 @@ export interface DynamicConfig {
 	/**
      *
      */
-	init: {
-		mean: number[][];
-		covariance: number[][];
-		index?: number;
-	};
+	init: StateLT;
 }
 
 /**
