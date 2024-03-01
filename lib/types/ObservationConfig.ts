@@ -5,8 +5,8 @@ interface Observation {
 	name: string;
 }
 
-export type PreviousCorrectedCallback = (opts: {index: number, previousCorrected: StateLT, variance?: number[]}) => number[][];
-export type PredictedCallback         = (opts: {index: number, previousCorrected: StateLT, predicted: StateLT, observation: Observation}) => number[][];
+export type PreviousCorrectedCallback = (opts: {index: number, previousCorrected?: StateLT, variance?: number[]}) => number[][];
+export type PredictedCallback         = (opts: {index: number, previousCorrected?: StateLT, predicted: StateLT, observation?: Observation}) => number[][];
 
 // export type PredictedCallback = (opts: {index: number, previousCorrected: number}) => number[][];
 
