@@ -3,7 +3,6 @@ import State from '../state';
 
 /**
 * Creates a dynamic model, considering the null in order to make the predictions
-* @param {Array.<Number>} staticCovariance
 * @param {ObservationConfig} observation
 * @returns {DynamicConfig}
 */
