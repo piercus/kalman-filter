@@ -2,6 +2,7 @@ import {identity} from 'simple-linalg';
 
 import polymorphMatrix from '../utils/polymorph-matrix';
 import checkMatrix from '../utils/check-matrix';
+import {ObservationConfig} from '../types/ObservationConfig';
 
 /**
 * @param {Number} sensorDimension
@@ -10,9 +11,9 @@ import checkMatrix from '../utils/check-matrix';
 * @returns {ObservationConfig}
 */
 
-const copy = mat => mat.map(a => a.concat());
+const copy = (mat: number[][]): number[][] => mat.map(a => a.concat());
 
-export default function sensor(options) {
+export default function sensor(options: any): ObservationConfig {
 	const {sensorDimension = 1, sensorCovariance = 1, nSensors = 1} = options;
 	const sensorCovarianceFormatted = polymorphMatrix(sensorCovariance, {dimension: sensorDimension});
 	checkMatrix(sensorCovarianceFormatted, [sensorDimension, sensorDimension], 'observation.sensorCovariance');
@@ -30,9 +31,10 @@ export default function sensor(options) {
 		}
 	}
 
-	return Object.assign({}, options, {
+	return {
+		...options,
 		dimension,
 		observedProjection: concatenatedObservedProjection,
 		covariance: concatenatedCovariance,
-	});
+	};
 }
