@@ -1,15 +1,18 @@
-/**
-*Verifies that dimensions are matching and set dynamic.dimension and observation.dimension
-* with respect of stateProjection and transition dimensions
-*@param {ObservationConfig} observation
-*@param {DynamicConfig} dynamic
-*@returns {ObservationConfig, DynamicConfig}
-*/
+import {DynamicConfigParcial, DynamicConfigParcialNoDim} from '../types/ObservationConfig';
 
-export default function setDimensions({observation, dynamic}) {
+/**
+ * Verifies that dimensions are matching and set dynamic.dimension and observation.dimension
+ * with respect of stateProjection and transition dimensions
+ * Only used by setupModelsParameters
+ * @param {ObservationConfig} observation
+ * @param {DynamicConfig} dynamic
+ * @returns {ObservationConfig, DynamicConfig}
+ */
+export default function setDimensions(args: {observation, dynamic: DynamicConfigParcialNoDim}): {observation: any, dynamic: DynamicConfigParcial} {
+	const {observation, dynamic} = args;
 	const {stateProjection} = observation;
 	const {transition} = dynamic;
-	const dynamicDimension = dynamic.dimension;
+	const dynamicDimension: number | undefined = dynamic.dimension;
 	const observationDimension = observation.dimension;
 
 	if (dynamicDimension && observationDimension && Array.isArray(stateProjection) && (dynamicDimension !== stateProjection[0].length || observationDimension !== stateProjection.length)) {
@@ -22,23 +25,26 @@ export default function setDimensions({observation, dynamic}) {
 
 	if (Array.isArray(stateProjection)) {
 		return {
-			observation: Object.assign({}, observation, {
+			observation: {
+				...observation,
 				dimension: stateProjection.length,
-			}),
-			dynamic: Object.assign({}, dynamic, {
+			},
+			dynamic: {
+				...dynamic,
 				dimension: stateProjection[0].length,
-			}),
+			},
 		};
 	}
 
 	if (Array.isArray(transition)) {
 		return {
 			observation,
-			dynamic: Object.assign({}, dynamic, {
+			dynamic: {
+				...dynamic,
 				dimension: transition.length,
-			}),
+			},
 		};
 	}
 
-	return {observation, dynamic};
+	return {observation, dynamic: dynamic as DynamicConfigParcial};
 }
