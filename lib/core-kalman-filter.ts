@@ -52,7 +52,7 @@ export default class CoreKalmanFilter {
 		let {previousCorrected, index} = options;
 		previousCorrected ||= this.getInitState();
 
-		const getValueOptions = Object.assign({}, {previousCorrected, index}, options);
+		const getValueOptions = {previousCorrected, index, ...options};
 		const transition = this.getValue(this.dynamic.transition, getValueOptions);
 
 		checkMatrix(transition, [this.dynamic.dimension, this.dynamic.dimension], 'dynamic.transition');
@@ -106,10 +106,11 @@ export default class CoreKalmanFilter {
 		}
 
 		State.check(previousCorrected, {dimension: this.dynamic.dimension});
-		const getValueOptions = Object.assign({}, options, {
+		const getValueOptions = {
+			...options,
 			previousCorrected,
 			index,
-		});
+		};
 
 		const transition = this.getValue(this.dynamic.transition, getValueOptions);
 
@@ -134,7 +135,10 @@ export default class CoreKalmanFilter {
 	 */
 	getGain(options: {predicted: State, stateProjection?: number[][]}): number[][] {
 		let {predicted, stateProjection} = options;
-		const getValueOptions = Object.assign({}, {index: predicted.index}, options);
+		const getValueOptions = {
+			index: predicted.index,
+			...options,
+		};
 		stateProjection ||= this.getValue(this.observation.stateProjection, getValueOptions);
 		const obsCovariance = this.getValue(this.observation.covariance, getValueOptions);
 		checkMatrix(obsCovariance, [this.observation.dimension, this.observation.dimension], 'observation.covariance');
@@ -166,11 +170,14 @@ export default class CoreKalmanFilter {
 		let {predicted, optimalKalmanGain, stateProjection} = options;
 		const identity = getIdentity(predicted.covariance.length);
 		if (!stateProjection) {
-			const getValueOptions = Object.assign({}, {index: predicted.index}, options);
+			const getValueOptions = {
+				index: predicted.index,
+				...options,
+			};
 			stateProjection = this.getValue(this.observation.stateProjection, getValueOptions);
 		}
 
-		optimalKalmanGain ||= this.getGain(Object.assign({stateProjection}, options));
+		optimalKalmanGain ||= this.getGain({stateProjection, ...options});
 
 		return matMul(
 			sub(identity, matMul(optimalKalmanGain, stateProjection)),
@@ -203,10 +210,19 @@ export default class CoreKalmanFilter {
 			throw (new Error('no measure available'));
 		}
 
-		const getValueOptions = Object.assign({}, {observation, predicted, index: predicted.index}, options);
+		const getValueOptions = {
+			observation,
+			predicted,
+			index: predicted.index,
+			...options,
+		};
 		const stateProjection = this.getValue(this.observation.stateProjection, getValueOptions);
 
-		const optimalKalmanGain = this.getGain(Object.assign({predicted, stateProjection}, options));
+		const optimalKalmanGain = this.getGain({
+			predicted,
+			stateProjection,
+			...options,
+		});
 
 		const innovation = sub(
 			observation,
@@ -222,7 +238,13 @@ export default class CoreKalmanFilter {
 			throw (new TypeError('Mean is NaN after correction'));
 		}
 
-		const covariance = this.getCorrectedCovariance(Object.assign({predicted, optimalKalmanGain, stateProjection}, options));
+		const covariance = this.getCorrectedCovariance({
+			predicted,
+			optimalKalmanGain,
+			stateProjection,
+			...options,
+		},
+		);
 		const corrected = new State({mean, covariance, index: predicted.index});
 		this.logger.debug('Correction done', corrected);
 		return corrected;

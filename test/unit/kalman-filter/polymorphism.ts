@@ -69,21 +69,25 @@ const observations = [
 test('Polymorphism', t => {
 	const kf1 = new KalmanFilter(defaultOptions);
 
-	const matrixOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const matrixOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition: [
 				[1, 0, timeStep, 0],
 				[0, 1, 0, timeStep],
 				[0, 0, 1, 0],
 				[0, 0, 0, 1],
 			],
-		}),
-	});
-	const simpleArrayOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		},
+	};
+	const simpleArrayOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			covariance: [1, 1, 0.01, 0.01],
-		}),
-	});
+		},
+	};
 
 	const kf2 = new KalmanFilter(matrixOptions);
 	const kf3 = new KalmanFilter(simpleArrayOptions);
@@ -148,11 +152,13 @@ test('Polymorphism on observation', t => {
 // Test 3: Verify the dynamic.init by defaultOptions
 
 test('Dynamic init', t => {
-	const noInitOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const noInitOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			init: undefined,
-		}),
-	});
+		},
+	};
 	const kf = new KalmanFilter(noInitOptions);
 	const predicted = kf.predict();
 	const corrected = kf.correct({predicted, observation: observations[0]});
@@ -188,16 +194,18 @@ test('Dynamic init', t => {
 
 test('stateProjection dimensions', t => {
 	const noDimensionsOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		dynamic: {
+			...defaultOptions.dynamic,
 			dimension: undefined,
-		}),
-		observation: Object.assign({}, defaultOptions.observation, {
+		},
+		observation: {
+			...defaultOptions.observation,
 			dimension: undefined,
 			stateProjection: [
 				[1, 0, 0, 0],
 				[0, 1, 0, 0],
 			],
-		}),
+		},
 	});
 	const kf = new KalmanFilter(noDimensionsOptions);
 	t.is(kf.dynamic.dimension, 4);
@@ -209,7 +217,8 @@ test('stateProjection dimensions', t => {
 
 test('Transition dimension', t => {
 	const noDynamicDimensionOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		dynamic: {
+			...defaultOptions.dynamic,
 			dimension: undefined,
 			transition: [
 				[1, 0, timeStep, 0],
@@ -217,7 +226,7 @@ test('Transition dimension', t => {
 				[0, 0, 1, 0],
 				[0, 0, 0, 1],
 			],
-		}),
+		},
 	});
 	const kf = new KalmanFilter(noDynamicDimensionOptions);
 	t.is(kf.dynamic.dimension, 4);
@@ -227,13 +236,14 @@ test('Transition dimension', t => {
 
 test('Building stateProjection', t => {
 	const noStateProjectionOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+		observation: {
+			...defaultOptions.observation,
 			stateProjection: undefined,
 			observedProjection: [
 				[1, 0],
 				[0, 1],
 			],
-		}),
+		},
 	});
 	const kf = new KalmanFilter(noStateProjectionOptions);
 	const stateProjectionObjective = [
@@ -248,16 +258,18 @@ test('Building stateProjection', t => {
 
 test('Dimension Error with stateProjection', t => {
 	const badSetOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		dynamic: {
+			...defaultOptions.dynamic,
 			dimension: 4,
-		}),
-		observation: Object.assign({}, defaultOptions.observation, {
+		},
+		observation: {
+			...defaultOptions.observation,
 			dimension: 2,
 			stateProjection: [
 				[1, 0],
 				[0, 1],
 			],
-		}),
+		},
 	});
 	const error = t.throws(() => {
 		const kf = new KalmanFilter(badSetOptions);
@@ -292,7 +304,8 @@ test('Dimension Error with Transition', t => {
 
 test('Observed and State Projections', t => {
 	const badSetOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+		observation: {
+			...defaultOptions.observation,
 			observedProjection: [
 				[1, 0],
 				[0, 1],
@@ -301,7 +314,7 @@ test('Observed and State Projections', t => {
 				[1, 0, 0, 0],
 				[0, 1, 0, 0],
 			],
-		}),
+		},
 	});
 	const error = t.throws(() => {
 		const kf = new KalmanFilter(badSetOptions);

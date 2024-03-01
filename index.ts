@@ -18,16 +18,6 @@ Object.keys(defaultObservationModels).forEach((k: string) => {
 	modelCollection.registerObservation(camelToDash(k), defaultObservationModels[k]);
 });
 
-// module.exports = Object.assign({
-// 	KalmanFilter: require('./lib/kalman-filter'),
-// 	getCovariance: require('./lib/utils/get-covariance'),
-// 	State: require('./lib/state'),
-// 	checkCovariance: require('./lib/utils/check-covariance'),
-// 	correlationToCovariance: require('./lib/utils/correlation-to-covariance'),
-// 	covarianceToCorrelation: require('./lib/utils/covariance-to-correlation'),
-// 	projectObservation: require('./lib/utils/project-observation'),
-// }, modelCollection);
-
 export * from './lib/model-collection';
 export * from './lib/dynamic';
 export * from './lib/observation';

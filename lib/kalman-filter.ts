@@ -129,12 +129,15 @@ export default class KalmanFilter extends CoreKalmanFilter {
 		const modelsParameters = setupModelsParameters(options);
 		const coreOptions = modelsParametersToCoreOptions(modelsParameters);
 
-		super(Object.assign({}, options, coreOptions));
+		super({...options, ...coreOptions});
 	}
 
 	correct(options) {
 		const coreObservation = arrayToMatrix({observation: options.observation, dimension: this.observation.dimension});
-		return super.correct(Object.assign({}, options, {observation: coreObservation}));
+		return super.correct({
+			...options,
+			observation: coreObservation,
+		});
 	}
 
 	/**
@@ -146,7 +149,10 @@ export default class KalmanFilter extends CoreKalmanFilter {
 
 	filter(options) {
 		const predicted = super.predict(options);
-		return this.correct(Object.assign({}, options, {predicted}));
+		return this.correct({
+			...options,
+			predicted,
+		});
 	}
 
 	/**

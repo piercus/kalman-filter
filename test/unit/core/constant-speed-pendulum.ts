@@ -121,15 +121,17 @@ test('Predicted variance', t => {
 			[0.0001, 0.001],
 		],
 	});
-	const obsNoiseOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const obsNoiseOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			covariance() {
 				return [
 					[10],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kf = new CoreKalmanFilter(obsNoiseOptions);
 
 	const goodFitObs = [[0.09]];
@@ -170,15 +172,17 @@ test('Bad fit observation and correlation', t => {
 			[0.0001, 0.001],
 		],
 	});
-	const obsNoiseOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const obsNoiseOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			covariance() {
 				return [
 					[10],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kf = new CoreKalmanFilter(obsNoiseOptions);
 
 	const badFitObs = [[0.17]];
@@ -211,16 +215,18 @@ test('Non null covariance', t => {
 			[0, 0.01],
 		],
 	});
-	const nullCovTransitionOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const nullCovTransitionOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition() {
 				return [
 					[0.5, 0],
 					[0, 0.005],
 				];
 			},
-		}),
-	});
+		},
+	};
 
 	// Verify that the covariance between alpha and Valpha is greater
 	// when both covariances are non null
@@ -268,9 +274,10 @@ test('getValue function', t => {
 	};
 
 	const multiParameterTransitionOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition: multiParameterTransition,
-		}),
+		},
 	});
 	const kf = new CoreKalmanFilter(multiParameterTransitionOptions);
 	const predicted = kf.predict({previousCorrected: previousCorrected1});

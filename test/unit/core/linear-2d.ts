@@ -153,7 +153,8 @@ test('Impact of timeStep', t => {
 	const timeStep1 = 1;
 	const timeStep2 = 2;
 	const smallTimeStepOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition() {
 				return [
 					[1, 0, timeStep1, 0],
@@ -162,10 +163,11 @@ test('Impact of timeStep', t => {
 					[0, 0, 0, 1],
 				];
 			},
-		}),
+		},
 	});
 	const bigTimeStepOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition() {
 				return [
 					[1, 0, timeStep2, 0],
@@ -174,7 +176,7 @@ test('Impact of timeStep', t => {
 					[0, 0, 0, 1],
 				];
 			},
-		}),
+		},
 	});
 	const kf1 = new CoreKalmanFilter(smallTimeStepOptions);
 	const kf2 = new CoreKalmanFilter(bigTimeStepOptions);
