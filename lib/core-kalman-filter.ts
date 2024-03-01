@@ -126,12 +126,13 @@ export default class CoreKalmanFilter {
 		return predicted;
 	}
 	/**
-	* This will return the new correction, taking into account the prediction made
-	* and the observation of the sensor
-	* @param {State} predicted the previous State
-	* @returns{Array<Array>} kalmanGain
-	*/
-	getGain(options: {predicted: State, stateProjection?: number[][]}) {
+	 * This will return the new correction, taking into account the prediction made
+	 * and the observation of the sensor
+	 * param {State} predicted the previous State
+	 * @param options
+	 * @returns kalmanGain
+	 */
+	getGain(options: {predicted: State, stateProjection?: number[][]}): number[][] {
 		let {predicted, stateProjection} = options;
 		const getValueOptions = Object.assign({}, {index: predicted.index}, options);
 		stateProjection ||= this.getValue(this.observation.stateProjection, getValueOptions);
@@ -157,11 +158,10 @@ export default class CoreKalmanFilter {
 	}
 
 	/**
-	This will return the corrected covariance of a given predicted State, this will help us to build the asymptoticState.
-	* @param {State} predicted the previous State
-	* @returns{Array.<Array.<Number>>}
-	*/
-
+	 * This will return the corrected covariance of a given predicted State, this will help us to build the asymptoticState.
+	 * @param {State} predicted the previous State
+	 * @returns{Array.<Array.<Number>>}
+	 */
 	getCorrectedCovariance(options: {predicted: State, optimalKalmanGain?: any, stateProjection?: any}) {
 		let {predicted, optimalKalmanGain, stateProjection} = options;
 		const identity = getIdentity(predicted.covariance.length);
