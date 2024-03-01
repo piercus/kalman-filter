@@ -11,7 +11,7 @@ import polymorphMatrix from '../lib/utils/polymorph-matrix';
 import State from './state';
 import * as modelCollection from './model-collection';
 import CoreKalmanFilter from './core-kalman-filter';
-import {WinstonLogger} from './types/ObservationConfig';
+import {ObservationConfig, ObservationObjectConfig, WinstonLogger} from './types/ObservationConfig';
 
 /**
  * @typedef {String} DynamicNonObjectConfig
@@ -32,13 +32,6 @@ const buildDefaultDynamic = function (dynamic): {name: string} {
 
 	return {name: 'constant-position'};
 };
-
-interface ObservationObjectConfig {
-	sensorDimension?: number, // Observation.dimension == observation.sensorDimension * observation.nSensors
-	nSensors?: number,
-	sensorCovariance?: number[],
-	name: 'sensor' | string,
-}
 
 /**
  * @typedef {String | Number} ObservationNonObjectConfig
@@ -71,7 +64,10 @@ const buildDefaultObservation = function (observation): ObservationObjectConfig 
 * @returns {CoreConfig}
 */
 
-const setupModelsParameters = function (args: {observation?: ObservationObjectConfig, dynamic?: any}) {
+const setupModelsParameters = function (args: {
+	observation?: number | string | null | ObservationObjectConfig, // ObservationConfig
+	dynamic?: any
+}) {
 	let {observation, dynamic} = args;
 	if (typeof (observation) !== 'object' || observation === null) {
 		observation = buildDefaultObservation(observation);

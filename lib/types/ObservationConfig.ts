@@ -92,8 +92,8 @@ export interface CoreConfig {
 //
 
 export interface ObservationConfig {
-	dimension: number;  // Observation.dimension == observation.sensorDimension * observation.nSensors
 	sensorDimension?: number;
+	dimension: number;  // Observation.dimension == observation.sensorDimension * observation.nSensors
 	nSensors?: number,
 	observedProjection?: any; // used in nullableSensor
 	fn?: PredictedCallback;
@@ -110,8 +110,10 @@ export interface ObservationConfig {
 
 export interface ObservationObjectConfig {
 	sensorDimension?: number, // Observation.dimension == observation.sensorDimension * observation.nSensors
+	dimension?: number;  // Observation.dimension == observation.sensorDimension * observation.nSensors
 	nSensors?: number,
+	observedProjection?: any; // used in nullableSensor
 	sensorCovariance?: number[],
-	name: 'sensor' | string,
+	name?: 'sensor' | string,
 }
 
