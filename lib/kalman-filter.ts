@@ -132,7 +132,7 @@ export default class KalmanFilter extends CoreKalmanFilter {
 		super({...options, ...coreOptions});
 	}
 
-	correct(options) {
+	correct(options: {predicted: State, observation: number[] | number[][]}): State {
 		const coreObservation = arrayToMatrix({observation: options.observation, dimension: this.observation.dimension});
 		return super.correct({
 			...options,
@@ -141,10 +141,10 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	}
 
 	/**
-	*Performs the prediction and the correction steps
-	*@param {State} previousCorrected
-	*@param {<Array.<Number>>} observation
-	*@returns {Array.<Number>} the mean of the corrections
+	* Performs the prediction and the correction steps
+	* @param {State} previousCorrected
+	* @param {<Array.<Number>>} observation
+	* @returns {Array.<Number>} the mean of the corrections
 	*/
 
 	filter(options) {
@@ -156,11 +156,11 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	}
 
 	/**
-*Filters all the observations
-*@param {Array.<Array.<Number>>} observations
-*@returns {Array.<Array.<Number>>} the mean of the corrections
-*/
-	filterAll(observations) {
+     * Filters all the observations
+     * @param {Array.<Array.<Number>>} observations
+     * @returns {Array.<Array.<Number>>} the mean of the corrections
+     */
+	filterAll(observations): number[][] {
 		let previousCorrected = this.getInitState();
 		const results: number[][] = [];
 		for (const observation of observations) {
@@ -182,7 +182,7 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	* @param {Number} [tolerance=1e-6] returns when the last values differences are less than tolerance
 	* @return {Array.<Array.<Number>>} covariance
 	*/
-	asymptoticStateCovariance({limitIterations = 1e2, tolerance = 1e-6} = {}) {
+	asymptoticStateCovariance({limitIterations = 1e2, tolerance = 1e-6} = {}): number[][] {
 		let previousCorrected = super.getInitState();
 		const results:  number[][][] = [];
 		for (let i = 0; i < limitIterations; i++) {
@@ -200,7 +200,6 @@ export default class KalmanFilter extends CoreKalmanFilter {
 				return results[i];
 			}
 		}
-
 		throw (new Error('The state covariance does not converge asymptotically'));
 	}
 
@@ -209,7 +208,7 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	* @param {Number} [tolerance=1e-6] returns when the last values differences are less than tolerance
 	* @return {Array.<Array.<Number>>} gain
 	*/
-	asymptoticGain({tolerance = 1e-6} = {}) {
+	asymptoticGain({tolerance = 1e-6} = {}): number[][] {
 		const covariance = this.asymptoticStateCovariance({tolerance});
 
 		const asymptoticState = new State({
@@ -217,7 +216,6 @@ export default class KalmanFilter extends CoreKalmanFilter {
 			mean: Array.from({length: covariance.length}).fill(0).map(() => [0]),
 			covariance,
 		});
-
 		return super.getGain({predicted: asymptoticState});
 	}
 }
