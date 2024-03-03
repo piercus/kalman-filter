@@ -5,7 +5,7 @@ interface Observation {
 	name: string;
 }
 
-export type PreviousCorrectedCallback = (opts: {index: number, previousCorrected?: StateLT, variance?: number[]}) => number[][];
+export type PreviousCorrectedCallback = (opts: {index: number, previousCorrected?: StateLT, predicted: StateLT, variance?: number[]}) => number[][];
 export type PredictedCallback         = (opts: {index: number, previousCorrected?: StateLT, predicted: StateLT, observation?: Observation}) => number[][];
 
 // export type PredictedCallback = (opts: {index: number, previousCorrected: number}) => number[][];
@@ -22,7 +22,7 @@ export interface DynamicConfig {
 	 * named this config.
 	 */
 	name?: string;
-	dimension: number;
+	dimension?: number;
 	/**
      * a function that returns the control parameter B_k*u_k of the kalman filter
      */
@@ -103,6 +103,7 @@ export interface ObservationConfig {
      * covariance the covariance of the observation noise
      */
 	covariance: number[] | number[][] | PreviousCorrectedCallback;
+	sensorCovariance?: number[],
 	name?: 'sensor' | string,
 }
 
