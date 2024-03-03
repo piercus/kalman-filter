@@ -1,6 +1,9 @@
 import {diag} from 'simple-linalg';
 import polymorphMatrix from '../utils/polymorph-matrix';
-import {DynamicConfig, DynamicConfigParcial, ObservationConfig} from '../types/ObservationConfig';
+import {
+	DynamicConfig, DynamicConfigParcial, ObservationConfig, ObservationObjectConfig,
+} from '../types/ObservationConfig';
+import TypeAssert from '../types/TypeAssert';
 
 /**
  * Initializes the dynamic.init when not given
@@ -35,10 +38,19 @@ export default function extendDynamicInit(args: {observation: ObservationConfig,
 		throw (new Error('dynamic.init should have a mean key'));
 	}
 
+	const covariance = polymorphMatrix(dynamic.init.covariance, {dimension: dynamic.dimension});
+	if (TypeAssert.isFunction(covariance)) {
+		throw new TypeError('covariance can not be a function');
+	}
 	dynamic.init = {
 		...dynamic.init,
-		covariance: polymorphMatrix(dynamic.init.covariance, {dimension: dynamic.dimension}),
+		covariance,
 	};
 
 	return {observation, dynamic: dynamic as DynamicConfig};
+}
+
+export interface ModelsParameters {
+	dynamic: DynamicConfig;
+	observation: ObservationConfig;// ObservationObjectConfig & {stateProjection: any; covariance: any};
 }

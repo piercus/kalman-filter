@@ -1,26 +1,14 @@
 import {diag} from 'simple-linalg';
 import checkMatrix from './check-matrix';
-
-function isArray2D(obj: unknown): obj is number[][] {
-	if (!Array.isArray(obj)) {
-		return false;
-	}
-	return (Array.isArray(obj[0]));
-}
-
-function isArray1D(obj: unknown): obj is number[] {
-	if (!Array.isArray(obj)) {
-		return false;
-	}
-	return (typeof (obj[0]) === 'number');
-}
+import TypeAssert from '../types/TypeAssert';
+import {PreviousCorrectedCallback} from '../types/ObservationConfig';
 
 /**
 * If cov is a number, result will be Identity*cov
 * If cov is an Number[], result will be diag(cov)
 * If cov is an Number[][], result will be cov
 */
-export default function polymorphMatrix(cov: number | number[] | number[][], opts: {dimension?: number, title?: string} = {}): number[][] {
+export default function polymorphMatrix(cov: number | number[] | number[][] | PreviousCorrectedCallback, opts: {dimension?: number, title?: string} = {}): number[][] | PreviousCorrectedCallback | undefined {
 	const {dimension, title = 'polymorph'} = opts;
 	//if (!cov) {
 	//	return undefined;
@@ -30,7 +18,7 @@ export default function polymorphMatrix(cov: number | number[] | number[][], opt
 			return diag(new Array(dimension).fill(cov));
 		}
 
-		if (isArray2D(cov)) {
+		if (TypeAssert.isArray2D(cov)) {
 			let shape: [number, number];
 			if (typeof (dimension) === 'number') {
 				shape = [dimension, dimension];
@@ -39,10 +27,10 @@ export default function polymorphMatrix(cov: number | number[] | number[][], opt
 			return cov;
 		}
 
-		if (isArray1D(cov)) {
+		if (TypeAssert.isArray1D(cov)) {
 			return diag(cov);
 		}
 	}
 	// throw new Error('Invalid input type in polymorphMatrix get ' + JSON.stringify(cov).slice(0, 100));
-	return cov as unknown as number[][];
+	return cov as number[][] | PreviousCorrectedCallback | undefined;
 }

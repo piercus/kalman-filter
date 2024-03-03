@@ -6,6 +6,7 @@ import checkMatrix from './utils/check-matrix';
 import checkCovariance from './utils/check-covariance';
 import type {StateLT} from './types/StateLT';
 import type KalmanFilter from './kalman-filter';
+import TypeAssert from './types/TypeAssert';
 
 /**
  * Class representing a multi dimensionnal gaussian, with his mean and his covariance
@@ -168,7 +169,7 @@ export default class State implements StateLT {
 		}
 
 		let correctlySizedObservation = arrayToMatrix({observation, dimension: observation.length});
-
+		TypeAssert.assertIsArray2D(kf.observation.stateProjection, 'State.detailedMahalanobis');
 		const stateProjection = kf.getValue(kf.observation.stateProjection, {});
 
 		let projectedState = State.matMul({state: this, matrix: stateProjection});
@@ -203,6 +204,7 @@ export default class State implements StateLT {
 	*/
 	obsBhattacharyya(options: {kf: KalmanFilter, state: State, obsIndexes: number[]}): number {
 		const {kf, state, obsIndexes} = options;
+		TypeAssert.assertIsArray2D(kf.observation.stateProjection, 'State.obsBhattacharyya');
 		const stateProjection = kf.getValue(kf.observation.stateProjection, {});
 
 		let projectedSelfState = State.matMul({state: this, matrix: stateProjection});

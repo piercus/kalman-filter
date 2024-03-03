@@ -6,6 +6,7 @@ import checkMatrix from './utils/check-matrix';
 import type {
 	CoreConfig, DynamicConfig, ObservationConfig, PredictedCallback, PreviousCorrectedCallback, WinstonLogger,
 } from './types/ObservationConfig';
+import TypeAssert from './types/TypeAssert';
 
 const defaultLogger: WinstonLogger = {
 	info: (...args) => console.log(...args),
@@ -98,7 +99,7 @@ export default class CoreKalmanFilter {
 	* @returns{State} predicted State
 	*/
 
-	predict(options: {previousCorrected?: State, index?: number, observation?: number[][]} = {}): State {
+	predict(options: {previousCorrected?: State, index?: number, observation?: number[] | number[][]} = {}): State {
 		let {previousCorrected, index} = options;
 		previousCorrected ||= this.getInitState();
 
@@ -140,6 +141,7 @@ export default class CoreKalmanFilter {
 			index: predicted.index,
 			...options,
 		};
+		TypeAssert.assertIsArray2DOrFnc(this.observation.stateProjection, 'CoreKalmanFilter.getGain');
 		stateProjection ||= this.getValue(this.observation.stateProjection, getValueOptions);
 		const obsCovariance = this.getValue(this.observation.covariance, getValueOptions);
 		checkMatrix(obsCovariance, [this.observation.dimension, this.observation.dimension], 'observation.covariance');
@@ -171,6 +173,7 @@ export default class CoreKalmanFilter {
 		let {predicted, optimalKalmanGain, stateProjection} = options;
 		const identity = getIdentity(predicted.covariance.length);
 		if (!stateProjection) {
+			TypeAssert.assertIsArray2D(this.observation.stateProjection, 'CoreKalmanFilter.getCorrectedCovariance');
 			const getValueOptions = {
 				index: predicted.index,
 				...options,
@@ -217,6 +220,7 @@ export default class CoreKalmanFilter {
 			index: predicted.index,
 			...options,
 		};
+		TypeAssert.assertIsArray2DOrFnc(this.observation.stateProjection, 'CoreKalmanFilter.correct');
 		const stateProjection = this.getValue(this.observation.stateProjection, getValueOptions);
 
 		const optimalKalmanGain = this.getGain({

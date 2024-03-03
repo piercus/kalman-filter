@@ -11,7 +11,10 @@ import polymorphMatrix from '../lib/utils/polymorph-matrix';
 import State from './state';
 import * as modelCollection from './model-collection';
 import CoreKalmanFilter from './core-kalman-filter';
-import {ObservationObjectConfig, WinstonLogger} from './types/ObservationConfig';
+import {
+	DynamicConfig, ObservationConfig, ObservationObjectConfig, WinstonLogger,
+} from './types/ObservationConfig';
+import TypeAssert from './types/TypeAssert';
 
 /**
  * @typedef {String} DynamicNonObjectConfig
@@ -91,19 +94,23 @@ const setupModelsParameters = function (args: {
 	return extendDynamicInit(buildStateProjectionOptions);
 };
 
-/**
-* @typedef {Object} ModelsParameters
-* @property {DynamicObjectConfig} dynamic
-* @property {ObservationObjectConfig} observation
-*/
+export interface ModelsParameters {
+	dynamic: DynamicConfig;
+	observation: ObservationConfig;// ObservationObjectConfig & {stateProjection: any; covariance: any};
+}
 
 /**
 * Returns the corresponding model without arrays as values but only functions
 * @param {ModelsParameters} modelToBeChanged
 * @returns {CoreConfig} model with respect of the Core Kalman Filter properties
 */
-const modelsParametersToCoreOptions = function (modelToBeChanged) {
+const modelsParametersToCoreOptions = function (modelToBeChanged: ModelsParameters) {
 	const {observation, dynamic} = modelToBeChanged;
+	TypeAssert.assertNotArray(observation, 'modelsParametersToCoreOptions: observation');
+	// TypeAssert.assertIsArray2D(observation.stateProjection, 'modelsParametersToCoreOptions: observation.stateProjection');
+	// TypeAssert.assertIsArray2D(observation.covariance, 'modelsParametersToCoreOptions: observation.covariance');
+	// TypeAssert.assertIsArray2D(dynamic.transition, 'modelsParametersToCoreOptions: dynamic.transition');
+	// TypeAssert.assertIsNumbersArray(dynamic.covariance, 'modelsParametersToCoreOptions: dynamic.covariance');
 	return deepAssign(modelToBeChanged, {
 		observation: {
 			stateProjection: toFunction(polymorphMatrix(observation.stateProjection), {label: 'observation.stateProjection'}),
@@ -125,13 +132,14 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	/**
 	* @param {Config} options
 	*/
+	// constructor(options: {observation?: ObservationConfig, dynamic?: DynamicConfig, logger?: WinstonLogger} = {}) {
 	constructor(options: {observation?: any, dynamic?: any, logger?: WinstonLogger} = {}) {
 		const modelsParameters = setupModelsParameters(options);
 		const coreOptions = modelsParametersToCoreOptions(modelsParameters);
 
 		super({...options, ...coreOptions});
 	}
-
+	// previousCorrected?: State, index?: number,
 	correct(options: {predicted: State, observation: number[] | number[][]}): State {
 		const coreObservation = arrayToMatrix({observation: options.observation, dimension: this.observation.dimension});
 		return super.correct({
@@ -146,7 +154,7 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	* @param {<Array.<Number>>} observation
 	* @returns {Array.<Number>} the mean of the corrections
 	*/
-	filter(options): State {
+	filter(options: {previousCorrected?: State, index?: number, observation: number[] | number[][]}): State {
 		const predicted = super.predict(options);
 		return this.correct({
 			...options,

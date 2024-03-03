@@ -97,7 +97,7 @@ export interface ObservationConfig {
 	/**
      * stateProjection the matrix to transform state to observation (for EKF, the jacobian of the fn)
      */
-	stateProjection?: number[][] | PreviousCorrectedCallback;
+	stateProjection?: number | number[] | number[][] | PreviousCorrectedCallback;
 	/**
      * covariance the covariance of the observation noise
      */
