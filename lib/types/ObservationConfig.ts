@@ -38,11 +38,12 @@ export interface DynamicConfig {
 	/**
      * covariance the covariance of the process noise
      */
-	covariance: number[][] | PredictedCallback;
+	covariance: number[] | number[][] | PredictedCallback;
 	/**
      *
      */
 	init: StateLT;
+	timeStep?: number;
 }
 
 /**
@@ -101,7 +102,7 @@ export interface ObservationConfig {
 	/**
      * covariance the covariance of the observation noise
      */
-	covariance: number[][] | PreviousCorrectedCallback;
+	covariance: number[] | number[][] | PreviousCorrectedCallback;
 	name?: 'sensor' | string,
 }
 

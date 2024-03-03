@@ -170,7 +170,7 @@ export default class State implements StateLT {
 
 		let correctlySizedObservation = arrayToMatrix({observation, dimension: observation.length});
 		TypeAssert.assertIsArray2D(kf.observation.stateProjection, 'State.detailedMahalanobis');
-		const stateProjection = kf.getValue(kf.observation.stateProjection, {});
+		const stateProjection = kf.getValue(kf.observation.stateProjection, {})  as number[][];
 
 		let projectedState = State.matMul({state: this, matrix: stateProjection});
 
@@ -207,8 +207,8 @@ export default class State implements StateLT {
 		TypeAssert.assertIsArray2D(kf.observation.stateProjection, 'State.obsBhattacharyya');
 		const stateProjection = kf.getValue(kf.observation.stateProjection, {});
 
-		let projectedSelfState = State.matMul({state: this, matrix: stateProjection});
-		let projectedOtherState = State.matMul({state, matrix: stateProjection});
+		let projectedSelfState = State.matMul({state: this, matrix: stateProjection as number[][]});
+		let projectedOtherState = State.matMul({state, matrix: stateProjection as number[][]});
 
 		if (Array.isArray(obsIndexes)) {
 			projectedSelfState = projectedSelfState.subState(obsIndexes);

@@ -133,7 +133,7 @@ export default class KalmanFilter extends CoreKalmanFilter {
 	* @param {Config} options
 	*/
 	// constructor(options: {observation?: ObservationConfig, dynamic?: DynamicConfig, logger?: WinstonLogger} = {}) {
-	constructor(options: {observation?: any, dynamic?: any, logger?: WinstonLogger} = {}) {
+	constructor(options: {observation?: any | {name: string}, dynamic?: any | {name: string}, logger?: WinstonLogger} = {}) {
 		const modelsParameters = setupModelsParameters(options);
 		const coreOptions = modelsParametersToCoreOptions(modelsParameters);
 

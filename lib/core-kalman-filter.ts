@@ -26,7 +26,7 @@ export default class CoreKalmanFilter {
 		this.observation = observation;
 		this.logger = logger;
 	}
-
+	// | number[]
 	getValue(fn: number[][] | PreviousCorrectedCallback | PredictedCallback, options: any): number[][] {
 		return (typeof (fn) === 'function' ? fn(options) : fn);
 	}
@@ -61,7 +61,7 @@ export default class CoreKalmanFilter {
 		const transitionTransposed = transpose(transition);
 		const covarianceInter = matMul(transition, previousCorrected.covariance);
 		const covariancePrevious = matMul(covarianceInter, transitionTransposed);
-		const dynCov = this.getValue(this.dynamic.covariance, getValueOptions);
+		const dynCov = this.getValue(this.dynamic.covariance as number[][], getValueOptions);
 
 		const covariance = add(
 			dynCov,
@@ -143,7 +143,7 @@ export default class CoreKalmanFilter {
 		};
 		TypeAssert.assertIsArray2DOrFnc(this.observation.stateProjection, 'CoreKalmanFilter.getGain');
 		stateProjection ||= this.getValue(this.observation.stateProjection, getValueOptions);
-		const obsCovariance = this.getValue(this.observation.covariance, getValueOptions);
+		const obsCovariance = this.getValue(this.observation.covariance as number[][], getValueOptions);
 		checkMatrix(obsCovariance, [this.observation.dimension, this.observation.dimension], 'observation.covariance');
 		const stateProjTransposed = transpose(stateProjection);
 
@@ -221,7 +221,7 @@ export default class CoreKalmanFilter {
 			...options,
 		};
 		TypeAssert.assertIsArray2DOrFnc(this.observation.stateProjection, 'CoreKalmanFilter.correct');
-		const stateProjection = this.getValue(this.observation.stateProjection, getValueOptions);
+		const stateProjection = this.getValue(this.observation.stateProjection, getValueOptions) as number[][];
 
 		const optimalKalmanGain = this.getGain({
 			predicted,
