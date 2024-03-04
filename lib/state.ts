@@ -126,7 +126,6 @@ export default class State implements StateLT {
 		const diffTransposed = transpose(diff);
 
 		// Console.log('covariance in obs space', covarianceInObservationSpace);
-
 		const valueMatrix = matMul(
 			matMul(diffTransposed, covarianceInvert),
 			diff,
