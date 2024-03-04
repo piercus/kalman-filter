@@ -1,6 +1,6 @@
 import test from 'ava';
 import {trace} from 'simple-linalg';
-import {frobenius as distanceMat}  from 'simple-linalg';
+import {frobenius as distanceMat} from 'simple-linalg';
 import {sum} from 'simple-linalg';
 import CoreKalmanFilter from '../../../lib/core-kalman-filter';
 import State from '../../../lib/state';

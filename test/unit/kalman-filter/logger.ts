@@ -1,4 +1,4 @@
-import test  from 'ava';
+import test from 'ava';
 import KalmanFilter from '../../../lib/kalman-filter';
 
 test('Logger.debug', t => {
