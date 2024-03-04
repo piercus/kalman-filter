@@ -2,7 +2,7 @@ import {writeFileSync} from 'node:fs';
 import generateNoisyObservation from './helpers/generate-noisy-observation';
 import calculateObservationCovariance from './helpers/calculate-observation-covariance';
 
-const boxes = [
+const boxes: number[][] = [
 	[
 		849, 294, 86, 83,
 	],
@@ -27,7 +27,10 @@ const boxes = [
 ];
 
 const noisyObservations = generateNoisyObservation({groundTruths: boxes})[0];
-writeFileSync('./demo/src/observations.json', JSON.stringify({observations: noisyObservations}));
+const observationsJSON = JSON.stringify({observations: noisyObservations});
+// console.log(`generating ./demo/src/observations.json with: ${observationsJSON}`);
+writeFileSync('./demo/src/observations.json', observationsJSON);
 
 const observationCovariance = calculateObservationCovariance({groundTruths: boxes, numberRun: 10});
-writeFileSync('./demo/src/observation-covariance.json', JSON.stringify(observationCovariance));
+const observationCovarianceJSON = JSON.stringify(observationCovariance);
+writeFileSync('./demo/src/observation-covariance.json', observationCovarianceJSON);
