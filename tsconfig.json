@@ -109,7 +109,19 @@
   "include": [
     "index.ts",
     "test/utils/get-covariance.ts",
+    "test/api/basic.ts",
+    "test/issues/26.ts",
+    "test/issues/34.ts",
+    "test/issues/59.ts",
     "test/unit/core/constant-speed-pendulum.ts",
+    "test/unit/core/linear-2d.ts",
+    "test/unit/core/linear-4d.ts",
+    "test/unit/core/trivial.ts",
+    "test/unit/kalman-filter/asymptotic.ts",
+    "test/unit/kalman-filter/filter.ts",
+    "test/unit/kalman-filter/logger.ts",
+    "test/unit/kalman-filter/polymorphism.ts",
+    "test/unit/kalman-filter/register.ts"
   ],
   "exclude": [
     "dist"
