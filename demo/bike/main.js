@@ -1,17 +1,17 @@
 /**
- * @typedef {import('../../index.d.ts').KalmanFilter} KalmanFilter
+ * @typedef {typeof import('../../index.d.ts')} kalmanFilter
  */
-const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
-const createElement = require('../shared/views/create-element');
+const { KalmanFilter } = /** @type {kalmanFilter} */ (kalmanFilter);// eslint-disable-line no-undef
+const createElement = require('../shared/views/create-elem§ent');
 const createGroupBoxes = require('../shared/views/create-group-boxes');
 const noisyObservations = require('./observations.json').observations;
 const kfOptions = require('./kf-options');
-
-/** @type {KalmanFilter} */
 const kf = new KalmanFilter(kfOptions);
 let predicted = kf.predict();
 
 const img = document.querySelector('#bikes');// eslint-disable-line no-undef
+if (!img)
+	throw Error('#bikes div is missing from the DOM')
 
 // Create all the elements of the prediction or correction phase
 const delay = 200;

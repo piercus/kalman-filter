@@ -1,16 +1,17 @@
 /**
- * @typedef {import('../../index.d.ts').KalmanFilter} KalmanFilter
+ * @typedef {typeof import('../../index.d.ts')} kalmanFilter
  */
-const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
+const { KalmanFilter } = /** @type {kalmanFilter} */ (kalmanFilter);// eslint-disable-line no-undef
 const createElement = require('../shared/views/create-element');
 const createGroupPoint = require('../shared/views/create-group-point');
 const kfOptions = require('./kf-options.js');
 const noisyObservations = require('./observations.json').observations;
-/** @type {KalmanFilter} */
 const kf = new KalmanFilter(kfOptions);
 let predicted = kf.predict();
 
 const img = document.querySelector('#bouncing-ball');// eslint-disable-line no-undef
+if (!img)
+	throw Error('#bouncing-ball div is missing from the DOM')
 
 // Create all the elements of the prediction or correction phase
 const delay = 200;
