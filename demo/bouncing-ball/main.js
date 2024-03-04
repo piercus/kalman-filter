@@ -1,9 +1,12 @@
+/**
+ * @typedef {import('../../index.d.ts').KalmanFilter} KalmanFilter
+ */
 const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
 const createElement = require('../shared/views/create-element');
 const createGroupPoint = require('../shared/views/create-group-point');
 const kfOptions = require('./kf-options.js');
 const noisyObservations = require('./observations.json').observations;
-
+/** @type {KalmanFilter} */
 const kf = new KalmanFilter(kfOptions);
 let predicted = kf.predict();
 
