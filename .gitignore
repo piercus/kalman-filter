@@ -110,7 +110,5 @@ lib/*/*.d.ts
 index.js
 lib/*.js
 lib/*/*.js
-docs/dist/bouncing-ball.js
-docs/dist/kalman-filter.js
 test/**/*.js
 test/**/*.d.ts
