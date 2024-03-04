@@ -1,6 +1,7 @@
 import test from 'ava';
 import equalState from '../../../test/helpers/equal-state';
-import {KalmanFilter, State} from '../../..';
+import KalmanFilter from '../../../lib/kalman-filter';
+import State from '../../../lib/state';
 
 test('Filter method', t => {
 	const observations = [[0.11], [0.21], [0.3]];

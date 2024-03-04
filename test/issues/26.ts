@@ -1,5 +1,5 @@
 import test from 'ava';
-import {KalmanFilter} from '../../index';
+import KalmanFilter from '../../lib/kalman-filter';
 
 const START_TIME_DELTA_SECS = 1;
 const COVARIANCE_FILL = 1;

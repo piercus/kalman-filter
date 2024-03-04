@@ -1,5 +1,5 @@
 import test from 'ava';
-import {KalmanFilter} from '../../index';
+import KalmanFilter from '../../lib/kalman-filter';
 import {diag} from 'simple-linalg';
 
 test('#34 1-D', t => {

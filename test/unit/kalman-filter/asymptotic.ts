@@ -1,7 +1,7 @@
 import test from 'ava';
 import {frobenius as distanceMat} from 'simple-linalg';
 import {sum} from 'simple-linalg';
-import {KalmanFilter} from '../../..';
+import KalmanFilter from '../../../lib/kalman-filter';
 
 // Test 1 : Verify that a simple model converges quickly
 
