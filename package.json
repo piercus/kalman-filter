@@ -2,8 +2,8 @@
   "name": "kalman-filter",
   "version": "2.3.0",
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "cjs/index.js",
+  "types": "cjs/index.d.ts",
   "scripts": {
     "test": "tsc && xo && ava",
     "xo": "xo",
@@ -18,9 +18,9 @@
     "url": "git+https://github.com/piercus/kalman-filter.git"
   },
   "files": [
-    "index.js",
-    "index.d.ts",
-    "lib"
+    "cjs/index.js",
+    "cjs/index.d.ts",
+    "cjs/lib"
   ],
   "release": {
     "branches": [
@@ -122,6 +122,7 @@
       "./docs/**",
       "./dist/**",
       "./test/**",
+      "./cjs/**",
       "./node_modules/**"
     ],
     "rules": {

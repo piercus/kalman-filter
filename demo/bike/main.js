@@ -2,7 +2,7 @@
  * @typedef {typeof import('../../index.d.ts')} kalmanFilter
  */
 const { KalmanFilter } = /** @type {kalmanFilter} */ (kalmanFilter);// eslint-disable-line no-undef
-const createElement = require('../shared/views/create-elem§ent');
+const createElement = require('../shared/views/create-element');
 const createGroupBoxes = require('../shared/views/create-group-boxes');
 const noisyObservations = require('./observations.json').observations;
 const kfOptions = require('./kf-options');
