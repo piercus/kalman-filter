@@ -28,7 +28,7 @@ module.exports = function ({mean, covariance, color, parent, className, tag = 'd
 		color,
 	});
 	const arrowRotation = (-1 * Math.atan(mean[2][0] / mean[3][0]) * 180 / Math.PI) - 45;
-	const arrowScale = Math.sqrt((mean[2][0] ** 2) + (mean[3][0] ** 2));
+	const arrowScale = Math.hypot((mean[2][0]), (mean[3][0]));
 	createArrow({
 		className: 'arrow',
 		bbox: [
