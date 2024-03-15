@@ -1,13 +1,17 @@
-const {KalmanFilter} = kalmanFilter;// eslint-disable-line no-undef
+/**
+ * @typedef {typeof import('../../index.d.ts')} kalmanFilter
+ */
+const { KalmanFilter } = /** @type {kalmanFilter} */ (kalmanFilter);// eslint-disable-line no-undef
 const createElement = require('../shared/views/create-element');
 const createGroupBoxes = require('../shared/views/create-group-boxes');
 const noisyObservations = require('./observations.json').observations;
 const kfOptions = require('./kf-options');
-
 const kf = new KalmanFilter(kfOptions);
 let predicted = kf.predict();
 
 const img = document.querySelector('#bikes');// eslint-disable-line no-undef
+if (!img)
+	throw Error('#bikes div is missing from the DOM')
 
 // Create all the elements of the prediction or correction phase
 const delay = 200;
@@ -41,7 +45,9 @@ module.exports = {
 					predicted = kf.predict({previousCorrected});
 					const {mean, covariance} = predicted;
 
-					const element = createGroupBoxes({mean, covariance, parent: img, className: 'predicted', color: 'blue'});
+					const element = createGroupBoxes({
+mean, covariance, parent: img, className: 'predicted', color: 'blue',
+});
 					els.push(element);
 
 					return delayPromise(delay);
@@ -67,7 +73,9 @@ module.exports = {
 					previousCorrected = kf.correct({predicted, observation: b});
 					const {mean, covariance} = previousCorrected;
 
-					const element = createGroupBoxes({mean, covariance, parent: img, className: 'corrected', color: 'red'});
+					const element = createGroupBoxes({
+mean, covariance, parent: img, className: 'corrected', color: 'red',
+});
 					els.push(element);
 
 					return delayPromise(delay);
