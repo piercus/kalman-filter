@@ -1,7 +1,7 @@
-const test = require('ava');
-const equalState = require('../../../test/helpers/equal-state.js');
-const KalmanFilter = require('../../../lib/kalman-filter.js');
-const State = require('../../../lib/state.js');
+import test from 'ava';
+import equalState from '../../../test/helpers/equal-state';
+import {KalmanFilter} from '../../../index';
+import State from '../../../lib/state';
 
 const huge = 1e6;
 const timeStep = 0.1;
@@ -69,21 +69,25 @@ const observations = [
 test('Polymorphism', t => {
 	const kf1 = new KalmanFilter(defaultOptions);
 
-	const matrixOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const matrixOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition: [
 				[1, 0, timeStep, 0],
 				[0, 1, 0, timeStep],
 				[0, 0, 1, 0],
 				[0, 0, 0, 1],
 			],
-		}),
-	});
-	const simpleArrayOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+		},
+	};
+	const simpleArrayOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			covariance: [1, 1, 0.01, 0.01],
-		}),
-	});
+		},
+	};
 
 	const kf2 = new KalmanFilter(matrixOptions);
 	const kf3 = new KalmanFilter(simpleArrayOptions);
@@ -148,11 +152,13 @@ test('Polymorphism on observation', t => {
 // Test 3: Verify the dynamic.init by defaultOptions
 
 test('Dynamic init', t => {
-	const noInitOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const noInitOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			init: undefined,
-		}),
-	});
+		},
+	};
 	const kf = new KalmanFilter(noInitOptions);
 	const predicted = kf.predict();
 	const corrected = kf.correct({predicted, observation: observations[0]});
@@ -187,18 +193,21 @@ test('Dynamic init', t => {
 // dimensions when stateProjection is a matrix
 
 test('stateProjection dimensions', t => {
-	const noDimensionsOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const noDimensionsOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			dimension: undefined,
-		}),
-		observation: Object.assign({}, defaultOptions.observation, {
+		},
+		observation: {
+			...defaultOptions.observation,
 			dimension: undefined,
 			stateProjection: [
 				[1, 0, 0, 0],
 				[0, 1, 0, 0],
 			],
-		}),
-	});
+		},
+	};
 	const kf = new KalmanFilter(noDimensionsOptions);
 	t.is(kf.dynamic.dimension, 4);
 	t.is(kf.observation.dimension, 2);
@@ -208,8 +217,10 @@ test('stateProjection dimensions', t => {
 // dimension when transition is a matrix
 
 test('Transition dimension', t => {
-	const noDynamicDimensionOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const noDynamicDimensionOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			dimension: undefined,
 			transition: [
 				[1, 0, timeStep, 0],
@@ -217,8 +228,8 @@ test('Transition dimension', t => {
 				[0, 0, 1, 0],
 				[0, 0, 0, 1],
 			],
-		}),
-	});
+		},
+	};
 	const kf = new KalmanFilter(noDynamicDimensionOptions);
 	t.is(kf.dynamic.dimension, 4);
 });
@@ -226,15 +237,17 @@ test('Transition dimension', t => {
 // Test 5: Verify that stateProjection is build if observedProjection is given only
 
 test('Building stateProjection', t => {
-	const noStateProjectionOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const noStateProjectionOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			stateProjection: undefined,
 			observedProjection: [
 				[1, 0],
 				[0, 1],
 			],
-		}),
-	});
+		},
+	};
 	const kf = new KalmanFilter(noStateProjectionOptions);
 	const stateProjectionObjective = [
 		[1, 0, 0, 0],
@@ -247,31 +260,36 @@ test('Building stateProjection', t => {
 // dynamic.dimension, observation.dimension and stateProjection
 
 test('Dimension Error with stateProjection', t => {
-	const badSetOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const badSetOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			dimension: 4,
-		}),
-		observation: Object.assign({}, defaultOptions.observation, {
+		},
+		observation: {
+			...defaultOptions.observation,
 			dimension: 2,
 			stateProjection: [
 				[1, 0],
 				[0, 1],
 			],
-		}),
-	});
+		},
+	};
 	const error = t.throws(() => {
 		const kf = new KalmanFilter(badSetOptions);
 		kf.predict();
 	});
-	t.is(error.message, 'stateProjection dimensions not matching with observation and dynamic dimensions');
+	t.is(error!.message, 'stateProjection dimensions not matching with observation and dynamic dimensions');
 });
 
 // Test Error 2: Verify that an error if thrown when there is a difference between
 // dynamic.dimension and transition matrix dimension
 
 test('Dimension Error with Transition', t => {
-	const badSetOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const badSetOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			dimension: 2,
 			transition: [
 				[1, 0, timeStep, 0],
@@ -279,20 +297,22 @@ test('Dimension Error with Transition', t => {
 				[0, 0, 1, 0],
 				[0, 0, 0, 1],
 			],
-		}),
-	});
+		},
+	};
 	const error = t.throws(() => {
 		const kf = new KalmanFilter(badSetOptions);
 		kf.predict();
 	});
-	t.is(error.message, 'transition dimension not matching with dynamic dimension');
+	t.is(error!.message, 'transition dimension not matching with dynamic dimension');
 });
 
 // Test Error 3: Throw an error if both observedProjection and stateProjection are defined
 
 test('Observed and State Projections', t => {
-	const badSetOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const badSetOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			observedProjection: [
 				[1, 0],
 				[0, 1],
@@ -301,13 +321,13 @@ test('Observed and State Projections', t => {
 				[1, 0, 0, 0],
 				[0, 1, 0, 0],
 			],
-		}),
-	});
+		},
+	};
 	const error = t.throws(() => {
 		const kf = new KalmanFilter(badSetOptions);
 		kf.predict();
 	});
-	t.is(error.message, 'You cannot use both observedProjection and stateProjection');
+	t.is(error!.message, 'You cannot use both observedProjection and stateProjection');
 });
 
 // Test index is not NaN if undefined
@@ -327,6 +347,8 @@ test('Index initialization', t => {
 	const predicted2 = kf.predict({previousCorrected: firstState});
 	t.false(Number.isNaN(predicted1.index));
 	t.false(Number.isNaN(predicted2.index));
+	// @ts-ignore
 	t.is(predicted1.index, undefined);
+	// @ts-ignore
 	t.is(predicted2.index, undefined);
 });

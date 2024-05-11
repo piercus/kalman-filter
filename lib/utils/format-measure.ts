@@ -7,6 +7,4 @@
 * @param {Observation} m
 * @returns {Array.<Number>}
 */
-module.exports = function (m) {// eslint-disable-line no-unused-vars
-
-};
+module.exports = function (m) {};

@@ -1,6 +1,6 @@
-const {identity, matPermutation} = require('simple-linalg');
-const correlationToCovariance = require('../utils/correlation-to-covariance');
-const covarianceToCorrelation = require('../utils/covariance-to-correlation');
+import {identity, matPermutation} from 'simple-linalg';
+import correlationToCovariance from '../utils/correlation-to-covariance';
+import covarianceToCorrelation from '../utils/covariance-to-correlation';
 
 /**
 *Creates an observation model with a observedProjection corresponding to
@@ -9,7 +9,7 @@ const covarianceToCorrelation = require('../utils/covariance-to-correlation');
 * @returns {DynamicConfig}
 */
 
-const sensorProjected = function ({selectedCovariance, totalDimension, obsIndexes, selectedStateProjection}) {
+export default function sensorProjected({selectedCovariance, totalDimension, obsIndexes, selectedStateProjection}) {
 	if (!selectedStateProjection) {
 		selectedStateProjection = new Array(obsIndexes.length).fill(0).map(() => new Array(obsIndexes.length).fill(0));
 		obsIndexes.forEach((index1, i1) => {
@@ -60,6 +60,4 @@ const sensorProjected = function ({selectedCovariance, totalDimension, obsIndexe
 			return result;
 		},
 	};
-};
-
-module.exports = sensorProjected;
+}

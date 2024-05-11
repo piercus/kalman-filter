@@ -1,7 +1,8 @@
 // ReadMe Tests
 
-const test = require('ava');
-const {KalmanFilter, State} = require('../..');
+import test from 'ava';
+import {KalmanFilter} from '../../index';
+import State from '../../lib/state';
 // Const getCovariance = require('../../lib/utils/get-covariance.js');
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
@@ -159,10 +160,10 @@ test('Sensor observation', t => {
 			covariance: [3, 3, 4, 4], // Equivalent to diag([3, 3, 4, 4])
 		},
 	});
-	t.is(kFilter.observation.stateProjection.length,
-		kFilter.observation.sensorDimension * kFilter.observation.nSensors);
+	t.is((kFilter.observation!.stateProjection as number[]).length,
+		kFilter.observation.sensorDimension! * kFilter.observation.nSensors!);
 
-	t.is(kFilter.observation.stateProjection[0].length, 4);
+	t.is(kFilter.observation!.stateProjection![0].length, 4);
 
 	t.is(kFilter.observation.covariance.length, 4);
 
@@ -218,8 +219,8 @@ test('Model fits ', t => {
 	const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
 
 	// Online kalman filter
-	let previousCorrected = null;
-	const distances = [];
+	let previousCorrected: State | undefined = undefined;
+	const distances: number[] = [];
 	for (const observation of observations) {
 		const predicted = kFilter.predict({
 			previousCorrected,

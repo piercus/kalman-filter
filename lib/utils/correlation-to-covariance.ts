@@ -1,6 +1,6 @@
-const checkCovariance = require('./check-covariance');
+import checkCovariance from './check-covariance';
 
-module.exports = function ({correlation, variance}) {
+export default function correlationToCovariance({correlation, variance}) {
 	checkCovariance({covariance: correlation});
 	return correlation.map((c, rowIndex) => c.map((a, colIndex) => a * Math.sqrt(variance[colIndex] * variance[rowIndex])));
-};
+}

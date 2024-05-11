@@ -4,11 +4,12 @@
 
 // We have used a specific script to build the default parameters [script](../../../script/covariance-pendulum.js)
 
-const test = require('ava');
-const {frobenius: distanceMat} = require('simple-linalg');
-const CoreKalmanFilter = require('../../../lib/core-kalman-filter.js');
-const State = require('../../../lib/state.js');
-const getCorrelation = require('../../helpers/get-correlation.js');
+import test from 'ava';
+import {frobenius as distanceMat} from 'simple-linalg';
+import CoreKalmanFilter from '../../../lib/core-kalman-filter';
+import State from '../../../lib/state';
+import getCorrelation from '../../helpers/get-correlation';
+import {CoreConfig, PredictedCallback} from '../../../lib/types/ObservationConfig';
 
 // Tests in 2D with constant speed model
 
@@ -121,15 +122,17 @@ test('Predicted variance', t => {
 			[0.0001, 0.001],
 		],
 	});
-	const obsNoiseOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const obsNoiseOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			covariance() {
 				return [
 					[10],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kf = new CoreKalmanFilter(obsNoiseOptions);
 
 	const goodFitObs = [[0.09]];
@@ -170,15 +173,17 @@ test('Bad fit observation and correlation', t => {
 			[0.0001, 0.001],
 		],
 	});
-	const obsNoiseOptions = Object.assign({}, defaultOptions, {
-		observation: Object.assign({}, defaultOptions.observation, {
+	const obsNoiseOptions = {
+		...defaultOptions,
+		observation: {
+			...defaultOptions.observation,
 			covariance() {
 				return [
 					[10],
 				];
 			},
-		}),
-	});
+		},
+	};
 	const kf = new CoreKalmanFilter(obsNoiseOptions);
 
 	const badFitObs = [[0.17]];
@@ -211,16 +216,18 @@ test('Non null covariance', t => {
 			[0, 0.01],
 		],
 	});
-	const nullCovTransitionOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const nullCovTransitionOptions = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition() {
 				return [
 					[0.5, 0],
 					[0, 0.005],
 				];
 			},
-		}),
-	});
+		},
+	};
 
 	// Verify that the covariance between alpha and Valpha is greater
 	// when both covariances are non null
@@ -256,7 +263,7 @@ test('getValue function', t => {
 		],
 		index: 1,
 	});
-	const multiParameterTransition = function ({previousCorrected, index}) {
+	const multiParameterTransition: PredictedCallback = function ({previousCorrected, index}) {
 		const timeStep = (index % 2) ? 1 : 0.5;
 		// We consider a resistance from the air, proportionnal to v*v
 		// NB: this model is not a good physical modeling
@@ -267,11 +274,13 @@ test('getValue function', t => {
 		];
 	};
 
-	const multiParameterTransitionOptions = Object.assign({}, defaultOptions, {
-		dynamic: Object.assign({}, defaultOptions.dynamic, {
+	const multiParameterTransitionOptions: CoreConfig = {
+		...defaultOptions,
+		dynamic: {
+			...defaultOptions.dynamic,
 			transition: multiParameterTransition,
-		}),
-	});
+		},
+	};
 	const kf = new CoreKalmanFilter(multiParameterTransitionOptions);
 	const predicted = kf.predict({previousCorrected: previousCorrected1});
 	t.true(predicted instanceof State);

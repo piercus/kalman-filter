@@ -1,13 +1,13 @@
-const {identity, diag} = require('simple-linalg');
+import {identity, diag} from 'simple-linalg';
 
 const nullModels = {
-	linear(a) {
+	linear(a: number): number {
 		return a;
 	},
-	one() {
+	one(): number {
 		return 1;
 	},
-	square(a) {
+	square(a: number): number {
 		return a * a;
 	},
 };
@@ -18,7 +18,8 @@ const huge = 1e6;
 * @param {ObservationConfig} observation
 * @returns {DynamicConfig}
 */
-const constantSpeedWithNull = function ({staticCovariance, obsDynaIndexes, nullGapModel = null, init}, observation) {
+export default function constantSpeedWithNull(args: {staticCovariance?: number[][], obsDynaIndexes?: number[], nullGapModel?: string[], init}, observation) {
+	let {staticCovariance, obsDynaIndexes, nullGapModel = null, init} = args;
 	if (!obsDynaIndexes) {
 		const l = observation.observedProjection[0].length;
 		obsDynaIndexes = new Array(l).fill(0).map((_, i) => i);
@@ -29,17 +30,13 @@ const constantSpeedWithNull = function ({staticCovariance, obsDynaIndexes, nullG
 	}
 
 	const dimension = 2 * obsDynaIndexes.length;
-	if (!init) {
-		init = {
-			mean: new Array(obsDynaIndexes.length * 2).fill(0).map(() => [0]),
-			covariance: diag(new Array(obsDynaIndexes.length * 2).fill(huge)),
-			index: -1,
-		};
-	}
+	init ||= {
+		mean: new Array(obsDynaIndexes.length * 2).fill(0).map(() => [0]),
+		covariance: diag(new Array(obsDynaIndexes.length * 2).fill(huge)),
+		index: -1,
+	};
 
-	if (!nullGapModel) {
-		nullGapModel = new Array(dimension).fill(0).map(() => 'linear');
-	}
+	nullGapModel ||= new Array(dimension).fill(0).map(() => 'linear');
 
 	return {
 		dimension,
@@ -51,7 +48,7 @@ const constantSpeedWithNull = function ({staticCovariance, obsDynaIndexes, nullG
 				throw (new TypeError('diffBetweenIndexes is NaN'));
 			}
 
-			const emptyTransition = new Array(dimension).fill(new Array(dimension).fill());
+			const emptyTransition = new Array(dimension).fill(new Array(dimension).fill(undefined));
 
 			const observationDimension = dimension / 2;
 			const transition = emptyTransition.map((row, rowId) => row.map((col, colId) => {
@@ -85,6 +82,4 @@ const constantSpeedWithNull = function ({staticCovariance, obsDynaIndexes, nullG
 			return identity(dimension);
 		},
 	};
-};
-
-module.exports = constantSpeedWithNull;
+}

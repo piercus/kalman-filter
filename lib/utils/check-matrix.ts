@@ -1,6 +1,6 @@
-const checkShape = require('./check-shape');
+import checkShape from './check-shape';
 
-module.exports = function (matrix, shape, title = 'checkMatrix') {
+export default function checkMatrix(matrix: number[][], shape?: number[], title = 'checkMatrix') {
 	if (!Array.isArray(matrix)) {
 		throw (new TypeError(`[${title}] should be a 2-level array matrix and is ${matrix}`));
 	}
@@ -21,4 +21,4 @@ module.exports = function (matrix, shape, title = 'checkMatrix') {
 	if (shape) {
 		checkShape(matrix, shape, title);
 	}
-};
+}

@@ -1,4 +1,4 @@
-const uniq = require('./uniq.js');
+import uniq from './uniq';
 
 const limit = 100;
 
@@ -8,13 +8,13 @@ const limit = 100;
 * @param {Number} step
 * @returns {Object}
 */
-const deepAssign = function (args, step) {
+function deepAssignInternal(args: any[], step: number): Record<string, any> {
 	if (step > limit) {
 		throw (new Error(`In deepAssign, number of recursive call (${step}) reached limit (${limit}), deepAssign is not working on  self-referencing objects`));
 	}
 
 	const filterArguments = args.filter(arg => (arg) !== undefined && arg !== null);
-	const lastArgument = filterArguments[filterArguments.length - 1];
+	const lastArgument = filterArguments.at(-1);
 	if (filterArguments.length === 1) {
 		return filterArguments[0];
 	}
@@ -34,13 +34,13 @@ const deepAssign = function (args, step) {
 	}
 
 	const uniqKeys = uniq(keys);
-	const result = {};
+	const result: Record<string, any> = {};
 	for (const key of uniqKeys) {
 		const values = objectsArguments.map(arg => arg[key]);
-		result[key] = deepAssign(values, step + 1);
+		result[key] = deepAssignInternal(values, step + 1);
 	}
 
 	return result;
-};
+}
 
-module.exports = ((...args) => deepAssign(args, 0));
+export default function deepAssign(...args: any[]): any { return deepAssignInternal(args, 0);}

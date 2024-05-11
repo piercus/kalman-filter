@@ -1,4 +1,4 @@
-const {buildDynamic} = require('../model-collection');
+import {buildDynamic} from '../model-collection';
 
 /**
 * @typedef {Object.<DynamicName, DynamicConfig>} PerNameConfigs
@@ -10,14 +10,14 @@ const {buildDynamic} = require('../model-collection');
 */
 
 /**
-*Creates a dynamic model, considering the null in order to make the predictions
+* Creates a dynamic model, considering the null in order to make the predictions
 * @param {Object} main
 * @param {Object.<String, DynamicConfig>} main.perName
 * @param {ObservationConfig} observation
 * @param {Array.<Array.<Number>>} opts.observedProjection
 * @returns {DynamicConfig}
 */
-module.exports = function ({perName}, observation) {
+export default function composition({perName}, observation) {
 	const {observedProjection} = observation;
 	const observedDynamDimension = observedProjection[0].length;
 
@@ -36,10 +36,10 @@ module.exports = function ({perName}, observation) {
 
 		const {dimension, transition, covariance, init} = buildDynamic(perName[k], observation);
 
-		const dynamicIndexes = [];
+		const dynamicIndexes: number[] = [];
 		for (let i = 0; i < dimension; i++) {
 			const isObserved = (i < obsDynaIndexes.length);
-			let newIndex;
+			let newIndex: number;
 			if (isObserved) {
 				newIndex = nextObservedDimension;
 				if (newIndex !== obsDynaIndexes[i]) {
@@ -96,7 +96,7 @@ module.exports = function ({perName}, observation) {
 		init,
 		transition(options) {
 			const {previousCorrected} = options;
-			const resultTransition = new Array(totalDimension).fill().map(() => new Array(totalDimension).fill(0));
+			const resultTransition = new Array(totalDimension).fill(undefined).map(() => new Array(totalDimension).fill(0));
 
 			dynamicNames.forEach(k => {
 				const {
@@ -104,7 +104,10 @@ module.exports = function ({perName}, observation) {
 					transition,
 				} = confs[k];
 
-				const options2 = Object.assign({}, options, {previousCorrected: previousCorrected.subState(dynamicIndexes)});
+				const options2 = {
+					...options,
+					previousCorrected: previousCorrected.subState(dynamicIndexes),
+				};
 				const trans = transition(options2);
 				dynamicIndexes.forEach((c1, i1) => dynamicIndexes.forEach((c2, i2) => {
 					resultTransition[c1][c2] = trans[i1][i2];
@@ -114,7 +117,7 @@ module.exports = function ({perName}, observation) {
 		},
 		covariance(options) {
 			const {previousCorrected} = options;
-			const resultCovariance = new Array(totalDimension).fill().map(() => new Array(totalDimension).fill(0));
+			const resultCovariance = new Array(totalDimension).fill(undefined).map(() => new Array(totalDimension).fill(0));
 
 			dynamicNames.forEach(k => {
 				const {
@@ -122,7 +125,10 @@ module.exports = function ({perName}, observation) {
 					covariance,
 				} = confs[k];
 
-				const options2 = Object.assign({}, options, {previousCorrected: previousCorrected.subState(dynamicIndexes)});
+				const options2 = {
+					...options,
+					previousCorrected: previousCorrected.subState(dynamicIndexes),
+				};
 
 				const cov = covariance(options2);
 				// Console.log('dynamic.composition',k, cov, dynamicIndexes)
@@ -133,4 +139,4 @@ module.exports = function ({perName}, observation) {
 			return resultCovariance;
 		},
 	};
-};
+}

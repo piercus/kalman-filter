@@ -1,6 +1,9 @@
-const {identity} = require('simple-linalg');
-const polymorphMatrix = require('../utils/polymorph-matrix.js');
-const checkMatrix = require('../utils/check-matrix.js');
+import {identity} from 'simple-linalg';
+
+import polymorphMatrix from '../utils/polymorph-matrix';
+import checkMatrix from '../utils/check-matrix';
+import {ObservationConfig} from '../types/ObservationConfig';
+import TypeAssert from '../types/TypeAssert';
 
 /**
 * @param {Number} sensorDimension
@@ -9,11 +12,13 @@ const checkMatrix = require('../utils/check-matrix.js');
 * @returns {ObservationConfig}
 */
 
-const copy = mat => mat.map(a => a.concat());
+const copy = (mat: number[][]): number[][] => mat.map(a => a.concat());
 
-module.exports = function (options) {
+export default function sensor(options: any): ObservationConfig {
 	const {sensorDimension = 1, sensorCovariance = 1, nSensors = 1} = options;
 	const sensorCovarianceFormatted = polymorphMatrix(sensorCovariance, {dimension: sensorDimension});
+	if (TypeAssert.isFunction(sensorCovarianceFormatted))
+	{throw new TypeError('sensorCovarianceFormatted can not be a function here');}
 	checkMatrix(sensorCovarianceFormatted, [sensorDimension, sensorDimension], 'observation.sensorCovariance');
 	const oneSensorObservedProjection = identity(sensorDimension);
 	let concatenatedObservedProjection = [];
@@ -29,9 +34,10 @@ module.exports = function (options) {
 		}
 	}
 
-	return Object.assign({}, options, {
+	return {
+		...options,
 		dimension,
 		observedProjection: concatenatedObservedProjection,
 		covariance: concatenatedCovariance,
-	});
-};
+	};
+}

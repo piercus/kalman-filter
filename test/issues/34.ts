@@ -1,5 +1,6 @@
-const test = require('ava');
-const {KalmanFilter} = require('../../index.js');
+import test from 'ava';
+import {KalmanFilter} from '../../index';
+import {diag} from 'simple-linalg';
 
 test('#34 1-D', t => {
 	const dataset = [0, 0, 0, 0, 16.1, 0, 0, 30.9, 0, 0, 0, 0, 26.1, null, null].map(a => [a]);
@@ -23,7 +24,6 @@ test('#34 1-D', t => {
 });
 
 test('#34 2D', t => {
-	const {diag} = require('simple-linalg');
 
 	const dataset = [
 		[22, null],

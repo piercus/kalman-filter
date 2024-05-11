@@ -1,12 +1,12 @@
-const {identity} = require('simple-linalg');
+import {identity} from 'simple-linalg';
 /**
-*Creates a dynamic model, following constant position model with respect with the dimensions provided in the observation parameters
+* Creates a dynamic model, following constant position model with respect with the dimensions provided in the observation parameters
 * @param {DynamicConfig} dynamic
 * @param {ObservationConfig} observation
 * @returns {DynamicConfig}
 */
 
-module.exports = function (dynamic, observation) {
+export default function constantPosition(dynamic, observation) {
 	let {dimension} = dynamic;
 	const observationDimension = observation.dimension;
 	const {observedProjection} = observation;
@@ -24,6 +24,8 @@ module.exports = function (dynamic, observation) {
 	}
 
 	const transition = identity(dimension);
-	covariance = covariance || identity(dimension);
-	return Object.assign({}, dynamic, {dimension, transition, covariance});
-};
+	covariance ||= identity(dimension);
+	return {
+		...dynamic, dimension, transition, covariance,
+	};
+}

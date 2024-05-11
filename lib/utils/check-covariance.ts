@@ -1,8 +1,9 @@
-const tolerance = 0.1;
-const Matrix = require('@rayyamhk/matrix');
-const checkMatrix = require('./check-matrix');
+import Matrix from '@rayyamhk/matrix';
+import checkMatrix from './check-matrix';
 
-const checkDefinitePositive = function (covariance, tolerance = 1e-10) {
+const tolerance = 0.1;
+
+const checkDefinitePositive = function (covariance: number[][], tolerance = 1e-10) {
 	const covarianceMatrix = new Matrix(covariance);
 	const eigenvalues = covarianceMatrix.eigenvalues();
 	for (const eigenvalue of eigenvalues) {
@@ -35,10 +36,11 @@ const checkSymetric = function (covariance, title = 'checkSymetric') {
 	}
 };
 
-module.exports = function ({covariance, eigen = false}) {
+export default function checkCovariance(args: {covariance: number[][], eigen?: boolean}, _title?: string) {
+	const {covariance, eigen = false} = args;
 	checkMatrix(covariance);
 	checkSymetric(covariance);
 	if (eigen) {
 		checkDefinitePositive(covariance);
 	}
-};
+}

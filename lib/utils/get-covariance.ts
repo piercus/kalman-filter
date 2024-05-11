@@ -5,7 +5,7 @@
 * @returns {Array.<Array.<Number>>} covariance matrix size is NxN
 */
 
-module.exports = function ({measures, averages}) {
+export default function getCovariance({measures, averages}) {
 	const l = measures.length;
 	const n = measures[0].length;
 
@@ -22,4 +22,4 @@ module.exports = function ({measures, averages}) {
 
 		return result;
 	}));
-};
+}

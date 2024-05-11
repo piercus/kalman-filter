@@ -1,7 +1,7 @@
-const test = require('ava');
-const {frobenius: distanceMat} = require('simple-linalg');
-const {sum} = require('simple-linalg');
-const {KalmanFilter} = require('../../..');
+import test from 'ava';
+import {frobenius as distanceMat} from 'simple-linalg';
+import {sum} from 'simple-linalg';
+import {KalmanFilter} from '../../../index';
 
 // Test 1 : Verify that a simple model converges quickly
 
@@ -70,5 +70,5 @@ test('Error when not converging', t => {
 	const error = t.throws(() => {
 		kf.asymptoticStateCovariance();
 	});
-	t.is(error.message, 'The state covariance does not converge asymptotically');
+	t.is(error!.message, 'The state covariance does not converge asymptotically');
 });

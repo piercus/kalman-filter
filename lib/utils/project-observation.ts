@@ -1,8 +1,8 @@
 // From observationTracks to movingAverageGroundTruthsStates with speed
 
-const {matMul, invert} = require('simple-linalg');
+import {matMul, invert} from 'simple-linalg';
 
-module.exports = function ({observation, obsIndexes, selectedStateProjection, invertSelectedStateProjection}) {
+export default function projectObservation({observation, obsIndexes, selectedStateProjection, invertSelectedStateProjection}) {
 	if (!observation) {
 		return null;
 	}
@@ -34,4 +34,4 @@ module.exports = function ({observation, obsIndexes, selectedStateProjection, in
 
 			return v;
 		});
-};
+}

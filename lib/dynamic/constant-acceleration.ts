@@ -1,13 +1,13 @@
-const {identity} = require('simple-linalg');
+import {identity} from 'simple-linalg';
 
 /**
-*Creates a dynamic model, following constant acceleration model with respect with the dimensions provided in the observation parameters
+* Creates a dynamic model, following constant acceleration model with respect with the dimensions provided in the observation parameters
 * @param {DynamicConfig} dynamic
 * @param {ObservationConfig} observation
 * @returns {DynamicConfig}
 */
 
-module.exports = function (dynamic, observation) {
+export default function constantAcceleration(dynamic, observation) {
 	const timeStep = dynamic.timeStep || 1;
 	const {observedProjection} = observation;
 	const {stateProjection} = observation;
@@ -37,5 +37,9 @@ module.exports = function (dynamic, observation) {
 		.concat(new Array(baseDimension).fill(timeStep * timeStep))
 		.concat(new Array(baseDimension).fill(timeStep ** 4));
 	const covariance = dynamic.covariance || arrayCovariance;
-	return Object.assign({}, dynamic, {dimension, transition, covariance});
-};
+	return {
+		...dynamic, dimension, transition, covariance,
+	};
+}
+
+// export default constantAcceleration;

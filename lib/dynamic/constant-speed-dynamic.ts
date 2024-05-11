@@ -1,12 +1,13 @@
-const {diag} = require('simple-linalg');
+import {diag} from 'simple-linalg';
+import State from '../state';
 
 /**
-*Creates a dynamic model, considering the null in order to make the predictions
-* @param {Array.<Number>} staticCovariance
+* Creates a dynamic model, considering the null in order to make the predictions
 * @param {ObservationConfig} observation
 * @returns {DynamicConfig}
 */
-const constantSpeedDynamic = function ({staticCovariance, avSpeed, center}, observation) {
+export default function constantSpeedDynamic(args: {staticCovariance: number[], avSpeed: number[], center: number[]}, observation) {
+	const {staticCovariance, avSpeed, center} = args;
 	const observationDimension = observation.observedProjection[0].length;
 
 	const dimension = 2 * observationDimension;
@@ -31,7 +32,8 @@ const constantSpeedDynamic = function ({staticCovariance, avSpeed, center}, obse
 		index: -1,
 	};
 
-	const transition = ({getTime, index, previousCorrected}) => {
+	const transition = (args: {getTime: (index: number) => number, index: number, previousCorrected: State}) => {
+		const {getTime, index, previousCorrected} = args;
 		const dT = getTime(index) - getTime(previousCorrected.index);
 		if (typeof (dT) !== 'number' || Number.isNaN(dT)) {
 			throw (new TypeError(`dT (${dT}) should be a number`));
@@ -59,7 +61,8 @@ const constantSpeedDynamic = function ({staticCovariance, avSpeed, center}, obse
 		return mat;
 	};
 
-	const covariance = ({index, previousCorrected, getTime}) => {
+	const covariance = (args: {index: number, previousCorrected: State, getTime: (index: number) => number}) => {
+		const {index, previousCorrected, getTime} = args;
 		const dT = getTime(index) - getTime(previousCorrected.index);
 
 		if (typeof (dT) !== 'number') {
@@ -83,6 +86,6 @@ const constantSpeedDynamic = function ({staticCovariance, avSpeed, center}, obse
 		transition,
 		covariance,
 	};
-};
+}
 
-module.exports = constantSpeedDynamic;
+// module.exports = constantSpeedDynamic;

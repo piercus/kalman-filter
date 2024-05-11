@@ -1,4 +1,4 @@
-module.exports = function ({inDimension, outDimension, inIndexes, selectedStateProjection, outIndexes}) {
+export function buildObserverProjection({inDimension, outDimension, inIndexes, selectedStateProjection, outIndexes}) {
 	if (selectedStateProjection.length !== outIndexes.length) {
 		throw (new Error(`shape mismatch (${selectedStateProjection.length} vs ${outIndexes.length})`));
 	}
@@ -14,4 +14,4 @@ module.exports = function ({inDimension, outDimension, inIndexes, selectedStateP
 
 		return 0;
 	}));
-};
+}

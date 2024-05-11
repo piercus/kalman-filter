@@ -1,5 +1,4 @@
-module.exports = {
-	sensor: require('./sensor.js'),
-	'sensor-local-variance': require('./sensor-local-variance'),
-	'sensor-projected': require('./sensor-projected'),
-};
+export {default as sensor} from './sensor';
+export {default as sensorLocalVariance} from './sensor-local-variance';
+export {default as sensorProjected} from './sensor-projected';
+

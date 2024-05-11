@@ -1,15 +1,14 @@
-const {elemWise, diag} = require('simple-linalg');
-const constantSpeedDynamic = require('./constant-speed-dynamic');
+import {elemWise, diag} from 'simple-linalg';
+import constantSpeedDynamic from './constant-speed-dynamic';
+import State from '../state';
 
-const safeDiv = function (a, b) {
+const safeDiv = function (a: number, b: number): number {
 	if (a === 0) {
 		return 0;
 	}
-
 	if (b === 0) {
 		return 1;
 	}
-
 	return a / b;
 };
 
@@ -25,7 +24,8 @@ const safeDiv = function (a, b) {
 * @param {Number} [options.typicalTime=10]
 * @returns {DynamicConfig}
 */
-module.exports = function (options, observation) {
+// {typicalTimes: any, staticCovariance: any, avSpeed, center: any: any}
+export default function shorttermConstantSpeed(options: any, observation) {
 	const {typicalTimes} = options;
 
 	if (!Array.isArray(typicalTimes)) {
@@ -54,7 +54,7 @@ module.exports = function (options, observation) {
 	return {
 		dimension,
 		init,
-		transition(options) {
+		transition(options: {getTime: (index: number) => number, index: number, previousCorrected: State}) {
 			const aMat = constantSpeed.transition(options);
 
 			const {getTime, index, previousCorrected} = options;
@@ -71,14 +71,14 @@ module.exports = function (options, observation) {
 
 			return mixMatrix({ratios, aMat, bMat});
 		},
-		covariance(options, observation) {
+		covariance(options: {getTime: (index: number) => number, index: number, previousCorrected: State}, observation) {
 			const {getTime, index, previousCorrected} = options;
 
 			const dT = getTime(index) - getTime(previousCorrected.index);
 			// State is (x, y, vx, vy)
 			const ratios = typicalTimes.map(t => Math.exp(-1 * dT / t));
-			const aMat = constantSpeed.covariance(options, observation);
+			const aMat = constantSpeed.covariance(options/*, observation*/ );
 			return mixMatrix({ratios, aMat, bMat: init.covariance});
 		},
 	};
-};
+}
