@@ -27,7 +27,9 @@ module.exports = {
 					predicted = kf.predict({previousCorrected});
 					const {mean, covariance} = predicted;
 
-					createGroupPoint({mean, covariance, parent: img, className: 'predicted', color: 'blue'});
+					createGroupPoint({
+mean, covariance, parent: img, className: 'predicted', color: 'blue',
+});
 
 					return delayPromise(delay);
 				})
@@ -54,7 +56,9 @@ module.exports = {
 					previousCorrected = kf.correct({predicted, observation: b});
 					const {mean, covariance} = previousCorrected;
 
-					createGroupPoint({mean, covariance, parent: img, className: 'corrected', color: 'red'});
+					createGroupPoint({
+mean, covariance, parent: img, className: 'corrected', color: 'red',
+});
 
 					return delayPromise(delay);
 				}).bind(null, box, index));
