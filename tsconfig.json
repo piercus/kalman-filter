@@ -3,13 +3,15 @@
     "target": "esnext",
     "module": "commonjs",
     "declaration": true,
-    "declarationMap": false,
+    "declarationMap": true,
     "outDir": "./cjs",
-    "removeComments": true,
+    "removeComments": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "emitDeclarationOnly": false 
   },
   "include": [
     "index.ts",
